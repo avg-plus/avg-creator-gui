@@ -1,8 +1,8 @@
 # output
 /.cache
 /coverage
-/app/renderer/.parcel
-/app/main/.parcel
+/src/renderer/.parcel
+/src/main/.parcel
 *.map
 /release
 
