@@ -1,15 +1,12 @@
 /** @format */
 
-import React from "react"
-import "./App.less"
-import AVGCreator from "./easy_creator/AVGCreator"
-import { Provider } from "react-redux"
+import React from "react";
+import "./App.less";
 
-// import store from "./redux/store"
-// import AVGStudioMain from "./layouts/AVGStudioMain"
+import AVGCreator from "./easy_creator/AVGCreator";
 
 const App: React.FC = () => {
-  return <AVGCreator />
-}
+  return <AVGCreator />;
+};
 
-export default App
+export default App;

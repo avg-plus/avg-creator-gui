@@ -1,61 +1,46 @@
 /** @format */
 
-import * as React from "react"
+import * as React from "react";
 // import { ipcMain, ipcRenderer } from "electron-better-ipc"
-import fs from "fs"
+// import fs from "fs-extra"
+// var remote = require("electron").remote
+// var electronFs = remote.require("fs")
 
-import { AVGCreatorPortal } from "./components/AVGCreatorPortal"
-import "./AVGCreator.less"
+import { AVGCreatorPortal } from "./components/AVGCreatorPortal";
+import "./AVGCreator.less";
 
-import { Button, Popover, Dialog, FormGroup, InputGroup } from "@blueprintjs/core"
-// import { IconNames } from "@blueprintjs/icons"
+import { Dialog, FormGroup, InputGroup, Button } from "@blueprintjs/core";
 
-import { AppContext } from "./hooks/context"
-import { useReducer, useState, useEffect, FormEvent } from "react"
-import { AVGCreatorReducer, AVGCreatorInitialState } from "../redux/reducers/avg-creator-reducers"
-import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions"
-// import { ipcRenderer } from "electron"
-
-// console.log(emoji)
-
-// console.log(ipcRenderer)
-
-// ipcRenderer.send("channel", "value")
-fs.writeFileSync("./test2.txt", "v2")
+import { AppContext } from "./hooks/context";
+import { useReducer, useState, useEffect } from "react";
+import {
+  AVGCreatorReducer,
+  AVGCreatorInitialState
+} from "../redux/reducers/avg-creator-reducers";
+import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
+import { IconNames } from "@blueprintjs/icons";
 
 const AVGCreator = () => {
-  const [state, dispatch] = useReducer(AVGCreatorReducer, AVGCreatorInitialState)
-  const [isCreateProjectDialogOpen, setIsCreateProjectDialogOpen] = useState(false)
-  const [projectDir, setProjectDir] = useState("")
-
-  const handleNewProject = () => {
-    // message.info("This is a normal message")
-    // setIsCreateProjectDialogOpen(!isCreateProjectDialogOpen)
-    setIsCreateProjectDialogOpen(true)
-    // ;(async () => {
-    // const emoji = ipc.callMain("IPC_ShowOpenDialog")
-    // })()
-
-    // ipc.callMain("get-emoji", "unicorn")
-  }
+  const [state, dispatch] = useReducer(
+    AVGCreatorReducer,
+    AVGCreatorInitialState
+  );
+  const [isCreateProjectDialogOpen, setIsCreateProjectDialogOpen] = useState(
+    false
+  );
+  const [] = useState("");
 
   const handleCreateDialogClose = () => {
-    setIsCreateProjectDialogOpen(false)
-  }
-
-  const handleInputProjectDirectoryChanged = (e: FormEvent<HTMLLabelElement>) => {
-    // const files = (e.target as any).files
-    // const selectedFile = files[0].path
-    // setProjectDir(dir)
-  }
+    setIsCreateProjectDialogOpen(false);
+  };
 
   // const handleInputProjectDirectoryChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   console.log("on input change ", e)
   // }
 
   useEffect(() => {
-    dispatch(AVGCreatorActionType.CloseSettingPanel)
-  }, [state.isSettingPanelOpen])
+    dispatch(AVGCreatorActionType.CloseSettingPanel);
+  }, [state.isSettingPanelOpen]);
 
   return (
     <AppContext.Provider value={{ state, dispatch }}>
@@ -85,21 +70,27 @@ const AVGCreator = () => {
                   canEscapeKeyClose={true}
                 >
                   <div className="container">
-                    {/* <FormGroup inline={false} label={"目录名称"} labelFor="text-input">
-                      <InputGroup disabled={false} leftIcon={IconNames.CUBE_ADD} placeholder="输入你的项目名称" />
-                    </FormGroup> */}
+                    <FormGroup
+                      inline={false}
+                      label={"目录名称"}
+                      labelFor="text-input"
+                    >
+                      <InputGroup
+                        disabled={false}
+                        leftIcon={IconNames.CUBE_ADD}
+                        placeholder="输入你的项目名称"
+                      />
+                    </FormGroup>
                   </div>
                 </Dialog>
-                {/* <Button icon={IconNames.ADD} onClick={handleNewProject}>
-                  新建项目
-                </Button> */}
+                <Button icon={IconNames.ADD}>新建项目</Button>
               </div>
             </div>
           )}
         </div>
       </div>
     </AppContext.Provider>
-  )
-}
+  );
+};
 
-export default AVGCreator
+export default AVGCreator;

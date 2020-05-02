@@ -5,7 +5,7 @@ import { Empty } from "antd"
 import { ProjectListItem } from "./ProjectListItem"
 
 import "./ProjectListMainPanel.less"
-import { IPanelProps } from "@blueprintjs/core"
+import { IPanelProps } from "@blueprintjs/core/lib/esnext"
 import { ProjectSettingPanel } from "./ProjectSettingPanel"
 import { AVGProjectManager, AVGProjectData } from "../manager/project-manager"
 // import store from "../../redux/store"

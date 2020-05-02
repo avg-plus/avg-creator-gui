@@ -2,61 +2,25 @@
   "name": "electron-react-parcel-boilerplate",
   "version": "0.7.7",
   "description": "A boilerplate for Electron + React + Parcel.",
-  "main": "dist/main/main.js",
+  "main": "./dist/src/main/main",
   "scripts": {
-    "start": "electron-forge start",
-    "release": "run-s parcel:build \"electron:build {@}\" --",
-    "watch": "run-p -r parcel:watch electron:start",
-    "electron:start": "nodemon --watch dist/main --exec \"electron .\"",
-    "electron:build": "build --x64 --publish=never",
-    "parcel:watch": "run-p -r main:watch renderer:watch",
-    "main:watch": "parcel watch src/main/main.ts --out-dir dist/main --out-file main --target=electron",
-    "renderer:watch": "parcel src/renderer/index.html --port 1124 --out-dir dist/renderer/development",
-    "parcel:build": "run-s main:build renderer:build",
-    "main:build": "parcel build src/main/main.ts --out-dir dist/main --out-file main --target=electron",
-    "renderer:build": "parcel build src/renderer/index.html --public-url ./ --out-dir dist/renderer/production",
+    "start": "run-s main:build electron:watch",
     "test": "run-s parcel:build \"test:jest {@}\" --",
-    "test:jest": "jest",
     "lint": "tslint src/**/*.ts{,x}",
-    "package": "electron-forge package",
-    "make": "electron-forge make"
+    "release": "run-s parcel:build \"electron:build {@}\" --",
+    "electron:watch": "run-p -r parcel:watch electron:start",
+    "electron:start": "nodemon --watch dist/src/main --exec \"electron .\"",
+    "electron:build": "electron-builder --x64 --publish=never",
+    "parcel:watch": "run-p -r main:watch renderer:watch",
+    "main:watch": "parcel watch src/main/main.ts --out-dir dist/main --out-file main --target electron",
+    "renderer:watch": "parcel static/index.html --port 1124 --out-dir dist/renderer/development --target electron",
+    "parcel:build": "run-s main:build renderer:build",
+    "main:build": "parcel build src/main/main.ts --out-dir dist/main --out-file main --target electron",
+    "renderer:build": "parcel build static/index.html --public-url ./ --out-dir dist/renderer/production  --target electron",
+    "test:jest": "jest"
   },
   "author": "AngryPowman",
   "license": "MIT",
-  "build": {
-    "productName": "AVG Creator",
-    "appId": "org.avgplus.creator",
-    "files": [
-      "src/**",
-      "!src/main/main.ts",
-      "!src/main/tests/**",
-      "!src/renderer/**",
-      "dist/renderer/production/**",
-      "!src/**/*.map"
-    ],
-    "mac": {
-      "target": [
-        "zip"
-      ],
-      "artifactName": "${productName}-mac.${ext}"
-    },
-    "win": {
-      "target": [
-        "zip"
-      ],
-      "artifactName": "${productName}-win.${ext}"
-    },
-    "linux": {
-      "target": [
-        "zip"
-      ],
-      "category": "Development",
-      "artifactName": "${productName}-linux.${ext}"
-    },
-    "directories": {
-      "output": "release"
-    }
-  },
   "jest": {
     "verbose": true,
     "collectCoverageFrom": [
@@ -78,21 +42,21 @@
       "node"
     ]
   },
-  "config": {
-    "forge": "./forge.config.js"
-  },
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/plugin-proposal-optional-chaining": "^7.9.0",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.3.3",
+    "@types/app-root-path": "^1.2.4",
     "@types/jest": "^24.0.15",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.6",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^24.8.0",
-    "electron": "^8.2.3",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
     "jest": "^24.8.0",
     "less": "^3.11.1",
     "nodemon": "^1.19.1",
@@ -103,18 +67,22 @@
     "react-router-dom": "^5.0.1",
     "react-test-renderer": "^16.8.6",
     "spectron": "^7.0.0",
-    "tslint": "^5.18.0",
+    "tslint": "^6.1.2",
+    "tslint-config-prettier": "^1.18.0",
     "tslint-react": "^4.0.0",
     "typescript": "^3.8.3"
   },
   "dependencies": {
     "@blueprintjs/core": "^3.25.0",
     "@blueprintjs/icons": "^3.15.0",
+    "@types/fs-extra": "^8.1.0",
     "antd": "^4.1.4",
     "app-root-path": "^3.0.0",
+    "electron": "^8.2.3",
     "electron-better-ipc": "^1.0.1",
     "electron-is-dev": "^1.1.0",
     "electron-squirrel-startup": "^1.0.0",
+    "fs-extra": "^9.0.0",
     "node": "^14.0.0",
     "react-redux": "^7.2.0",
     "src": "^1.1.2"

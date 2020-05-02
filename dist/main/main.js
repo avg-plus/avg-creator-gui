@@ -1,4 +1,4 @@
-process.env.HMR_PORT=54198;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
+process.env.HMR_PORT=62146;process.env.HMR_HOSTNAME="localhost";// modules are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -120,58 +120,63 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 })({"main.ts":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
+var _tslib = require("tslib");
+
+var _url = require("url");
+
+var _electron = require("electron");
+
+var _electronIsDev = _interopRequireDefault(require("electron-is-dev"));
+
+var _appRootPath = require("app-root-path");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_electron.app.on("ready", function () {
+  return (0, _tslib.__awaiter)(void 0, void 0, void 0, function () {
+    var mainWindow, devPath, prodPath, url;
+    return (0, _tslib.__generator)(this, function (_a) {
+      mainWindow = new _electron.BrowserWindow({
+        x: 0,
+        y: 0,
+        width: 400,
+        height: 680,
+        minWidth: 400,
+        minHeight: 480,
+        frame: true,
+        thickFrame: false,
+        resizable: true,
+        titleBarStyle: "hiddenInset",
+        webPreferences: {
+          nodeIntegration: true // allowRunningInsecureContent: true,
+
+        }
+      });
+      mainWindow.once("ready-to-show", function () {
+        mainWindow.show();
+
+        if (_electronIsDev.default) {
+          mainWindow.webContents.openDevTools();
+        }
+      });
+      devPath = "http://localhost:1124";
+      prodPath = (0, _url.format)({
+        pathname: (0, _appRootPath.resolve)("dist/static/index.html"),
+        protocol: "file:",
+        slashes: true
+      });
+      url = _electronIsDev.default ? devPath : prodPath;
+      mainWindow.setMenu(null); // mainWindow.loadURL(url)
+
+      mainWindow.loadFile("./dist/static/index.html");
+      return [2
+      /*return*/
+      ];
+    });
+  });
 });
 
-const tslib_1 = require("tslib");
-
-const url_1 = require("url");
-
-const fs_1 = tslib_1.__importDefault(require("fs"));
-
-const electron_1 = require("electron");
-
-const electron_is_dev_1 = tslib_1.__importDefault(require("electron-is-dev"));
-
-const app_root_path_1 = require("app-root-path");
-
-electron_1.app.on('ready', async () => {
-  const mainWindow = new electron_1.BrowserWindow({
-    x: 0,
-    y: 0,
-    width: 400,
-    height: 680,
-    minWidth: 400,
-    minHeight: 480,
-    frame: true,
-    thickFrame: false,
-    resizable: true,
-    titleBarStyle: "hiddenInset",
-    webPreferences: {
-      nodeIntegration: true,
-      allowRunningInsecureContent: true
-    }
-  });
-  mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
-
-    if (electron_is_dev_1.default) {
-      mainWindow.webContents.openDevTools();
-    }
-  });
-  const devPath = 'http://localhost:1124';
-  const prodPath = url_1.format({
-    pathname: app_root_path_1.resolve('dist/renderer/production/index.html'),
-    protocol: 'file:',
-    slashes: true
-  });
-  const url = electron_is_dev_1.default ? devPath : prodPath;
-  mainWindow.setMenu(null);
-  mainWindow.loadURL(url);
-  fs_1.default.writeFileSync("./test.txt", "xxx");
-});
-electron_1.app.on('window-all-closed', electron_1.app.quit);
+_electron.app.on("window-all-closed", _electron.app.quit);
 },{}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var OVERLAY_ID = '__parcel__error__overlay__';
 

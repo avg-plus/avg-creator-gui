@@ -1,10 +1,9 @@
-import { format } from 'url'
-import fs from "fs";
-import { BrowserWindow, app } from 'electron'
-import isDev from 'electron-is-dev';
-import { resolve } from 'app-root-path'
+import { format } from "url";
+import { BrowserWindow, app } from "electron";
+import isDev from "electron-is-dev";
+import { resolve } from "app-root-path";
 
-app.on('ready', async () => {
+app.on("ready", async () => {
   const mainWindow = new BrowserWindow({
     x: 0,
     y: 0,
@@ -17,28 +16,31 @@ app.on('ready', async () => {
     resizable: true,
     titleBarStyle: "hiddenInset",
     webPreferences: {
-      nodeIntegration: true,
-      allowRunningInsecureContent: true,
-    },
-  })
+      nodeIntegration: true
+      // allowRunningInsecureContent: true,
+    }
+  });
 
-  mainWindow.once('ready-to-show', () => {
-    mainWindow.show()
-    if (isDev) { mainWindow.webContents.openDevTools() }
-  })
+  mainWindow.once("ready-to-show", () => {
+    mainWindow.show();
+    if (isDev) {
+      mainWindow.webContents.openDevTools();
+    }
+  });
 
-  const devPath = 'http://localhost:1124'
+  const devPath = "http://localhost:1124";
   const prodPath = format({
-    pathname: resolve('dist/renderer/production/index.html'),
-    protocol: 'file:',
+    pathname: resolve("dist/static/index.html"),
+    protocol: "file:",
     slashes: true
-  })
-  const url = isDev ? devPath : prodPath
+  });
 
-  mainWindow.setMenu(null)
-  mainWindow.loadURL(url)
+  const url = isDev ? devPath : prodPath;
 
-  fs.writeFileSync("./test.txt", "xxx");
-})
+  mainWindow.setMenu(null);
+  // mainWindow.loadURL(url)
 
-app.on('window-all-closed', app.quit)
+  mainWindow.loadFile("./dist/static/index.html");
+});
+
+app.on("window-all-closed", app.quit);
