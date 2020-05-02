@@ -61,10 +61,6 @@ export const AVGCreatorPortal = () => {
   };
 
   const onPanelOpen = () => {
-    // this.setState({
-    //   isShowPanelHeader: true,
-    // })
-
     dispatch(AVGCreatorActionType.OpenSettingPanel);
   };
 

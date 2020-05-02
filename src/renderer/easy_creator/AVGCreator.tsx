@@ -51,11 +51,10 @@ const AVGCreator = () => {
           </div>
 
           <div className="bp3-dialog-body avg-window-body">
-            <div className="body-content">
-              <AVGCreatorPortal />
-            </div>
+            <div className="body-content"><AVGCreatorPortal /></div>
           </div>
           {!state.isSettingPanelOpen && (
+            <></>
             <div className="bp3-dialog-header avg-creator-footer">
               <div className="bp3-button-group .modifier">
                 <Dialog

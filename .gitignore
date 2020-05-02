@@ -5,6 +5,7 @@
 /src/main/.parcel
 *.map
 /release
+/.dist
 
 # dependencies
 /node_modules

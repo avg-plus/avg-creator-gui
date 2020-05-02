@@ -2,7 +2,7 @@
   "name": "electron-react-parcel-boilerplate",
   "version": "0.7.7",
   "description": "A boilerplate for Electron + React + Parcel.",
-  "main": "./dist/src/main/main",
+  "main": "./dist/main/main",
   "scripts": {
     "start": "run-s main:build electron:watch",
     "test": "run-s parcel:build \"test:jest {@}\" --",
