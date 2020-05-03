@@ -1,40 +1,41 @@
 {
-  "name": "electron-react-parcel-boilerplate",
-  "version": "0.7.7",
-  "description": "A boilerplate for Electron + React + Parcel.",
-  "main": "./dist/src/main/main",
+  "name": "avg.creator",
+  "productName": "avg.creator",
+  "version": "1.0.0",
+  "description": "My Electron application description",
+  "main": "dist/src/main/main.js",
   "scripts": {
+    "make": "electron-forge make",
     "start": "run-p -r watch electron:start",
     "build": "node tools/parcel-build.js",
     "watch": "node tools/parcel-build.js --watch",
     "release": "run-s parcel:build \"electron:build {@}\" --",
+    "package": "electron-builder --config tools/packager.js",
     "electron:start": "nodemon --watch dist/src/main --exec \"electron .\"",
     "electron:build": "electron-builder --x64 --publish=never",
     "main:watch": "node tools/parcel-build.js --watch",
     "parcel:build": "run-s main:build renderer:build"
   },
-  "author": "AngryPowman",
+  "keywords": [],
+  "author": "angrypowman",
   "license": "MIT",
-  "jest": {
-    "verbose": true,
-    "collectCoverageFrom": [
-      "src/renderer/**",
-      "!src/renderer/index.tsx",
-      "!src/renderer/tests/**",
-      "!dist/renderer/**"
-    ],
-    "transform": {
-      "^.+\\.tsx?$": "babel-jest"
-    },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ]
+  "config": {
+    "forge": "./forge.config.js"
+  },
+  "dependencies": {
+    "@blueprintjs/core": "^3.25.0",
+    "@blueprintjs/icons": "^3.15.0",
+    "@types/fs-extra": "^8.1.0",
+    "antd": "^4.1.4",
+    "app-root-path": "^3.0.0",
+    "electron-better-ipc": "^1.0.1",
+    "electron-compile": "^6.4.4",
+    "electron-is-dev": "^1.1.0",
+    "electron-squirrel-startup": "^1.0.0",
+    "fs-extra": "^9.0.0",
+    "node": "^14.0.0",
+    "react-redux": "^7.2.0",
+    "src": "^1.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
@@ -46,11 +47,23 @@
     "@types/jest": "^24.0.15",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.6",
+    "app-root-path": "^3.0.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^24.8.0",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "electron-builder": "^22.6.0",
+    "electron-is-dev": "^1.2.0",
+    "electron-prebuilt-compile": "8.2.0",
+    "eslint": "^3",
+    "eslint-config-airbnb": "^15",
+    "eslint-plugin-import": "^2",
+    "eslint-plugin-jsx-a11y": "^5",
+    "eslint-plugin-react": "^7",
+    "electron": "^8.2.3",
     "jest": "^24.8.0",
     "less": "^3.11.1",
     "nodemon": "^1.19.1",
@@ -65,20 +78,5 @@
     "tslint-config-prettier": "^1.18.0",
     "tslint-react": "^4.0.0",
     "typescript": "^3.8.3"
-  },
-  "dependencies": {
-    "@blueprintjs/core": "^3.25.0",
-    "@blueprintjs/icons": "^3.15.0",
-    "@types/fs-extra": "^8.1.0",
-    "antd": "^4.1.4",
-    "app-root-path": "^3.0.0",
-    "electron": "^8.2.3",
-    "electron-better-ipc": "^1.0.1",
-    "electron-is-dev": "^1.1.0",
-    "electron-squirrel-startup": "^1.0.0",
-    "fs-extra": "^9.0.0",
-    "node": "^14.0.0",
-    "react-redux": "^7.2.0",
-    "src": "^1.1.2"
   }
 }

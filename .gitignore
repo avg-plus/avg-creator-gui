@@ -6,6 +6,8 @@
 *.map
 /release
 /dist
+/out
+/build
 
 # dependencies
 /node_modules
