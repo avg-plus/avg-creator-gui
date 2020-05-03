@@ -44,4 +44,7 @@ module.exports = {
   compileParcel
 }
 
-if (require.main === module) compileParcel()
+if (require.main === module) {
+  const watch = process.argv.includes("--watch");
+  compileParcel({ watch })
+}
