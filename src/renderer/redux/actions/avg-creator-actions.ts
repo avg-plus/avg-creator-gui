@@ -1,29 +1,18 @@
-
 export enum AVGCreatorActionType {
-  OpenSettingPanel, // 进入设置面板
-  CloseSettingPanel, // 退出设置面板
+  // 进入设置面板
+  OpenSettingPanel = "OpenSettingPanel",
+
+  // 退出设置面板
+  CloseSettingPanel = "CloseSettingPanel",
+
+  // 打开创建项目对话框
+  ToggleCreateProjectDialog = "ToggleCreateProjectDialog",
+
+  // 创建项目
+  CreateProject = "CreateProject"
 }
 
-
-// export class AVGCreatorAction {
-//   static openSettingPanel(project: AVGProjectData) {
-//     return {
-//       type: AVGCreatorActionType.OpenSettingPanel,
-//       data: {
-//         project,
-//         isSettingPanelOpen: true
-//       }
-//     };
-//   }
-//   static closeSettingPanel() {
-//     return {
-//       type: AVGCreatorActionType.CloseSettingPanel,
-//       data: {
-//         project: null,
-//         isSettingPanelOpen: false
-//       }
-//     };
-//   }
-
-
-// }
+export class AVGCreatorAction {
+  type: AVGCreatorActionType;
+  payload?: any;
+}

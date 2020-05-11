@@ -11,7 +11,7 @@ import {
   Tab,
   Tag,
   Slider,
-  Button,
+  Button
 } from "@blueprintjs/core";
 import store from "../../redux/store";
 
@@ -28,7 +28,7 @@ interface IProjectSettingPanelState {
 enum SettingPanelTabID {
   BasePanel = "base-panel",
   GamePanel = "game-panel",
-  AdvancedPanel = "advanced-panel",
+  AdvancedPanel = "advanced-panel"
 }
 
 const handleTabChange = (navbarTabId: SettingPanelTabID) => {
@@ -51,12 +51,28 @@ const BaseSettingPanel = ({ project }) => {
         <InputGroup id="project-name-input" defaultValue={project.name} />
       </FormGroup>
 
-      <FormGroup helperText="为游戏项目写一个简短的说明" label="描述" labelFor="project-description-input">
-        <InputGroup className="dir-path-input" id="project-description-input" defaultValue={project.description} />
+      <FormGroup
+        helperText="为游戏项目写一个简短的说明"
+        label="描述"
+        labelFor="project-description-input"
+      >
+        <InputGroup
+          className="dir-path-input"
+          id="project-description-input"
+          defaultValue={project.description}
+        />
       </FormGroup>
 
-      <FormGroup helperText="游戏项目的目录路径" label="项目目录" labelFor="project-dir-input">
-        <FileInput id="project-dir-input" buttonText="选择目录" text="选择游戏项目目录" />
+      <FormGroup
+        helperText="游戏项目的目录路径"
+        label="项目目录"
+        labelFor="project-dir-input"
+      >
+        <FileInput
+          id="project-dir-input"
+          buttonText="选择目录"
+          text="选择游戏项目目录"
+        />
       </FormGroup>
     </>
   );
@@ -83,7 +99,10 @@ const AdvancedSettingPanel = ({ project }) => {
         }
         labelFor="project-name-input"
       >
-        <InputGroup placeholder="如 http://localhost:2335" defaultValue={project.host} />
+        <InputGroup
+          placeholder="如 http://localhost:2335"
+          defaultValue={project.host}
+        />
         <Checkbox label="自定义" />
       </FormGroup>
     </>
@@ -142,7 +161,11 @@ const GameSettingPanel = (project: AVGProjectData) => {
             vertical={false}
             labelRenderer={(value: number) => {
               if (value === 0) {
-                return <div style={{ wordBreak: "keep-all", marginLeft: "30px" }}>非常慢</div>;
+                return (
+                  <div style={{ wordBreak: "keep-all", marginLeft: "30px" }}>
+                    非常慢
+                  </div>
+                );
               } else if (value === 25) {
                 return <p>稍慢</p>;
               } else if (value === 50) {
@@ -150,7 +173,11 @@ const GameSettingPanel = (project: AVGProjectData) => {
               } else if (value === 75) {
                 return <p>稍快</p>;
               } else if (value === 100) {
-                return <div style={{ wordBreak: "keep-all", marginRight: "30px" }}>非常快</div>;
+                return (
+                  <div style={{ wordBreak: "keep-all", marginRight: "30px" }}>
+                    非常快
+                  </div>
+                );
               }
 
               return <></>;
@@ -168,14 +195,23 @@ const GameSettingPanel = (project: AVGProjectData) => {
       <div className="form-group-line">
         <label className="form-label">声音</label>
         <div className="controls-container">
-          <Slider min={0} max={100} stepSize={1} labelStepSize={10} value={project.volume} vertical={false} />
+          <Slider
+            min={0}
+            max={100}
+            stepSize={1}
+            labelStepSize={10}
+            value={project.volume}
+            vertical={false}
+          />
         </div>
       </div>
     </>
   );
 };
 
-export const ProjectSettingPanel: React.FC<{ project: AVGProjectData }> = ({ project }) => {
+export const ProjectSettingPanel: React.FC<{ project: AVGProjectData }> = ({
+  project
+}) => {
   // console.log("Load props ", props);
   const [p, setProject] = useState(project);
 
@@ -185,7 +221,11 @@ export const ProjectSettingPanel: React.FC<{ project: AVGProjectData }> = ({ pro
       {/* selectedTabId={this.state.selectedTab} */}
       {/*  */}
       <Tabs id="TabsExample" onChange={handleTabChange}>
-        <Tab id={SettingPanelTabID.BasePanel} title="基本" panel={BaseSettingPanel({ project })} />
+        <Tab
+          id={SettingPanelTabID.BasePanel}
+          title="基本"
+          panel={BaseSettingPanel({ project })}
+        />
         <Tab
           id={SettingPanelTabID.GamePanel}
           title="初始游戏设置"

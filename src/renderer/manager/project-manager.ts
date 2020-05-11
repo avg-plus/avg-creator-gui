@@ -1,21 +1,32 @@
-
-export interface AVGProjectData {
+export class AVGProjectData {
   name: string;
-  description: string;
-  dir: string;
-  host: string;
-  listenPort: number;
-  screenWidth: number;
-  screenHeight: number;
-  isFullScreen: boolean;
-  textSpeed: number;
-  autoPlay: boolean;
-  volume: number;
+  description: string = "";
+  dir?: string;
+  host?: string = "127.0.0.1";
+  listenPort?: number;
+  screenWidth?: number = 800;
+  screenHeight?: number = 600;
+  isFullScreen?: boolean = false;
+  textSpeed?: number = 80;
+  autoPlay?: boolean = false;
+  volume?: number = 100;
 }
 
 export class AVGProjectManager {
-  static loadProjectList(): Array<AVGProjectData> {
+  static createProject(name: string, description: string) {
+    // 获取端口
+    // TODO:
+    const port = 2335;
 
+    const project = new AVGProjectData();
+    project.name = name;
+    project.description = description;
+    project.listenPort = port;
+
+    return project;
+  }
+
+  static loadProjectList(): Array<AVGProjectData> {
     // 临时列表
     return [
       {
@@ -43,7 +54,7 @@ export class AVGProjectManager {
         textSpeed: 80,
         autoPlay: false,
         volume: 80
-      },
-    ]
+      }
+    ];
   }
 }

@@ -1,0 +1,35 @@
+// 禁止文本选择
+:not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before {
+  -webkit-user-select: none;
+  user-select: none;
+  // cursor: !important;
+}
+
+// 禁止按钮描边
+input,
+button,
+textarea,
+:focus {
+  outline: none;
+}
+
+// 禁止图片拖动
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+}
+
+:not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before {
+  cursor: default !important;
+}
+
+// 提示 Toaster
+.gui-toaster {
+  top: 4% !important;
+}

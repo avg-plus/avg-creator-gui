@@ -2,15 +2,16 @@ module.exports = {
   "productName": "AVGPlus Creator",//项目名 这也是生成的exe文件的前缀名
   "appId": "com.avgplus.creator",//包名  
   "directories": {
-    "output": "build"
+    app: "./",
+    "output": "build",
   },
   "files": [
-    "dist/"
+    "dist/**/*"
   ],
   "asar": true,
   "mac": {
     "icon": "build/icons/icon.icns",
-    target: ["zip"]
+    target: ["dir"]
   },
   "win": {
     "icon": "build/icons/aims.ico",
