@@ -11,6 +11,7 @@ export interface IAVGCreatorInitialState {
   isSettingPanelOpen: boolean;
   isShowPanelHeader: boolean;
   isCreateProjectDialogOpen: boolean;
+  isSetWorkspaceDialogOpen: boolean;
   projects: AVGProjectData[];
 }
 
@@ -18,6 +19,7 @@ export const AVGCreatorInitialState: IAVGCreatorInitialState = {
   isSettingPanelOpen: true,
   isShowPanelHeader: false,
   isCreateProjectDialogOpen: false,
+  isSetWorkspaceDialogOpen: false,
   projects: []
 };
 
@@ -32,6 +34,8 @@ export function AVGCreatorReducer(
       return { ...state, isSettingPanelOpen: false, isShowPanelHeader: false };
     case AVGCreatorActionType.ToggleCreateProjectDialog:
       return { ...state, isCreateProjectDialogOpen: action.payload.open };
+    case AVGCreatorActionType.ToggleSetWorkspaceDialog:
+      return { ...state, isSetWorkspaceDialogOpen: action.payload.open };
     case AVGCreatorActionType.CreateProject:
       const newProject = AVGProjectManager.createProject(
         action.payload.projectName,

@@ -1,4 +1,5 @@
 /** @format */
+@import "~@blueprintjs/core/lib/less/variables";
 
 .list-container {
   background: white;
@@ -15,7 +16,7 @@
 
   .running-status-info-bar {
     width: 100%;
-    background: #f34545;
+    background: @green4;
     height: 28px;
     padding: 0 10px 0 10px;
     bottom: 0%;
@@ -25,6 +26,7 @@
     .info {
       position: relative;
       top: 50%;
+      color: white;
       transform: translateY(-50%);
     }
   }

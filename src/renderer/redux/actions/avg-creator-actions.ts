@@ -8,6 +8,9 @@ export enum AVGCreatorActionType {
   // 打开创建项目对话框
   ToggleCreateProjectDialog = "ToggleCreateProjectDialog",
 
+  // 打开设置工作目录对话框
+  ToggleSetWorkspaceDialog = "ToggleSetWorkspaceDialog",
+
   // 创建项目
   CreateProject = "CreateProject"
 }

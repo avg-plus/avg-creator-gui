@@ -6,7 +6,7 @@
     "experimentalDecorators": true,
     "removeComments": false,
     "preserveConstEnums": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "lib": ["dom", "dom.iterable", "esnext", "es6", "es2015.promise"],
     "noImplicitAny": true,
     "noImplicitReturns": true,
@@ -22,10 +22,10 @@
     "target": "es5",
     "module": "esnext",
     "jsx": "react",
-    "typeRoots": ["./node_modules/@types"],
+    "typeRoots": ["./node_modules/@types", "./typings"],
     "baseUrl": "."
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "typings/nconf/nconf.d.ts"],
   "exclude": ["node_modules"],
   "formatCodeOptions": {
     "indentSize": 2,

@@ -1,22 +1,21 @@
 /** @format */
 
 import * as React from "react";
-// import { ipcMain, ipcRenderer } from "electron-better-ipc"
-// import fs from "fs-extra"
-// var remote = require("electron").remote
-// var electronFs = remote.require("fs")
+import styled from "styled-components";
 
-import { AVGCreatorPortal } from "./AVGCreatorPortal";
 import "./AVGCreator.less";
 
 import { CreatorContext } from "../hooks/context";
-import { useReducer, useState, useEffect, useCallback } from "react";
+import { useReducer, useEffect } from "react";
 import {
   AVGCreatorReducer,
   AVGCreatorInitialState
 } from "../redux/reducers/avg-creator-reducers";
 import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
 import { CreateProjectDialog } from "../components/create-project-dialog/create-project-dialog";
+import { PanelStack, Button } from "@blueprintjs/core";
+import { ProjectListMainPanel } from "./ProjectListMainPanel";
+import { InitWorkspaceDialog } from "../components/initial-workspace-dialog/init-workspace-dialog";
 
 const AVGCreator = () => {
   const [state, dispatch] = useReducer(
@@ -27,6 +26,19 @@ const AVGCreator = () => {
   useEffect(() => {
     dispatch({ type: AVGCreatorActionType.CloseSettingPanel });
   }, [state.isSettingPanelOpen]);
+
+  const onPanelOpen = () => {
+    dispatch({ type: AVGCreatorActionType.OpenSettingPanel });
+  };
+
+  const onPanelClose = () => {
+    dispatch({ type: AVGCreatorActionType.CloseSettingPanel });
+  };
+
+  const ToolBar = styled.div`
+    height: 2.4rem;
+    background: #ececec;
+  `;
 
   return (
     <CreatorContext.Provider value={{ state, dispatch }}>
@@ -40,18 +52,18 @@ const AVGCreator = () => {
 
           <div className="bp3-dialog-body avg-window-body">
             <div className="body-content">
-              <AVGCreatorPortal></AVGCreatorPortal>
+              {/* <ToolBar></ToolBar> */}
+              <PanelStack
+                className="panel-stack"
+                showPanelHeader={true}
+                initialPanel={{ component: ProjectListMainPanel }}
+                onOpen={onPanelOpen}
+                onClose={onPanelClose}
+              />
             </div>
           </div>
           <CreateProjectDialog />
-
-          {/* {!state.isSettingPanelOpen && (
-            <div className="bp3-dialog-header avg-creator-footer">
-              <div className="bp3-button-group .modifier">
-
-              </div>
-            </div>
-          )} */}
+          <InitWorkspaceDialog />
         </div>
       </div>
     </CreatorContext.Provider>

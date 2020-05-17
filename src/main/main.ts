@@ -3,6 +3,8 @@ import { BrowserWindow, app } from "electron";
 import isDev from "electron-is-dev";
 import { resolve } from "app-root-path";
 
+import "./ipc";
+
 app.on("ready", async () => {
   const mainWindow = new BrowserWindow({
     x: 0,

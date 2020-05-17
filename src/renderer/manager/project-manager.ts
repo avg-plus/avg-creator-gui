@@ -1,3 +1,9 @@
+import { nconf } from "./../../common/config";
+import fs from "fs-extra";
+import { ipcRenderer } from "electron-better-ipc";
+import { IPCEvents } from "../../../src/common/ipc-events";
+import { isNullOrUndefined } from "util";
+
 export class AVGProjectData {
   name: string;
   description: string = "";
@@ -13,10 +19,17 @@ export class AVGProjectData {
 }
 
 export class AVGProjectManager {
+  static isWorkspaceInit() {
+    const workspaceDir = nconf.get("workspace");
+    console.log("isWorkspaceInit", nconf, workspaceDir);
+
+    return !isNullOrUndefined(workspaceDir);
+  }
+
   static createProject(name: string, description: string) {
     // 获取端口
     // TODO:
-    const port = 2335;
+    const port = 0; // free port
 
     const project = new AVGProjectData();
     project.name = name;
@@ -25,6 +38,27 @@ export class AVGProjectManager {
 
     return project;
   }
+
+  static async createFromExistsProject(dir: string) {
+    const paths = await ipcRenderer.callMain<any, string[]>(
+      IPCEvents.IPC_ShowOpenDialog,
+      {
+        title: "tring"
+      }
+    );
+
+    // GUIToaster.show({ message: paths });
+
+    // AVGProjectManager.createFromExistsProject(
+    //   "/Users/angrypowman/Workspace/Programming/Revisions/avg-plus/game-projects/tutorials"
+    // );
+
+    if (!fs.existsSync(dir)) {
+      throw "Not Exsits";
+    }
+  }
+
+  static initFromDB() {}
 
   static loadProjectList(): Array<AVGProjectData> {
     // 临时列表

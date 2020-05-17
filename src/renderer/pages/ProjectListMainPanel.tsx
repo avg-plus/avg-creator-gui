@@ -10,15 +10,11 @@ import { ProjectSettingPanel } from "./ProjectSettingPanel";
 import { AVGProjectManager, AVGProjectData } from "../manager/project-manager";
 import { CreatorContext } from "../hooks/context";
 import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
+import styled from "styled-components";
 
-export const ProjectListMainPanel: React.FC<IPanelProps> = ({
-  openPanel,
-  closePanel
-}) => {
-  // const [projectList, setProjectList] = useState(
-  //   AVGProjectManager.loadProjectList()
-  // );
+import { Intent, Button } from "@blueprintjs/core";
 
+export const ProjectListMainPanel: React.FC<IPanelProps> = ({ openPanel }) => {
   const { state, dispatch } = useContext(CreatorContext);
 
   const openSettingsPanel = (project: AVGProjectData) => {
@@ -29,9 +25,17 @@ export const ProjectListMainPanel: React.FC<IPanelProps> = ({
     });
   };
 
-  const handleCreateProject = () => {
-    console.log("handleCreateProject");
+  const handleInitWorkspace = async () => {
+    dispatch({
+      type: AVGCreatorActionType.ToggleSetWorkspaceDialog,
+      payload: {
+        open: true
+      }
+    });
+    return;
+  };
 
+  const handleCreateProject = async () => {
     dispatch({
       type: AVGCreatorActionType.ToggleCreateProjectDialog,
       payload: {
@@ -40,34 +44,50 @@ export const ProjectListMainPanel: React.FC<IPanelProps> = ({
     });
   };
 
-  useEffect(() => {
-    // setProjectList(state.projects);
-  }, [state.projects]);
+  const NoProjectHint = styled.label`
+    font-size: 16px;
+    color: black;
+    font-weight: 200;
+  `;
 
   return (
     <div className="list-container">
       {state.projects.length === 0 && (
         <Empty
-          // image="https://gw.alipayobjects.com/mdn/miniapp_social/afts/img/A*pevERLJC9v0AAAAAAAAAAABjAQAAAQ/original"
           imageStyle={{
             height: 160
           }}
           description={
-            <div className="empty-list-hint">暂时没有任何游戏项目</div>
+            <NoProjectHint>
+              {!AVGProjectManager.isWorkspaceInit() &&
+                "设置一个目录，用于储存你的游戏项目"}
+              {AVGProjectManager.isWorkspaceInit() &&
+                "开始创建第一个游戏项目吧！"}
+            </NoProjectHint>
           }
         >
-          <button
-            className="bp3-button bp3-icon-add"
-            onClick={handleCreateProject}
-          >
-            创建游戏
-          </button>
+          {!AVGProjectManager.isWorkspaceInit() && (
+            <Button
+              className="bp3-icon-inbox"
+              intent={Intent.PRIMARY}
+              onClick={handleInitWorkspace}
+            >
+              初始化工作目录
+            </Button>
+          )}
+
+          {AVGProjectManager.isWorkspaceInit() && (
+            <Button className="bp3-icon-add" onClick={handleCreateProject}>
+              创建游戏
+            </Button>
+          )}
         </Empty>
       )}
 
       {state.projects.map((p: AVGProjectData) => {
         return (
           <div
+            key={p.name}
             onDoubleClick={() => {
               openSettingsPanel(p);
             }}
@@ -81,9 +101,9 @@ export const ProjectListMainPanel: React.FC<IPanelProps> = ({
         );
       })}
 
-      <div className="running-status-info-bar">
+      {/* <div className="running-status-info-bar">
         <p className="info">正在监听 http://localhost:2335, 点击打开</p>
-      </div>
+      </div> */}
     </div>
   );
 };
