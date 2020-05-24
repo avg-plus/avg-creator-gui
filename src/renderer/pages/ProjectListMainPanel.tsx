@@ -1,27 +1,54 @@
 /** @format */
 
 import React, { useState, useContext, useEffect } from "react";
-import { Empty } from "antd";
-import { ProjectListItem } from "./ProjectListItem";
 
-import "./ProjectListMainPanel.less";
+import { Empty } from "antd";
+import {
+  Intent,
+  Button,
+  ContextMenuTarget,
+  ContextMenu,
+  Menu
+} from "@blueprintjs/core";
 import { IPanelProps } from "@blueprintjs/core/lib/esnext";
+import { Scrollbars } from "react-custom-scrollbars";
+
+import { ProjectListItem } from "./ProjectListItem";
 import { ProjectSettingPanel } from "./ProjectSettingPanel";
 import { AVGProjectManager, AVGProjectData } from "../manager/project-manager";
 import { CreatorContext } from "../hooks/context";
 import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
 import styled from "styled-components";
 
-import { Intent, Button } from "@blueprintjs/core";
+import "./ProjectListMainPanel.less";
+
+const NoProjectHint = styled.label`
+  font-size: 16px;
+  color: black;
+  font-weight: 200;
+`;
 
 export const ProjectListMainPanel: React.FC<IPanelProps> = ({ openPanel }) => {
   const { state, dispatch } = useContext(CreatorContext);
 
+  useEffect(() => {
+    AVGProjectManager.loadProjects().then((v) => {
+      console.log("loaded projects", v);
+
+      dispatch({
+        type: AVGCreatorActionType.SetProjectList,
+        payload: {
+          projects: v
+        }
+      });
+    });
+  }, []);
+
   const openSettingsPanel = (project: AVGProjectData) => {
     openPanel({
-      component: ProjectSettingPanel, // <- class or stateless function type
-      props: { project }, // <- SettingsPanel props without IPanelProps
-      title: "设置" // <- appears in header and back button
+      component: ProjectSettingPanel,
+      props: { project },
+      title: "设置"
     });
   };
 
@@ -44,66 +71,107 @@ export const ProjectListMainPanel: React.FC<IPanelProps> = ({ openPanel }) => {
     });
   };
 
-  const NoProjectHint = styled.label`
-    font-size: 16px;
-    color: black;
-    font-weight: 200;
-  `;
+  const contextMenu = () => {
+    return (
+      <Menu>
+        <Menu.Item icon="cog" text="设置" />
+      </Menu>
+    );
+  };
 
   return (
-    <div className="list-container">
-      {state.projects.length === 0 && (
-        <Empty
-          imageStyle={{
-            height: 160
-          }}
-          description={
-            <NoProjectHint>
-              {!AVGProjectManager.isWorkspaceInit() &&
-                "设置一个目录，用于储存你的游戏项目"}
-              {AVGProjectManager.isWorkspaceInit() &&
-                "开始创建第一个游戏项目吧！"}
-            </NoProjectHint>
-          }
-        >
-          {!AVGProjectManager.isWorkspaceInit() && (
-            <Button
-              className="bp3-icon-inbox"
-              intent={Intent.PRIMARY}
-              onClick={handleInitWorkspace}
-            >
-              初始化工作目录
-            </Button>
-          )}
+    <Scrollbars>
+      <div
+        className="list-container"
+        onContextMenu={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+          e.preventDefault();
+          dispatch({
+            type: AVGCreatorActionType.SelectProjectItem,
+            payload: {
+              project: null
+            }
+          });
 
-          {AVGProjectManager.isWorkspaceInit() && (
-            <Button className="bp3-icon-add" onClick={handleCreateProject}>
-              创建游戏
-            </Button>
-          )}
-        </Empty>
-      )}
+          ContextMenu.show(contextMenu(), { left: e.clientX, top: e.clientY });
+        }}
+      >
+        {state.projects.length === 0 && (
+          <Empty
+            imageStyle={{
+              height: 160
+            }}
+            description={
+              <NoProjectHint>
+                {!AVGProjectManager.isWorkspaceInit() &&
+                  "设置一个目录，用于储存你的游戏项目"}
+                {AVGProjectManager.isWorkspaceInit() &&
+                  "使用 AVGPlus 开发你的第一个文字冒险游戏"}
+              </NoProjectHint>
+            }
+          >
+            {!AVGProjectManager.isWorkspaceInit() && (
+              <Button
+                className="bp3-icon-inbox"
+                intent={Intent.PRIMARY}
+                onClick={handleInitWorkspace}
+              >
+                初始化工作目录
+              </Button>
+            )}
 
-      {state.projects.map((p: AVGProjectData) => {
-        return (
+            {AVGProjectManager.isWorkspaceInit() && (
+              <Button className="bp3-icon-add" onClick={handleCreateProject}>
+                创建游戏
+              </Button>
+            )}
+          </Empty>
+        )}
+
+        {state.projects.map((p: AVGProjectData) => (
           <div
-            key={p.name}
+            key={p._id}
             onDoubleClick={() => {
               openSettingsPanel(p);
             }}
-          >
-            <ProjectListItem
-              key={p.name}
-              name={p.name}
-              description={p.description ?? ""}
-            />
-          </div>
-        );
-      })}
+            onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+              event.stopPropagation();
+              dispatch({
+                type: AVGCreatorActionType.SelectProjectItem,
+                payload: {
+                  project: p
+                }
+              });
+            }}
+            onContextMenu={(
+              event: React.MouseEvent<HTMLDivElement, MouseEvent>
+            ) => {
+              event.stopPropagation();
 
-      {/* <div className="running-status-info-bar">
+              dispatch({
+                type: AVGCreatorActionType.SelectProjectItem,
+                payload: {
+                  project: p
+                }
+              });
+            }}
+          >
+            <div
+              className={`project-list-item ${
+                state.selectedProjectItem &&
+                state.selectedProjectItem._id === p._id
+                  ? "selected"
+                  : ""
+              }`}
+            >
+              <ProjectListItem data={p} dispatch={dispatch} />
+            </div>
+          </div>
+        ))}
+
+        {/* <div className="running-status-info-bar">
         <p className="info">正在监听 http://localhost:2335, 点击打开</p>
       </div> */}
-    </div>
+      </div>
+    </Scrollbars>
   );
 };

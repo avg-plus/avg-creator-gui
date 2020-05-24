@@ -1,4 +1,5 @@
-import React, { useReducer, useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
+
 import {
   Dialog,
   FormGroup,
@@ -6,10 +7,10 @@ import {
   Checkbox,
   Classes,
   Button,
-  AnchorButton,
-  Intent,
-  FileInput
+  Intent
 } from "@blueprintjs/core";
+
+import { useHotkeys } from "react-hotkeys-hook";
 
 import "./create-project-dialog.less";
 
@@ -17,10 +18,7 @@ import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
 import { IconNames } from "@blueprintjs/icons";
 import { CreatorContext } from "../../hooks/context";
 import { GUIToaster } from "../../services/toaster";
-import { ipcRenderer } from "electron-better-ipc";
-import { IPCEvents } from "../../../../src/common/ipc-events";
-import debug from "debug";
-const log = debug("s");
+import { AVGProjectManager } from "../../../renderer/manager/project-manager";
 
 export const CreateProjectDialog = () => {
   const { state, dispatch } = useContext(CreatorContext);
@@ -29,7 +27,6 @@ export const CreateProjectDialog = () => {
   const [generateTutorial, setGenerateTutorial] = useState(true);
 
   const handleCreateDialogClose = () => {
-    // setIsCreateProjectDialogOpen(false);
     dispatch({
       type: AVGCreatorActionType.ToggleCreateProjectDialog,
       payload: {
@@ -48,11 +45,16 @@ export const CreateProjectDialog = () => {
       return;
     }
 
+    // 创建项目
+    const newProject = AVGProjectManager.createProject(
+      projectName,
+      generateTutorial
+    );
+
     dispatch({
-      type: AVGCreatorActionType.CreateProject,
+      type: AVGCreatorActionType.AddProjectItem,
       payload: {
-        projectName,
-        generateTutorial
+        project: newProject
       }
     });
 
@@ -64,15 +66,20 @@ export const CreateProjectDialog = () => {
     });
   };
 
-  const [projectDir, setProjectDir] = useState("");
+  useHotkeys(
+    "enter",
+    () => {
+      handleConfirmCreateProject();
+    },
+    { filter: () => true },
+    [projectName]
+  );
 
-  const handleBrowse = async () => {
-    const paths = await ipcRenderer.callMain<any, string>(
-      IPCEvents.IPC_ShowOpenDialog,
-      { title: "选择目录" }
-    );
-
-    setProjectDir(paths);
+  const handleProjectNameInputChanged = (
+    event: React.FormEvent<HTMLInputElement>
+  ) => {
+    const text = (event.target as HTMLInputElement).value;
+    setProjectName(text);
   };
 
   return (
@@ -91,24 +98,12 @@ export const CreateProjectDialog = () => {
         <FormGroup inline={false} label={"游戏名称"} labelFor="text-input">
           <InputGroup
             disabled={false}
-            defaultValue={projectName}
+            value={projectName}
             leftIcon={IconNames.CUBE_ADD}
-            onChange={(event: React.FormEvent<HTMLInputElement>) => {
-              const text = (event.target as HTMLInputElement).value;
-              setProjectName(text);
-            }}
+            onChange={handleProjectNameInputChanged}
             placeholder="输入你的游戏名称"
           />
         </FormGroup>
-        {/* 
-        <FormGroup inline={false} label={"项目路径"}>
-          <InputGroup
-            placeholder="选择项目的储存目录"
-            rightElement={<Button onClick={handleBrowse}>浏览</Button>}
-            defaultValue={projectDir}
-            value={projectDir}
-          />
-        </FormGroup> */}
 
         <FormGroup label={""} labelInfo={"(required)"}>
           <Checkbox
@@ -121,16 +116,16 @@ export const CreateProjectDialog = () => {
           />
         </FormGroup>
       </div>
-
       <div className={Classes.DIALOG_FOOTER}>
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
           <Button onClick={handleCreateDialogClose}>取消</Button>
-          <AnchorButton
+          <Button
             intent={Intent.PRIMARY}
+            type="submit"
             onClick={handleConfirmCreateProject}
           >
             创建游戏
-          </AnchorButton>
+          </Button>
         </div>
       </div>
     </Dialog>

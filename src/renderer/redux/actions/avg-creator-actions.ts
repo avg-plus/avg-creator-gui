@@ -11,6 +11,18 @@ export enum AVGCreatorActionType {
   // 打开设置工作目录对话框
   ToggleSetWorkspaceDialog = "ToggleSetWorkspaceDialog",
 
+  // 增加项目
+  AddProjectItem = "AddProjectItem",
+
+  // 删除项目
+  RemoveProjectItem = "RemoveProjectItem",
+
+  // 设置项目列表
+  SetProjectList = "SetProjectList",
+
+  // 选择项目
+  SelectProjectItem = "SelectProjectItem",
+
   // 创建项目
   CreateProject = "CreateProject"
 }

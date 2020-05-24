@@ -23,10 +23,6 @@ const AVGCreator = () => {
     AVGCreatorInitialState
   );
 
-  useEffect(() => {
-    dispatch({ type: AVGCreatorActionType.CloseSettingPanel });
-  }, [state.isSettingPanelOpen]);
-
   const onPanelOpen = () => {
     dispatch({ type: AVGCreatorActionType.OpenSettingPanel });
   };
@@ -34,11 +30,6 @@ const AVGCreator = () => {
   const onPanelClose = () => {
     dispatch({ type: AVGCreatorActionType.CloseSettingPanel });
   };
-
-  const ToolBar = styled.div`
-    height: 2.4rem;
-    background: #ececec;
-  `;
 
   return (
     <CreatorContext.Provider value={{ state, dispatch }}>
@@ -55,7 +46,7 @@ const AVGCreator = () => {
               {/* <ToolBar></ToolBar> */}
               <PanelStack
                 className="panel-stack"
-                showPanelHeader={true}
+                showPanelHeader={state.isShowPanelHeader}
                 initialPanel={{ component: ProjectListMainPanel }}
                 onOpen={onPanelOpen}
                 onClose={onPanelClose}

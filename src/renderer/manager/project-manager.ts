@@ -3,8 +3,10 @@ import fs from "fs-extra";
 import { ipcRenderer } from "electron-better-ipc";
 import { IPCEvents } from "../../../src/common/ipc-events";
 import { isNullOrUndefined } from "util";
+import { DBProjects } from "../../common/database/db-project";
 
 export class AVGProjectData {
+  _id: string;
   name: string;
   description: string = "";
   dir?: string;
@@ -21,20 +23,25 @@ export class AVGProjectData {
 export class AVGProjectManager {
   static isWorkspaceInit() {
     const workspaceDir = nconf.get("workspace");
-    console.log("isWorkspaceInit", nconf, workspaceDir);
-
     return !isNullOrUndefined(workspaceDir);
   }
 
-  static createProject(name: string, description: string) {
+  static createProject(name: string, generateTutorial: boolean = true) {
     // 获取端口
     // TODO:
     const port = 0; // free port
 
     const project = new AVGProjectData();
     project.name = name;
-    project.description = description;
+    project.description = "";
     project.listenPort = port;
+
+    // 保存到数据库
+    console.log("DBProjects", DBProjects);
+
+    DBProjects.insert({
+      ...project
+    });
 
     return project;
   }
@@ -46,49 +53,18 @@ export class AVGProjectManager {
         title: "tring"
       }
     );
-
-    // GUIToaster.show({ message: paths });
-
-    // AVGProjectManager.createFromExistsProject(
-    //   "/Users/angrypowman/Workspace/Programming/Revisions/avg-plus/game-projects/tutorials"
-    // );
-
     if (!fs.existsSync(dir)) {
       throw "Not Exsits";
     }
   }
 
-  static initFromDB() {}
+  static async deleteProject(id: string) {
+    await DBProjects.remove({ _id: id }, {});
 
-  static loadProjectList(): Array<AVGProjectData> {
-    // 临时列表
-    return [
-      {
-        name: "游戏 Demo",
-        description: "明明是我先来……",
-        dir: "dir/to/a/b/c",
-        host: "localhost",
-        listenPort: 2336,
-        screenWidth: 800,
-        screenHeight: 600,
-        isFullScreen: true,
-        textSpeed: 20,
-        autoPlay: true,
-        volume: 80
-      },
-      {
-        name: "白色相簿2",
-        description: "明明是我先来……",
-        dir: "dir/to/a/b/c",
-        host: "localhost",
-        listenPort: 2336,
-        screenWidth: 1920,
-        screenHeight: 1080,
-        isFullScreen: false,
-        textSpeed: 80,
-        autoPlay: false,
-        volume: 80
-      }
-    ];
+    return id;
+  }
+
+  static async loadProjects() {
+    return await DBProjects.find({});
   }
 }

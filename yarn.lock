@@ -2351,6 +2351,13 @@
   resolved "https://registry.npm.taobao.org/@types/q/download/@types/q-1.5.2.tgz#690a1475b84f2a884fd07cd797c00f5f31356ea8"
   integrity sha1-aQoUdbhPKohP0HzXl8APXzE1bqg=
 
+"@types/react-custom-scrollbars@^4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npm.taobao.org/@types/react-custom-scrollbars/download/@types/react-custom-scrollbars-4.0.6.tgz#d84831ac287d8fefdf2a7dcbc12a505bcecc8092"
+  integrity sha1-2EgxrCh9j+/fKn3LwSpQW87MgJI=
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-dom@^16.9.6":
   version "16.9.6"
   resolved "https://registry.npm.taobao.org/@types/react-dom/download/@types/react-dom-16.9.6.tgz#9e7f83d90566521cc2083be2277c6712dcaf754c"
@@ -2512,6 +2519,16 @@ add-dom-event-listener@^1.1.0:
   integrity sha1-apLbOg3Qq8JU4JXA8dwUrLuq4xA=
   dependencies:
     object-assign "4.x"
+
+add-px-to-style@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npm.taobao.org/add-px-to-style/download/add-px-to-style-1.0.0.tgz#d0c135441fa8014a8137904531096f67f28f263a"
+  integrity sha1-0ME1RB+oAUqBN5BFMQlvZ/KPJjo=
+
+add@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.npm.taobao.org/add/download/add-2.0.6.tgz#248f0a9f6e5a528ef2295dbeec30532130ae2235"
+  integrity sha1-JI8Kn25aUo7yKV2+7DBTITCuIjU=
 
 ajv-keywords@^1.0.0:
   version "1.5.1"
@@ -5767,6 +5784,15 @@ dom-align@^1.7.0:
   resolved "https://registry.npm.taobao.org/dom-align/download/dom-align-1.11.1.tgz?cache=0&sync_timestamp=1584440792731&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fdom-align%2Fdownload%2Fdom-align-1.11.1.tgz#7592be99a660a36cdedc1d6eeb22b8109d758cae"
   integrity sha1-dZK+maZgo2ze3B1u6yK4EJ11jK4=
 
+dom-css@^2.0.0:
+  version "2.1.0"
+  resolved "https://registry.npm.taobao.org/dom-css/download/dom-css-2.1.0.tgz#fdbc2d5a015d0a3e1872e11472bbd0e7b9e6a202"
+  integrity sha1-/bwtWgFdCj4YcuEUcrvQ57nmogI=
+  dependencies:
+    add-px-to-style "1.0.0"
+    prefix-style "2.0.1"
+    to-camel-case "1.0.0"
+
 dom-helpers@^3.4.0:
   version "3.4.0"
   resolved "https://registry.npm.taobao.org/dom-helpers/download/dom-helpers-3.4.0.tgz#e9b369700f959f62ecde5a6babde4bccd9169af8"
@@ -7609,6 +7635,11 @@ hosted-git-info@^3.0.4:
   integrity sha1-vklz6x/Sc3sRycfBk4Bzm7JJ9g0=
   dependencies:
     lru-cache "^5.1.1"
+
+hotkeys-js@3.7.6:
+  version "3.7.6"
+  resolved "https://registry.npm.taobao.org/hotkeys-js/download/hotkeys-js-3.7.6.tgz#b90ae3453a7be2f2b2bed6ee55cb96443944c77b"
+  integrity sha1-uQrjRTp74vKyvtbuVcuWRDlEx3s=
 
 hsl-regex@^1.0.0:
   version "1.0.0"
@@ -11414,6 +11445,11 @@ prebuild-install@^5.2.5:
     tunnel-agent "^0.6.0"
     which-pm-runs "^1.0.0"
 
+prefix-style@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npm.taobao.org/prefix-style/download/prefix-style-2.0.1.tgz#66bba9a870cfda308a5dc20e85e9120932c95a06"
+  integrity sha1-ZrupqHDP2jCKXcIOhekSCTLJWgY=
+
 prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://registry.npm.taobao.org/prelude-ls/download/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
@@ -11637,7 +11673,7 @@ quote-stream@^1.0.1, quote-stream@~1.0.2:
     minimist "^1.1.3"
     through2 "^2.0.0"
 
-raf@^3.4.0, raf@^3.4.1:
+raf@^3.1.0, raf@^3.4.0, raf@^3.4.1:
   version "3.4.1"
   resolved "https://registry.npm.taobao.org/raf/download/raf-3.4.1.tgz#0742e99a4a6552f445d73e3ee0328af0ff1ede39"
   integrity sha1-B0LpmkplUvRF1z4+4DKK8P8e3jk=
@@ -12014,6 +12050,23 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.2.1, rc@^1.2.7, rc@^1.2.8:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-contextmenu@^2.13.0:
+  version "2.13.0"
+  resolved "https://registry.npm.taobao.org/react-contextmenu/download/react-contextmenu-2.13.0.tgz#dabaea63124e30c85f1b4245c095b7045d013459"
+  integrity sha1-2rrqYxJOMMhfG0JFwJW3BF0BNFk=
+  dependencies:
+    classnames "^2.2.5"
+    object-assign "^4.1.0"
+
+react-custom-scrollbars@^4.2.1:
+  version "4.2.1"
+  resolved "https://registry.npm.taobao.org/react-custom-scrollbars/download/react-custom-scrollbars-4.2.1.tgz#830fd9502927e97e8a78c2086813899b2a8b66db"
+  integrity sha1-gw/ZUCkn6X6KeMIIaBOJmyqLZts=
+  dependencies:
+    dom-css "^2.0.0"
+    prop-types "^15.5.10"
+    raf "^3.1.0"
+
 "react-dom@^15.3.0 || 16":
   version "16.13.1"
   resolved "https://registry.npm.taobao.org/react-dom/download/react-dom-16.13.1.tgz#c1bd37331a0486c078ee54c4740720993b2e0e7f"
@@ -12023,6 +12076,13 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.2.1, rc@^1.2.7, rc@^1.2.8:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     scheduler "^0.19.1"
+
+react-hotkeys-hook@^2.1.3:
+  version "2.1.3"
+  resolved "https://registry.npm.taobao.org/react-hotkeys-hook/download/react-hotkeys-hook-2.1.3.tgz#c7df9e4cb895a21934f0cd190831b62df063b163"
+  integrity sha1-x9+eTLiVohk08M0ZCDG2LfBjsWM=
+  dependencies:
+    hotkeys-js "3.7.6"
 
 react-is@^16.12.0, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.8.6, react-is@^16.9.0:
   version "16.13.1"
@@ -14051,6 +14111,13 @@ to-buffer@^1.1.1:
   resolved "https://registry.npm.taobao.org/to-buffer/download/to-buffer-1.1.1.tgz#493bd48f62d7c43fcded313a03dcadb2e1213a80"
   integrity sha1-STvUj2LXxD/N7TE6A9ytsuEhOoA=
 
+to-camel-case@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npm.taobao.org/to-camel-case/download/to-camel-case-1.0.0.tgz#1a56054b2f9d696298ce66a60897322b6f423e46"
+  integrity sha1-GlYFSy+daWKYzmamCJcyK29CPkY=
+  dependencies:
+    to-space-case "^1.0.0"
+
 to-fast-properties@^1.0.3:
   version "1.0.3"
   resolved "https://registry.npm.taobao.org/to-fast-properties/download/to-fast-properties-1.0.3.tgz?cache=0&sync_timestamp=1580550317222&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fto-fast-properties%2Fdownload%2Fto-fast-properties-1.0.3.tgz#b83571fa4d8c25b82e231b06e3a3055de4ca1a47"
@@ -14060,6 +14127,11 @@ to-fast-properties@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npm.taobao.org/to-fast-properties/download/to-fast-properties-2.0.0.tgz?cache=0&sync_timestamp=1580550317222&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fto-fast-properties%2Fdownload%2Fto-fast-properties-2.0.0.tgz#dc5e698cbd079265bc73e0377681a4e4e83f616e"
   integrity sha1-3F5pjL0HkmW8c+A3doGk5Og/YW4=
+
+to-no-case@^1.0.0:
+  version "1.0.2"
+  resolved "https://registry.npm.taobao.org/to-no-case/download/to-no-case-1.0.2.tgz#c722907164ef6b178132c8e69930212d1b4aa16a"
+  integrity sha1-xyKQcWTvaxeBMsjmmTAhLRtKoWo=
 
 to-object-path@^0.3.0:
   version "0.3.0"
@@ -14097,6 +14169,13 @@ to-regex@^3.0.1, to-regex@^3.0.2:
     extend-shallow "^3.0.2"
     regex-not "^1.0.2"
     safe-regex "^1.1.0"
+
+to-space-case@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npm.taobao.org/to-space-case/download/to-space-case-1.0.0.tgz#b052daafb1b2b29dc770cea0163e5ec0ebc9fc17"
+  integrity sha1-sFLar7Gysp3HcM6gFj5ewOvJ/Bc=
+  dependencies:
+    to-no-case "^1.0.0"
 
 toggle-selection@^1.0.6:
   version "1.0.6"
@@ -15220,6 +15299,11 @@ yargs@~3.10.0:
     cliui "^2.1.0"
     decamelize "^1.0.0"
     window-size "0.1.0"
+
+yarn@^1.22.4:
+  version "1.22.4"
+  resolved "https://registry.npm.taobao.org/yarn/download/yarn-1.22.4.tgz#01c1197ca5b27f21edc8bc472cd4c8ce0e5a470e"
+  integrity sha1-AcEZfKWyfyHtyLxHLNTIzg5aRw4=
 
 yauzl@^2.10.0:
   version "2.10.0"

@@ -1,12 +1,15 @@
 import { Database } from "./database";
 
 class _DBProjects extends Database {
-  public aaa: string;
-
   constructor() {
     super("projects");
   }
+
+  aaa: string;
 }
 
 const db = new _DBProjects();
-export const DBProjects = Object.assign({}, db, db.datastore);
+export const DBProjects: Datastore & _DBProjects = Object.assign(
+  db.datastore,
+  db
+);

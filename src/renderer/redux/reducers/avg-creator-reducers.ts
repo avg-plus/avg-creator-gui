@@ -13,6 +13,7 @@ export interface IAVGCreatorInitialState {
   isCreateProjectDialogOpen: boolean;
   isSetWorkspaceDialogOpen: boolean;
   projects: AVGProjectData[];
+  selectedProjectItem: AVGProjectData | null;
 }
 
 export const AVGCreatorInitialState: IAVGCreatorInitialState = {
@@ -20,7 +21,8 @@ export const AVGCreatorInitialState: IAVGCreatorInitialState = {
   isShowPanelHeader: false,
   isCreateProjectDialogOpen: false,
   isSetWorkspaceDialogOpen: false,
-  projects: []
+  projects: [],
+  selectedProjectItem: null
 };
 
 export function AVGCreatorReducer(
@@ -36,14 +38,25 @@ export function AVGCreatorReducer(
       return { ...state, isCreateProjectDialogOpen: action.payload.open };
     case AVGCreatorActionType.ToggleSetWorkspaceDialog:
       return { ...state, isSetWorkspaceDialogOpen: action.payload.open };
-    case AVGCreatorActionType.CreateProject:
-      const newProject = AVGProjectManager.createProject(
-        action.payload.projectName,
-        action.payload.description
-      );
+    case AVGCreatorActionType.SetProjectList:
+      return { ...state, projects: action.payload.projects };
+    case AVGCreatorActionType.AddProjectItem:
+      return {
+        ...state,
+        selectedProjectItem: null,
+        projects: state.projects.concat(action.payload.project)
+      };
+    case AVGCreatorActionType.SelectProjectItem:
+      return { ...state, selectedProjectItem: action.payload.project };
+    case AVGCreatorActionType.RemoveProjectItem:
+      const projects = state.projects.filter((v) => {
+        return v._id !== action.payload.projectID;
+      });
 
-      const projects = state.projects.concat(newProject);
-      return { ...state, projects };
+      return {
+        ...state,
+        projects
+      };
     default:
       throw new Error();
   }

@@ -1,17 +1,17 @@
 import path from "path";
 import { Env } from "../env";
-// import Nedb from 'nedb';
 import Datastore from "nedb-promises";
+
+import { remote } from "electron";
+
+const app = remote.app;
 
 export class Database {
   datastore: Datastore;
   constructor(name: string) {
+    const appDataDir = path.join(app.getPath("appData"), app.getName());
     this.datastore = Datastore.create({
-      filename: path.join(
-        "/Users/angrypowman/Library/Application Support/avg.creator",
-        "db",
-        name
-      ),
+      filename: path.join(appDataDir, "db", name),
       autoload: true
     });
   }

@@ -13,12 +13,10 @@ import {
   Slider,
   Button
 } from "@blueprintjs/core";
-import store from "../../redux/store";
 
 import "./ProjectSettingPanel.less";
 import { Row, Col } from "antd";
 import { AVGProjectData } from "../manager/project-manager";
-import { connect } from "react-redux";
 
 interface IProjectSettingPanelState {
   selectedTab: string;
