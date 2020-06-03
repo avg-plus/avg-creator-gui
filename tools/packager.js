@@ -10,6 +10,7 @@ module.exports = {
   ],
   "asar": true,
   "mac": {
+    hardenedRuntime: true,
     "icon": "build/icons/icon.icns",
     target: ["dir"]
   },

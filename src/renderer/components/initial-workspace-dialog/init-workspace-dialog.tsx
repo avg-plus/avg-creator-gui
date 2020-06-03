@@ -16,11 +16,10 @@ import "./init-workspace-dialog.less";
 
 import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
 import { CreatorContext } from "../../hooks/context";
-import { ipcRenderer } from "electron-better-ipc";
-import { IPCEvents } from "../../../common/ipc-events";
 import { GUIToaster } from "../../../../src/renderer/services/toaster";
 import { IconNames } from "@blueprintjs/icons";
-import { nconf } from "../../../common/config";
+import { Config } from "../../../common/config";
+import { remote } from "electron";
 
 export const InitWorkspaceDialog = () => {
   const { state, dispatch } = useContext(CreatorContext);
@@ -28,10 +27,10 @@ export const InitWorkspaceDialog = () => {
   const [workspaceDir, setWorkspaceDir] = useState("");
 
   const handleBrowse = async () => {
-    const paths = await ipcRenderer.callMain<any, string>(
-      IPCEvents.IPC_ShowOpenDialog,
-      { title: "选择工作目录" }
-    );
+    const paths = remote.dialog.showOpenDialogSync({
+      title: "选择工作目录",
+      properties: ["openDirectory"]
+    });
 
     if (paths && paths.length > 0) {
       setWorkspaceDir(paths[0]);
@@ -72,8 +71,8 @@ export const InitWorkspaceDialog = () => {
       intent: Intent.SUCCESS
     });
 
-    nconf.set("workspace", workspaceDir);
-    nconf.save();
+    Config.set("workspace", workspaceDir);
+    Config.save();
 
     handleDialogClose();
   };

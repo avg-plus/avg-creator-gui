@@ -1,11 +1,9 @@
 import { dialog } from "electron";
-import { IPCModule, IPC } from "./ipc-module-base";
-import { IPCEvents } from "../../../src/common/ipc-events";
-// import { ipcRenderer } from 'electron-better-ipc';
-// import { ipcMain } from 'electron-better-ipc';
+import { IPCModule, IPC } from "../../common/ipc-module-base";
+import { IPCMainEvents } from "../../common/ipc-events";
 
 export class IPCDialog extends IPCModule {
-  @IPC(IPCEvents.IPC_ShowOpenDialog)
+  @IPC(IPCMainEvents.ShowOpenDialog)
   static async showOpenFolderDialog(data: { title: string }) {
     const filePaths = dialog.showOpenDialogSync({
       title: data.title ?? "选择目录",

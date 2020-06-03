@@ -1,9 +1,9 @@
 import { app } from "electron";
-import { IPCModule, IPC } from "./ipc-module-base";
-import { IPCEvents } from "../../common/ipc-events";
+import { IPCMainEvents } from "./../../common/ipc-events";
+import { IPCModule, IPC } from "../../common/ipc-module-base";
 
 export class IPCElectronApp extends IPCModule {
-  @IPC(IPCEvents.IPC_GetPath)
+  @IPC(IPCMainEvents.GetPath)
   static async getPath(
     name:
       | "home"

@@ -4,8 +4,6 @@ class _DBProjects extends Database {
   constructor() {
     super("projects");
   }
-
-  aaa: string;
 }
 
 const db = new _DBProjects();

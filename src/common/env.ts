@@ -1,14 +1,24 @@
-import nconf from "nconf";
 import fs from "fs-extra";
 import path from "path";
 
 import { remote } from "electron";
+import { Config } from "./config";
 const app = remote.app;
 
 export class Env {
   static appDataDir: string;
   static getAppDataDir() {
     return Env.appDataDir;
+  }
+
+  // 获取游戏模板工程目录
+  static getAVGProjectTemplateDir() {
+    return path.join(this.getAppDataDir(), "avg-bundles/project-templates");
+  }
+
+  // 获取工作目录
+  static getWorkspace() {
+    return Config.get("workspace");
   }
 
   static init() {

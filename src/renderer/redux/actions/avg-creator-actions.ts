@@ -24,7 +24,10 @@ export enum AVGCreatorActionType {
   SelectProjectItem = "SelectProjectItem",
 
   // 创建项目
-  CreateProject = "CreateProject"
+  CreateProject = "CreateProject",
+
+  // 开启服务
+  StartServer = "StartServer"
 }
 
 export class AVGCreatorAction {

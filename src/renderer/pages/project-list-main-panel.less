@@ -6,29 +6,28 @@
   width: 100%;
   height: 100%;
   // overflow: auto;
-  padding-top: 6%;
 
   .empty-list-hint {
     font-size: 16px;
     color: black;
     font-weight: 200;
   }
+}
 
-  .running-status-info-bar {
-    width: 100%;
-    background: @green4;
-    height: 28px;
-    padding: 0 10px 0 10px;
-    bottom: 0%;
-    text-align: center;
-    position: absolute;
+.running-status-info-bar {
+  width: 100%;
+  background: @green4;
+  height: 28px;
+  padding: 0 10px 0 10px;
+  text-align: center;
+  position: absolute;
+  top: 0;
 
-    .info {
-      position: relative;
-      top: 50%;
-      color: white;
-      transform: translateY(-50%);
-    }
+  .info {
+    position: relative;
+    top: 50%;
+    color: white;
+    transform: translateY(-50%);
   }
 }
 

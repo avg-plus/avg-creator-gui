@@ -1,4 +1,11 @@
-export enum IPCEvents {
-  IPC_ShowOpenDialog = "IPC_ShowOpenDialog",
-  IPC_GetPath = "IPC_GetPath"
+export enum IPCMainEvents {
+  ShowOpenDialog = "ShowOpenDialog",
+  GetPath = "GetPath"
+}
+
+export enum IPCRendererEvents {
+  CheckingForUpdates = "CheckingForUpdates",
+  UpdateAvailable = "UpdateAvailable",
+  UpdateNotAvailable = "UpdateNotAvailable",
+  UpdateDownloaded = "UpdateDownloaded"
 }

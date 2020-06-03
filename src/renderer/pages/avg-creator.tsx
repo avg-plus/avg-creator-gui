@@ -1,20 +1,19 @@
 /** @format */
 
 import * as React from "react";
-import styled from "styled-components";
 
-import "./AVGCreator.less";
+import "./avg-creator.less";
 
 import { CreatorContext } from "../hooks/context";
-import { useReducer, useEffect } from "react";
+import { useReducer } from "react";
 import {
   AVGCreatorReducer,
   AVGCreatorInitialState
 } from "../redux/reducers/avg-creator-reducers";
 import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
 import { CreateProjectDialog } from "../components/create-project-dialog/create-project-dialog";
-import { PanelStack, Button } from "@blueprintjs/core";
-import { ProjectListMainPanel } from "./ProjectListMainPanel";
+import { PanelStack } from "@blueprintjs/core";
+import { ProjectListMainPanel } from "./project-list-main-panel";
 import { InitWorkspaceDialog } from "../components/initial-workspace-dialog/init-workspace-dialog";
 
 const AVGCreator = () => {
@@ -43,7 +42,6 @@ const AVGCreator = () => {
 
           <div className="bp3-dialog-body avg-window-body">
             <div className="body-content">
-              {/* <ToolBar></ToolBar> */}
               <PanelStack
                 className="panel-stack"
                 showPanelHeader={state.isShowPanelHeader}
@@ -53,7 +51,7 @@ const AVGCreator = () => {
               />
             </div>
           </div>
-          <CreateProjectDialog />
+          {state.isCreateProjectDialogOpen && <CreateProjectDialog />}
           <InitWorkspaceDialog />
         </div>
       </div>

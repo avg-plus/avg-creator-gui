@@ -1,4 +1,4 @@
-import { IPCEvents } from "../../../src/common/ipc-events";
+import { IPCEvents } from "./ipc-events";
 import { ipcMain } from "electron-better-ipc";
 
 export function IPC(eventName: IPCEvents) {

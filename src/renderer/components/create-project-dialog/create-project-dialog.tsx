@@ -1,4 +1,10 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useMemo,
+  useCallback
+} from "react";
 
 import {
   Dialog,
@@ -10,6 +16,7 @@ import {
   Intent
 } from "@blueprintjs/core";
 
+import hotkeys from "hotkeys-js";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import "./create-project-dialog.less";
@@ -25,6 +32,22 @@ export const CreateProjectDialog = () => {
 
   const [projectName, setProjectName] = useState("");
   const [generateTutorial, setGenerateTutorial] = useState(true);
+  const [projectNameInputIntent, setProjectNameInputIntent] = useState<Intent>(
+    Intent.PRIMARY
+  );
+  const [isCreateLoading, setIsCreateLoading] = useState(false);
+  const [nameInputRef, setNameInputRef] = useState<HTMLInputElement | null>();
+
+  nameInputRef?.focus();
+
+  // 清除状态
+  const clearState = () => {
+    setProjectName("");
+    setGenerateTutorial(true);
+    setIsCreateLoading(false);
+
+    hotkeys.unbind("enter");
+  };
 
   const handleCreateDialogClose = () => {
     dispatch({
@@ -33,37 +56,77 @@ export const CreateProjectDialog = () => {
         open: false
       }
     });
+
+    clearState();
   };
 
   const handleConfirmCreateProject = () => {
+    console.log("handleConfirmCreateProject", projectName);
+
     if (!projectName || projectName.length === 0) {
       GUIToaster.show({
-        message: "请输入游戏名称 ",
+        message: "请输入游戏名称",
         timeout: 1000,
         intent: Intent.WARNING
       });
+
+      setProjectNameInputIntent(Intent.DANGER);
+      nameInputRef?.focus();
+      return;
+    }
+
+    if (!projectName.match(/^[^<>:;,?"*|/]+$/g)) {
+      GUIToaster.show({
+        message: `名称不允许包含以下特殊符号：<>:;,?"*|/`,
+        timeout: 3000,
+        intent: Intent.WARNING
+      });
+      setProjectNameInputIntent(Intent.DANGER);
+      nameInputRef?.focus();
       return;
     }
 
     // 创建项目
+    setIsCreateLoading(true);
+
     const newProject = AVGProjectManager.createProject(
       projectName,
       generateTutorial
-    );
+    )
+      .then((project) => {
+        dispatch({
+          type: AVGCreatorActionType.AddProjectItem,
+          payload: {
+            project
+          }
+        });
 
-    dispatch({
-      type: AVGCreatorActionType.AddProjectItem,
-      payload: {
-        project: newProject
-      }
-    });
+        dispatch({
+          type: AVGCreatorActionType.ToggleCreateProjectDialog,
+          payload: {
+            open: false
+          }
+        });
+      })
+      .catch((error) => {
+        GUIToaster.show({
+          message: error,
+          timeout: 4000,
+          intent: Intent.DANGER
+        });
+      })
+      .finally(() => {
+        clearState();
+      });
+  };
 
-    dispatch({
-      type: AVGCreatorActionType.ToggleCreateProjectDialog,
-      payload: {
-        open: false
-      }
-    });
+  const handleProjectNameInputChanged = (
+    event: React.FormEvent<HTMLInputElement>
+  ) => {
+    const text = (event.target as HTMLInputElement).value;
+    console.log("handleProjectNameInputChanged", text);
+
+    setProjectName(text);
   };
 
   useHotkeys(
@@ -75,13 +138,6 @@ export const CreateProjectDialog = () => {
     [projectName]
   );
 
-  const handleProjectNameInputChanged = (
-    event: React.FormEvent<HTMLInputElement>
-  ) => {
-    const text = (event.target as HTMLInputElement).value;
-    setProjectName(text);
-  };
-
   return (
     <Dialog
       className={"create-project-dialog"}
@@ -91,15 +147,19 @@ export const CreateProjectDialog = () => {
       isOpen={state.isCreateProjectDialogOpen}
       usePortal={true}
       hasBackdrop={false}
-      transitionDuration={0}
+      transitionDuration={1000}
       canEscapeKeyClose={true}
     >
       <div className="container">
         <FormGroup inline={false} label={"游戏名称"} labelFor="text-input">
           <InputGroup
-            disabled={false}
+            disabled={isCreateLoading}
             value={projectName}
+            intent={projectNameInputIntent}
             leftIcon={IconNames.CUBE_ADD}
+            inputRef={(input) => {
+              setNameInputRef(input);
+            }}
             onChange={handleProjectNameInputChanged}
             placeholder="输入你的游戏名称"
           />
@@ -116,12 +176,14 @@ export const CreateProjectDialog = () => {
           />
         </FormGroup>
       </div>
+
       <div className={Classes.DIALOG_FOOTER}>
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
           <Button onClick={handleCreateDialogClose}>取消</Button>
           <Button
             intent={Intent.PRIMARY}
             type="submit"
+            loading={isCreateLoading}
             onClick={handleConfirmCreateProject}
           >
             创建游戏

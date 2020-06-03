@@ -7,6 +7,11 @@ import {
   AVGProjectManager
 } from "../../manager/project-manager";
 
+export interface IAVGServer {
+  serverProject: AVGProjectData | null;
+  isRunning: boolean;
+}
+
 export interface IAVGCreatorInitialState {
   isSettingPanelOpen: boolean;
   isShowPanelHeader: boolean;
@@ -14,6 +19,7 @@ export interface IAVGCreatorInitialState {
   isSetWorkspaceDialogOpen: boolean;
   projects: AVGProjectData[];
   selectedProjectItem: AVGProjectData | null;
+  currentServer: IAVGServer;
 }
 
 export const AVGCreatorInitialState: IAVGCreatorInitialState = {
@@ -22,7 +28,11 @@ export const AVGCreatorInitialState: IAVGCreatorInitialState = {
   isCreateProjectDialogOpen: false,
   isSetWorkspaceDialogOpen: false,
   projects: [],
-  selectedProjectItem: null
+  selectedProjectItem: null,
+  currentServer: {
+    serverProject: null,
+    isRunning: false
+  }
 };
 
 export function AVGCreatorReducer(
@@ -57,6 +67,16 @@ export function AVGCreatorReducer(
         ...state,
         projects
       };
+    case AVGCreatorActionType.StartServer: {
+      return {
+        ...state,
+        currentServer: {
+          serverProject: action.payload.serverProject,
+          isRunning: action.payload.isRunning
+        }
+      };
+    }
+
     default:
       throw new Error();
   }

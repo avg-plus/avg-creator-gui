@@ -1,12 +1,12 @@
 /** @format */
 
 import React from "react";
-import "./App.less";
+import "./app.less";
 
 import { FocusStyleManager } from "@blueprintjs/core";
 FocusStyleManager.onlyShowFocusOnTabs();
 
-import AVGCreator from "./pages/AVGCreator";
+import AVGCreator from "./pages/avg-creator";
 import { AppInit } from "./services/app-init";
 
 AppInit.start();
