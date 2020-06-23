@@ -16,6 +16,11 @@ export class Env {
     return path.join(this.getAppDataDir(), "avg-bundles/project-templates");
   }
 
+  // 获取游戏引擎包目录
+  static getAVGEngineBundleDir() {
+    return path.join(this.getAppDataDir(), "avg-bundles/engines");
+  }
+
   // 获取工作目录
   static getWorkspace() {
     return Config.get("workspace");

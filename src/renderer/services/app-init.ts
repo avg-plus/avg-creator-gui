@@ -1,8 +1,13 @@
+import { FocusStyleManager } from "@blueprintjs/core";
+
+import { BundlesManager } from "./bundles-manager/bundles-manager";
 import { Env } from "../../common/env";
 import "../../common/config";
 
 export class AppInit {
   static start() {
+    FocusStyleManager.onlyShowFocusOnTabs();
+
     // 初始化环境
     Env.init();
 

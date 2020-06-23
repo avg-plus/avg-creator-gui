@@ -39,7 +39,7 @@ const NoProjectHint = styled.label`
   font-weight: 200;
 `;
 
-export const ProjectListMainPanel: React.FC<IPanelProps> = ({ openPanel }) => {
+export const ProjectListMainPanel = () => {
   const { state, dispatch } = useContext(CreatorContext);
   const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(
     false

@@ -8,6 +8,7 @@
 /dist
 /out
 /build
+/bundle-release
 
 # dependencies
 /node_modules
