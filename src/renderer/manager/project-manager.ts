@@ -6,8 +6,9 @@ import AdmZip from "adm-zip";
 
 import { isNullOrUndefined } from "util";
 import { DBProjects } from "../../common/database/db-project";
-import { Config } from "../../common/config";
+import { LocalAppConfig } from "../../common/local-app-config";
 import { Env } from "../../common/env";
+import { TDAPP } from "../services/td-analytics";
 
 export class AVGProjectData {
   _id: string;
@@ -26,7 +27,7 @@ export class AVGProjectData {
 
 export class AVGProjectManager {
   static isWorkspaceInit() {
-    const workspaceDir = Config.get("workspace");
+    const workspaceDir = LocalAppConfig.get("workspace");
     return !isNullOrUndefined(workspaceDir);
   }
 
@@ -38,7 +39,7 @@ export class AVGProjectManager {
     }
 
     // 创建目录
-    const workspace = Config.get("workspace");
+    const workspace = LocalAppConfig.get("workspace");
     if (!workspace || !fs.existsSync(workspace)) {
       throw "工作目录不存在";
     }
@@ -73,9 +74,11 @@ export class AVGProjectManager {
       ...project
     });
 
+    TDAPP.onEvent("创建项目", "创建项目", project);
+
     project._id = doc._id;
 
-    console.log("Created project", project);
+    console.log("Created project", JSON.stringify(project));
 
     return project;
   }

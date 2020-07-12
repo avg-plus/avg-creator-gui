@@ -1,7 +1,6 @@
 /** @format */
 
 import { Progress as AntdProgress } from "antd";
-import { Progress } from "got";
 
 import "./avg-creator.less";
 
@@ -24,7 +23,9 @@ import {
   Position,
   Tooltip,
   ProgressBar,
-  Classes
+  Classes,
+  Tab,
+  Tabs
 } from "@blueprintjs/core";
 import { ProjectListMainPanel } from "./project-list-main-panel";
 import { InitWorkspaceDialog } from "../components/initial-workspace-dialog/init-workspace-dialog";
@@ -37,6 +38,7 @@ import { GUIToaster } from "../services/toaster";
 import classNames from "classnames";
 import { formatBytes, sleep } from "../../common/utils";
 import { useMount, useMotion } from "react-use";
+import { BundleManagerDialog } from "../components/bundles-manager-dialog/bundles-manager-dialog";
 
 const AVGCreator = () => {
   const [state, dispatch] = useReducer(
@@ -44,96 +46,7 @@ const AVGCreator = () => {
     AVGCreatorInitialState
   );
 
-  const onPanelOpen = () => {
-    dispatch({ type: AVGCreatorActionType.OpenSettingPanel });
-  };
-
-  const onPanelClose = () => {
-    dispatch({ type: AVGCreatorActionType.CloseSettingPanel });
-  };
-
-  const [progress, setProgress] = useState(0);
-  console.log("trigger rendering", progress);
-
-  useMount(() => {
-    BundlesManager.checkingBundles(
-      (
-        current: {
-          bundle: IBundle;
-          index: number;
-          progress: Progress;
-        },
-        list: Array<IBundle>
-      ) => {
-        const p = current.progress.percent * 100;
-        setProgress(p);
-        if (current.progress.percent >= 1) {
-          setProgress(0);
-          return;
-        }
-
-        GUIToaster.show(
-          {
-            icon: "cube",
-            timeout: 0,
-            message: (
-              <>
-                <div className="bp3-running-text">
-                  正在下载 ({current.index + 1}/{list.length}):
-                  <div>
-                    ({formatBytes(current.progress.transferred, 1)}/
-                    {formatBytes(current.progress.total ?? 0, 1)})
-                  </div>
-                </div>
-
-                {(current.progress.percent * 100).toFixed(0)}
-                {/* <AntdProgress percent={current.progress.percent * 100} /> */}
-                {/* 
-                <ProgressBar
-                  stripes={false}
-                  className={classNames("docs-toast-progress", {
-                    [Classes.PROGRESS_NO_STRIPES]: current.progress.percent >= 1
-                  })}
-                  intent={
-                    current.progress.percent < 1
-                      ? Intent.PRIMARY
-                      : Intent.SUCCESS
-                  }
-                  value={
-                    Number.parseFloat(current.progress.percent.toFixed(0)) / 100
-                  }
-                /> */}
-              </>
-            )
-          },
-          "bundle-updates"
-        );
-
-        if (
-          current.index + 1 === list.length &&
-          current.progress.percent >= 1
-        ) {
-          GUIToaster.show(
-            {
-              message: "AVGPlus 数据已更新",
-              icon: "updated",
-              timeout: 5000,
-              intent: Intent.SUCCESS
-            },
-            "bundle-updates"
-          );
-        }
-      }
-    );
-  });
-
-  // const handleCheckUpdates = useCallback(async () => {
-
-  // }, []);
-
-  // async () => {
-  //   GUIToaster.show({ message: "开始检查资源更新" }, "bundle-updates");
-  // };
+  const [bundleManagerOpenned, setBundleManagerOpenned] = useState(false);
 
   return (
     <CreatorContext.Provider value={{ state, dispatch }}>
@@ -146,19 +59,48 @@ const AVGCreator = () => {
           </div>
 
           <div className="bp3-dialog-body avg-window-body">
+            <div className="toolbar">
+              <ButtonGroup>
+                <Button
+                  active={!bundleManagerOpenned}
+                  icon="projects"
+                  onClick={() => {
+                    setBundleManagerOpenned(false);
+                  }}
+                >
+                  项目
+                </Button>
+                <Button
+                  active={bundleManagerOpenned}
+                  icon="cloud-download"
+                  onClick={() => {
+                    setBundleManagerOpenned(true);
+                  }}
+                >
+                  远程资源
+                </Button>
+              </ButtonGroup>
+            </div>
             <div className="body-content">
-              <ProjectListMainPanel />
+              {bundleManagerOpenned && <BundleManagerDialog />}
+              {!bundleManagerOpenned && <ProjectListMainPanel />}
             </div>
             <div className="avg-creator-footer">
               <ButtonGroup minimal={true} alignText={"right"}>
-                <Tooltip
-                  content="当前没有任何更新任务"
+                {/* <Tooltip
+                  // content={downloadingTips}
                   intent={Intent.SUCCESS}
                   position={Position.TOP}
                 >
-                  <Button icon={<Icon icon="cloud-download" />} />
+                  <Button
+                    active={bundleManagerOpenned}
+                    icon={<Icon icon="cloud-download" />}
+                    onClick={() => {
+                      setBundleManagerOpenned(!bundleManagerOpenned);
+                    }}
+                  />
                 </Tooltip>
-                <Divider />
+                <Divider /> */}
 
                 <Button icon={<Icon icon="cog" />} color="red" />
               </ButtonGroup>

@@ -14,6 +14,7 @@
     "strictNullChecks": true,
     "noUnusedLocals": true,
     "noImplicitThis": true,
+    "resolveJsonModule": true,
     "noUnusedParameters": true,
     "importHelpers": true,
     "noEmitHelpers": true,
@@ -23,7 +24,7 @@
     "module": "esnext",
     "jsx": "react",
     "typeRoots": ["./node_modules/@types", "./typings"],
-    "baseUrl": "."
+    "baseUrl": "../src"
   },
   "include": ["src/**/*", "typings/nconf/nconf.d.ts"],
   "exclude": ["node_modules"],

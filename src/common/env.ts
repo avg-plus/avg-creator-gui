@@ -2,13 +2,18 @@ import fs from "fs-extra";
 import path from "path";
 
 import { remote } from "electron";
-import { Config } from "./config";
+import { LocalAppConfig } from "./local-app-config";
 const app = remote.app;
 
 export class Env {
   static appDataDir: string;
   static getAppDataDir() {
     return Env.appDataDir;
+  }
+
+  // 获取游戏模板工程目录
+  static getBundleDir() {
+    return path.join(this.getAppDataDir(), "avg-bundles/");
   }
 
   // 获取游戏模板工程目录
@@ -23,7 +28,7 @@ export class Env {
 
   // 获取工作目录
   static getWorkspace() {
-    return Config.get("workspace");
+    return LocalAppConfig.get("workspace");
   }
 
   static init() {

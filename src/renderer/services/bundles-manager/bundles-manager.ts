@@ -1,74 +1,46 @@
 import { Env } from "./../../../common/env";
-import fs from "fs-extra";
+import got, { Progress } from "got";
+import fs, { mkdirpSync } from "fs-extra";
 import url from "url";
 import path from "path";
-import got, { Progress } from "got";
 import urljoin from "url-join";
+import { apiGetManifest } from "../APIs/bundles-update-api";
+import { logger } from "../../../common/lib/logger";
 
-enum BundleType {
-  Template = "template",
-  Engine = "engine"
+// export enum BundleType {
+//   Template = "template",
+//   Engine = "engine"
+// }
+
+export enum BundleType {
+  Engines = "engines",
+  Templtes = "project-templates"
 }
 
 export interface IBundle {
+  type: BundleType;
   path: string;
   hash: string;
-  type: BundleType;
-}
-
-export interface ITemplteBundle extends IBundle {
-  name: string;
-}
-
-export interface IEngineBundle extends IBundle {
-  platform: string;
+  time: number;
+  size: number;
 }
 
 export interface IBundleManifest {
   domain: string;
-  project_templates: Array<ITemplteBundle>;
-  engines: Array<IEngineBundle>;
+  bundles: Array<IBundle>;
 }
 
 export class BundlesManager {
   static async fetchManifest() {
-    console.log("Fetching manifest ...");
-    const manifest = await got.get<IBundleManifest>(
-      "https://static.avg-engine.com/manifest.json",
-      {
-        responseType: "json"
-      }
-    );
+    const manifest = await apiGetManifest<IBundleManifest>();
+
+    logger.info("response", manifest);
 
     // 保存配置到本地
     const saveDir = Env.getAppDataDir();
-    fs.writeJSONSync(path.join(saveDir, "manifest.json"), manifest.body);
+    fs.writeJSONSync(path.join(saveDir, "manifest.json"), manifest);
 
-    return {
-      domain: "https://static.avg-engine.com/",
-      project_templates: [
-        // {
-        //   type: "template",
-        //   path: "project-templates/default.zip",
-        //   hash: "150db4614da2b6313695bdd9b083b0d1"
-        // }
-      ],
-      engines: [
-        // {
-        //   "type": "engine",
-        //   "path": "engines/AVGPlus-browser-v0.1.24_alpha.zip",
-        //   "hash": "18353ddc55cbca4db85800f361f78317"
-        // },
-        {
-          type: "engine",
-          path: "test/large-test.zip",
-          hash: "18353ddc55cbca4db85800f361f78317",
-          platform: "browser"
-        }
-      ]
-    };
-
-    //manifest.body;
+    return manifest;
   }
 
   static async checkingBundles(
@@ -81,13 +53,10 @@ export class BundlesManager {
       list: Array<IBundle>
     ) => void
   ) {
-    const fetchConfig = await this.fetchManifest();
-    const domain = fetchConfig.domain;
+    const fetchData = await this.fetchManifest();
 
-    const bundles: Array<IBundle> = [
-      ...fetchConfig.engines,
-      ...fetchConfig.project_templates
-    ];
+    const domain = fetchData.domain;
+    const bundles = fetchData.bundles;
 
     for (let i = 0; i < bundles.length; ++i) {
       const bundle = bundles[i];
@@ -101,9 +70,11 @@ export class BundlesManager {
       const parsed = url.parse(downloadURL);
 
       const saveDirectory =
-        bundle.type === BundleType.Engine
+        bundle.type === BundleType.Engines
           ? Env.getAVGEngineBundleDir()
           : Env.getAVGProjectTemplateDir();
+
+      mkdirpSync(saveDirectory);
 
       if (parsed.pathname) {
         fs.writeFileSync(

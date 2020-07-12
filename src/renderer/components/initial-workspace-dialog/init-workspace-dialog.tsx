@@ -18,7 +18,7 @@ import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
 import { CreatorContext } from "../../hooks/context";
 import { GUIToaster } from "../../../../src/renderer/services/toaster";
 import { IconNames } from "@blueprintjs/icons";
-import { Config } from "../../../common/config";
+import { LocalAppConfig } from "../../../common/local-app-config";
 import { remote } from "electron";
 
 export const InitWorkspaceDialog = () => {
@@ -71,8 +71,8 @@ export const InitWorkspaceDialog = () => {
       intent: Intent.SUCCESS
     });
 
-    Config.set("workspace", workspaceDir);
-    Config.save();
+    LocalAppConfig.set("workspace", workspaceDir);
+    LocalAppConfig.save();
 
     handleDialogClose();
   };

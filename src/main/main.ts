@@ -9,12 +9,13 @@ app.on("ready", async () => {
   const mainWindow = new BrowserWindow({
     x: 0,
     y: 0,
-    width: 400,
+    width: 460,
     height: 680,
     minWidth: 400,
     minHeight: 480,
     frame: true,
     thickFrame: false,
+    center: true,
     resizable: true,
     titleBarStyle: "hiddenInset",
     webPreferences: {
