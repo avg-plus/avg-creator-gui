@@ -5,16 +5,18 @@ interface IProjectItemContextMenuProps {
   onDelete: () => void;
   onExploreDir: () => void;
   onOpenInVSCode: () => void;
+  onServe: () => void;
 }
 
 export const ProjectItemContextMenu = (props: IProjectItemContextMenuProps) => {
   return (
     <>
       <Menu>
-        <Menu.Item icon="label" text="运行">
+        {/* <Menu.Item icon="label" text="运行">
           <Menu.Item icon="globe-network" text="浏览器" />
           <Menu.Item icon="desktop" text="PC 桌面" />
-        </Menu.Item>
+        </Menu.Item> */}
+        <Menu.Item icon="applications" onClick={props.onServe} text="运行" />
         <Menu.Item
           icon="code"
           onClick={props.onOpenInVSCode}

@@ -20,6 +20,7 @@ export interface IAVGCreatorInitialState {
   projects: AVGProjectData[];
   selectedProjectItem: AVGProjectData | null;
   currentServer: IAVGServer;
+  defaultEngineBundleHash: string;
 }
 
 export const AVGCreatorInitialState: IAVGCreatorInitialState = {
@@ -32,7 +33,8 @@ export const AVGCreatorInitialState: IAVGCreatorInitialState = {
   currentServer: {
     serverProject: null,
     isRunning: false
-  }
+  },
+  defaultEngineBundleHash: ""
 };
 
 export function AVGCreatorReducer(
@@ -76,7 +78,12 @@ export function AVGCreatorReducer(
         }
       };
     }
-
+    case AVGCreatorActionType.SetDefaultEngine: {
+      return {
+        ...state,
+        defaultEngineBundleHash: action.payload.bundleHash
+      };
+    }
     default:
       throw new Error();
   }

@@ -27,7 +27,10 @@ export enum AVGCreatorActionType {
   CreateProject = "CreateProject",
 
   // 开启服务
-  StartServer = "StartServer"
+  StartServer = "StartServer",
+
+  // 设置默认引擎
+  SetDefaultEngine = "SetDefaultEngine"
 }
 
 export class AVGCreatorAction {

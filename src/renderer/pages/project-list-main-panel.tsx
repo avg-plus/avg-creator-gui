@@ -100,6 +100,30 @@ export const ProjectListMainPanel = () => {
     }
   };
 
+  const handleServeProject = () => {
+    if (state.selectedProjectItem) {
+      if (state.currentServer.isRunning) {
+        GameRunner.close();
+        dispatch({
+          type: AVGCreatorActionType.StartServer,
+          payload: {
+            serverProject: null,
+            isRunning: false
+          }
+        });
+      } else {
+        GameRunner.serve(state.selectedProjectItem);
+        dispatch({
+          type: AVGCreatorActionType.StartServer,
+          payload: {
+            serverProject: state.selectedProjectItem,
+            isRunning: true
+          }
+        });
+      }
+    }
+  };
+
   const handleConfirmDelete = () => {
     if (!state.selectedProjectItem) {
       return;
@@ -271,6 +295,7 @@ export const ProjectListMainPanel = () => {
                     onDelete={handleAlertDelete}
                     onExploreDir={handleExploreDir}
                     onOpenInVSCode={handleOpenInVSCode}
+                    onServe={handleServeProject}
                   />,
                   {
                     left: event.clientX,
@@ -310,29 +335,7 @@ export const ProjectListMainPanel = () => {
                 text={
                   isServingProject(state.selectedProjectItem) ? "停止" : "运行"
                 }
-                onClick={() => {
-                  if (state.selectedProjectItem) {
-                    if (state.currentServer.isRunning) {
-                      GameRunner.close();
-                      dispatch({
-                        type: AVGCreatorActionType.StartServer,
-                        payload: {
-                          serverProject: null,
-                          isRunning: false
-                        }
-                      });
-                    } else {
-                      GameRunner.serve(state.selectedProjectItem);
-                      dispatch({
-                        type: AVGCreatorActionType.StartServer,
-                        payload: {
-                          serverProject: state.selectedProjectItem,
-                          isRunning: true
-                        }
-                      });
-                    }
-                  }
-                }}
+                onClick={() => {}}
               />
             )}
           </Navbar.Group>

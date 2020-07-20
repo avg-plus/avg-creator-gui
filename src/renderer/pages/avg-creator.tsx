@@ -1,43 +1,18 @@
 /** @format */
 
-import { Progress as AntdProgress } from "antd";
-
 import "./avg-creator.less";
 
 import { CreatorContext } from "../hooks/context";
-import React, { useReducer, useState, useEffect, useCallback } from "react";
+import React, { useReducer, useState } from "react";
 import {
   AVGCreatorReducer,
   AVGCreatorInitialState
 } from "../redux/reducers/avg-creator-reducers";
-import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
 import { CreateProjectDialog } from "../components/create-project-dialog/create-project-dialog";
-import {
-  PanelStack,
-  ButtonGroup,
-  Button,
-  Icon,
-  Intent,
-  Divider,
-  Popover,
-  Position,
-  Tooltip,
-  ProgressBar,
-  Classes,
-  Tab,
-  Tabs
-} from "@blueprintjs/core";
+import { ButtonGroup, Button, Icon } from "@blueprintjs/core";
 import { ProjectListMainPanel } from "./project-list-main-panel";
 import { InitWorkspaceDialog } from "../components/initial-workspace-dialog/init-workspace-dialog";
-import {
-  BundlesManager,
-  IEngineBundle,
-  IBundle
-} from "../services/bundles-manager/bundles-manager";
-import { GUIToaster } from "../services/toaster";
 import classNames from "classnames";
-import { formatBytes, sleep } from "../../common/utils";
-import { useMount, useMotion } from "react-use";
 import { BundleManagerDialog } from "../components/bundles-manager-dialog/bundles-manager-dialog";
 
 const AVGCreator = () => {
@@ -82,26 +57,28 @@ const AVGCreator = () => {
               </ButtonGroup>
             </div>
             <div className="body-content">
-              {bundleManagerOpenned && <BundleManagerDialog />}
-              {!bundleManagerOpenned && <ProjectListMainPanel />}
+              <div className="main-panel-container max-size">
+                <div
+                  className={classNames({
+                    "component-visible": !bundleManagerOpenned,
+                    "component-hidden": bundleManagerOpenned
+                  })}
+                >
+                  <ProjectListMainPanel />
+                </div>
+
+                <div
+                  className={classNames({
+                    "component-visible": bundleManagerOpenned,
+                    "component-hidden": !bundleManagerOpenned
+                  })}
+                >
+                  <BundleManagerDialog />
+                </div>
+              </div>
             </div>
             <div className="avg-creator-footer">
               <ButtonGroup minimal={true} alignText={"right"}>
-                {/* <Tooltip
-                  // content={downloadingTips}
-                  intent={Intent.SUCCESS}
-                  position={Position.TOP}
-                >
-                  <Button
-                    active={bundleManagerOpenned}
-                    icon={<Icon icon="cloud-download" />}
-                    onClick={() => {
-                      setBundleManagerOpenned(!bundleManagerOpenned);
-                    }}
-                  />
-                </Tooltip>
-                <Divider /> */}
-
                 <Button icon={<Icon icon="cog" />} color="red" />
               </ButtonGroup>
             </div>
