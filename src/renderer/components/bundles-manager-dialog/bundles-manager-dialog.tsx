@@ -41,6 +41,9 @@ export const BundleManagerDialog = () => {
   const [currentFilter, setCurrentFilter] = useState(BundleFilterType.Engines);
   const [bundleList, setBundleList] = useState<BundleItem[]>([]);
   const [isBundleListLoading, setIsBundleListLoading] = useState(false);
+  const [currentSelectedTabs, setCurrentSelectedTabs] = useState(
+    BundleFilterType.Engines
+  );
 
   useMount(async () => {
     await fetchManifest();
@@ -107,10 +110,29 @@ export const BundleManagerDialog = () => {
     return list;
   };
 
+  const renderList = (type: BundleType) => {
+    return (
+      <List
+        className="bundle-list"
+        itemLayout="horizontal"
+        style={{ height: "100%" }}
+        loading={isBundleListLoading}
+        dataSource={bundleList.filter((v) => v.type === type)}
+        renderItem={(item) => (
+          <BundleListItem key={item.hash} item={item}></BundleListItem>
+        )}
+      />
+    );
+  };
+
+  const handleTabsChanged = (id: BundleFilterType) => {
+    setCurrentSelectedTabs(id);
+  };
+
   return (
     <>
-      <div className="button-group-toolbar">
-        <ButtonGroup fill={true} minimal={false}>
+      <div className="tabs-container">
+        {/* <ButtonGroup fill={true} minimal={false}>
           <Button
             active={currentFilter === BundleFilterType.Engines}
             icon="application"
@@ -126,23 +148,31 @@ export const BundleManagerDialog = () => {
           >
             模板项目
           </Button>
-        </ButtonGroup>
+        </ButtonGroup> */}
 
-        <Button icon="application" onClick={fetchManifest}>
-          刷新列表
-        </Button>
+        <Tabs
+          className={"main-tabs"}
+          selectedTabId={currentSelectedTabs}
+          onChange={handleTabsChanged}
+        >
+          <Tab
+            id={BundleFilterType.Engines}
+            title="引擎"
+            panel={renderList(BundleType.Engines)}
+            panelClassName="ember-panel"
+          />
+          <Tab
+            id={BundleFilterType.Templates}
+            title="模板项目"
+            panel={renderList(BundleType.Templates)}
+          />
+
+          <Tabs.Expander />
+          <input className="bp3-input" type="text" placeholder="Search..." />
+        </Tabs>
       </div>
 
-      <List
-        className="bundle-list"
-        itemLayout="horizontal"
-        style={{ height: "100%" }}
-        loading={isBundleListLoading}
-        dataSource={getBundleList()}
-        renderItem={(item) => (
-          <BundleListItem key={item.hash} item={item}></BundleListItem>
-        )}
-      />
+      <div className={"footer"}></div>
     </>
   );
 };
