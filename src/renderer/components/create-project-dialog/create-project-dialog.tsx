@@ -13,7 +13,8 @@ import {
   Checkbox,
   Classes,
   Button,
-  Intent
+  Intent,
+  Drawer
 } from "@blueprintjs/core";
 
 import hotkeys from "hotkeys-js";
@@ -26,6 +27,9 @@ import { IconNames } from "@blueprintjs/icons";
 import { CreatorContext } from "../../hooks/context";
 import { GUIToaster } from "../../services/toaster";
 import { AVGProjectManager } from "../../../renderer/manager/project-manager";
+import { BundlesManager } from "../../services/bundles-manager/bundles-manager";
+import { logger } from "../../../common/lib/logger";
+import { useMount } from "react-use";
 
 export const CreateProjectDialog = () => {
   const { state, dispatch } = useContext(CreatorContext);
@@ -37,6 +41,11 @@ export const CreateProjectDialog = () => {
   );
   const [isCreateLoading, setIsCreateLoading] = useState(false);
   const [nameInputRef, setNameInputRef] = useState<HTMLInputElement | null>();
+
+  useMount(async () => {
+    const bundles = await BundlesManager.loadLocalBundles();
+    logger.info("bundles", Array.from(bundles.values()));
+  });
 
   nameInputRef?.focus();
 
@@ -139,16 +148,26 @@ export const CreateProjectDialog = () => {
   );
 
   return (
-    <Dialog
+    <Drawer
       className={"create-project-dialog"}
-      icon="info-sign"
-      onClose={handleCreateDialogClose}
-      title="创建游戏"
       isOpen={state.isCreateProjectDialogOpen}
-      usePortal={true}
+      position={"bottom"}
+      title="创建游戏"
+      icon="info-sign"
+      canOutsideClickClose={true}
+      onClose={handleCreateDialogClose}
       hasBackdrop={false}
-      transitionDuration={1000}
-      canEscapeKeyClose={true}
+      autoFocus={true}
+      enforceFocus={true}
+      usePortal={true}
+      onClosed={() => {
+        dispatch({
+          type: AVGCreatorActionType.ToggleCreateProjectDialog,
+          payload: {
+            open: false
+          }
+        });
+      }}
     >
       <div className="container">
         <FormGroup inline={false} label={"游戏名称"} labelFor="text-input">
@@ -190,6 +209,6 @@ export const CreateProjectDialog = () => {
           </Button>
         </div>
       </div>
-    </Dialog>
+    </Drawer>
   );
 };

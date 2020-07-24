@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import _ from "underscore";
 import { List, Progress as AntdProgress } from "antd";
 
 import { formatBytes } from "../../../common/utils";
 import { BundleItem, BundleStatus } from "./bundles-manager-dialog";
 import { CreatorContext } from "../../hooks/context";
-import { Icon, ContextMenu, Intent, Tag } from "@blueprintjs/core";
+import { Icon, ContextMenu, Intent, Tag, Classes } from "@blueprintjs/core";
 import { BundleListItemContextMenu } from "../context-menus/bundle-list-menus";
 import {
   BundlesManager,
@@ -19,6 +19,7 @@ import { useForceUpdate } from "../../hooks/use-forceupdate";
 import "./bundle-list-item.less";
 import { DBProjects } from "../../../common/database/db-project";
 import { LocalAppConfig } from "../../../common/local-app-config";
+import classNames from "classnames";
 
 export interface IBundleListItemProps {
   item: BundleItem;
@@ -77,6 +78,10 @@ export const BundleListItem = (props: IBundleListItemProps) => {
   };
 
   const handleSetAsDefault = async (bundle: BundleItem) => {
+    if (bundle.type !== BundleType.Engines) {
+      return;
+    }
+
     LocalAppConfig.set("defaultEngine", bundle.hash);
     LocalAppConfig.save(() => {
       dispatch({
@@ -94,7 +99,9 @@ export const BundleListItem = (props: IBundleListItemProps) => {
       return (
         <>
           {props.item.name} {"   "}
-          {isDefault && <Tag intent={Intent.SUCCESS}>默认</Tag>}
+          {isDefault && props.item.status === BundleStatus.Downloaded && (
+            <Tag intent={Intent.SUCCESS}>默认</Tag>
+          )}
         </>
       );
     } else if (props.item.type === BundleType.Templates) {
@@ -117,12 +124,18 @@ export const BundleListItem = (props: IBundleListItemProps) => {
     );
   };
 
+  const [selected, setSelected] = useState(false);
+
   return (
     <List.Item
-      className="bundle-item"
+      className={classNames("bundle-item", {
+        selected: selected
+      })}
       key={props.item.hash}
       actions={[renderDownloadStatus(props.item)]}
+      onDoubleClick={() => handleSetAsDefault(props.item)}
       onContextMenu={(event) => {
+        setSelected(true);
         ContextMenu.show(
           <BundleListItemContextMenu
             bundle={props.item}
@@ -133,6 +146,9 @@ export const BundleListItem = (props: IBundleListItemProps) => {
           {
             left: event.clientX,
             top: event.clientY
+          },
+          () => {
+            setSelected(false);
           }
         );
       }}

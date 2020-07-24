@@ -89,7 +89,7 @@ export const InitWorkspaceDialog = () => {
 
   return (
     <Dialog
-      className={"create-project-dialog"}
+      className={"dialog-container"}
       icon="info-sign"
       title="设置工作目录"
       isOpen={state.isSetWorkspaceDialogOpen}

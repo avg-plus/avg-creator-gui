@@ -83,6 +83,7 @@ const AVGCreator = () => {
               </ButtonGroup>
             </div>
           </div>
+
           <CreateProjectDialog />
           <InitWorkspaceDialog />
         </div>

@@ -26,6 +26,8 @@ export interface IBundle {
 
 export interface ILocalBundle {
   bundleInfo: any;
+  hash: string;
+  filename: string;
 }
 
 export interface IBundleManifest {
@@ -76,7 +78,7 @@ export class BundlesManager {
 
       if (entry) {
         const bundleInfo = JSON.parse(entry.getData().toString());
-        bundles.set(hash, { bundleInfo });
+        bundles.set(hash, { hash, filename: file, bundleInfo });
       }
     }
 
@@ -116,17 +118,4 @@ export class BundlesManager {
       );
     }
   }
-
-  // static async checkingBundles(onUpdate: OnUpdateCallback) {
-  //   const fetchData = await this.fetchManifest();
-
-  //   const domain = fetchData.domain;
-  //   const bundles = fetchData.bundles;
-
-  //   for (let i = 0; i < bundles.length; ++i) {
-  //     const bundle = bundles[i];
-
-  //     this.downloadBundle(domain, bundle, onUpdate);
-  //   }
-  // }
 }

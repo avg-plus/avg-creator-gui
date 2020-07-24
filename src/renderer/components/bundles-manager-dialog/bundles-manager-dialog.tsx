@@ -72,42 +72,21 @@ export const BundleManagerDialog = () => {
     }
 
     setBundleList(list);
-    // setBundleList(list);
 
-    setTimeout(() => {
-      // 设置默认
-      const defaultEngineBundleHash = LocalAppConfig.get(
-        "defaultEngine"
-      ) as string;
-      if (defaultEngineBundleHash && defaultEngineBundleHash.length) {
-        dispatch({
-          type: AVGCreatorActionType.SetDefaultEngine,
-          payload: {
-            bundleHash: defaultEngineBundleHash
-          }
-        });
-      }
-    }, 100);
+    // 设置默认
+    const defaultEngineBundleHash = LocalAppConfig.get(
+      "defaultEngine"
+    ) as string;
+    if (defaultEngineBundleHash && defaultEngineBundleHash.length) {
+      dispatch({
+        type: AVGCreatorActionType.SetDefaultEngine,
+        payload: {
+          bundleHash: defaultEngineBundleHash
+        }
+      });
+    }
 
     setIsBundleListLoading(false);
-  };
-
-  const handleFilterChanged = (filter: BundleFilterType) => {
-    setCurrentFilter(filter);
-  };
-
-  const getBundleList = () => {
-    const list = bundleList.filter((v) => {
-      if (currentFilter === BundleFilterType.Engines) {
-        return v.type === BundleType.Engines;
-      } else if (currentFilter === BundleFilterType.Templates) {
-        return v.type === BundleType.Templates;
-      }
-
-      return true;
-    });
-
-    return list;
   };
 
   const renderList = (type: BundleType) => {
@@ -132,26 +111,9 @@ export const BundleManagerDialog = () => {
   return (
     <>
       <div className="tabs-container">
-        {/* <ButtonGroup fill={true} minimal={false}>
-          <Button
-            active={currentFilter === BundleFilterType.Engines}
-            icon="application"
-            onClick={() => handleFilterChanged(BundleFilterType.Engines)}
-          >
-            引擎
-          </Button>
-
-          <Button
-            active={currentFilter === BundleFilterType.Templates}
-            icon="projects"
-            onClick={() => handleFilterChanged(BundleFilterType.Templates)}
-          >
-            模板项目
-          </Button>
-        </ButtonGroup> */}
-
         <Tabs
           className={"main-tabs"}
+          large={true}
           selectedTabId={currentSelectedTabs}
           onChange={handleTabsChanged}
         >
@@ -168,7 +130,13 @@ export const BundleManagerDialog = () => {
           />
 
           <Tabs.Expander />
-          <input className="bp3-input" type="text" placeholder="Search..." />
+          <Button
+            minimal={true}
+            large={false}
+            icon="refresh"
+            loading={isBundleListLoading}
+            onClick={() => fetchManifest()}
+          ></Button>
         </Tabs>
       </div>
 
