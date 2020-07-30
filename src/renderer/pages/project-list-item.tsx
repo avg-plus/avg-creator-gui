@@ -2,7 +2,8 @@
 
 import React from "react";
 import "./project-list-item.less";
-import { Row, Col } from "antd";
+import Row from "antd/lib/row";
+import Col from "antd/lib/col";
 import { AVGProjectData } from "../manager/project-manager";
 
 export interface IProjectListItemProps {

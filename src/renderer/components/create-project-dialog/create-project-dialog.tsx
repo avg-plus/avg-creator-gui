@@ -14,8 +14,12 @@ import {
   Classes,
   Button,
   Intent,
-  Drawer
+  Drawer,
+  MenuItem,
+  Tag
 } from "@blueprintjs/core";
+import Select from "react-select";
+import Option from "react-select";
 
 import hotkeys from "hotkeys-js";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -27,33 +31,55 @@ import { IconNames } from "@blueprintjs/icons";
 import { CreatorContext } from "../../hooks/context";
 import { GUIToaster } from "../../services/toaster";
 import { AVGProjectManager } from "../../../renderer/manager/project-manager";
-import { BundlesManager } from "../../services/bundles-manager/bundles-manager";
+import {
+  BundlesManager,
+  ILocalBundle,
+  BundleType
+} from "../../services/bundles-manager/bundles-manager";
 import { logger } from "../../../common/lib/logger";
+import { BundleItem } from "../bundles-manager-dialog/bundles-manager-dialog";
+import { LocalAppConfig } from "../../../common/local-app-config";
 import { useMount } from "react-use";
+import { useForceUpdate } from "../../hooks/use-forceupdate";
+
+export interface BundleOption {
+  value: string;
+  label: string;
+  bundle: ILocalBundle;
+}
 
 export const CreateProjectDialog = () => {
   const { state, dispatch } = useContext(CreatorContext);
 
   const [projectName, setProjectName] = useState("");
-  const [generateTutorial, setGenerateTutorial] = useState(true);
+  // const [generateTutorial, setGenerateTutorial] = useState(true);
   const [projectNameInputIntent, setProjectNameInputIntent] = useState<Intent>(
     Intent.PRIMARY
   );
   const [isCreateLoading, setIsCreateLoading] = useState(false);
   const [nameInputRef, setNameInputRef] = useState<HTMLInputElement | null>();
 
-  useMount(async () => {
-    const bundles = await BundlesManager.loadLocalBundles();
-    logger.info("bundles", Array.from(bundles.values()));
-  });
+  const [localBundles, setLocalBundles] = useState<ILocalBundle[]>([]);
 
-  nameInputRef?.focus();
+  const defaultEngineBundleHash = LocalAppConfig.get("defaultEngine") as string;
+
+  const [selectedEngineBundle, setSelectedEngineBundle] = useState<
+    BundleOption
+  >();
+
+  const [selectedTemplateBundle, setSelectedTemplateBundle] = useState<
+    BundleOption
+  >();
+
+  const [engineOptions, setEngineOptions] = useState<BundleOption[]>([]);
+  const [templateOptions, setTemplateOptions] = useState<BundleOption[]>([]);
 
   // 清除状态
   const clearState = () => {
     setProjectName("");
-    setGenerateTutorial(true);
+    // setGenerateTutorial(true);
     setIsCreateLoading(false);
+    setProjectNameInputIntent(Intent.NONE);
 
     hotkeys.unbind("enter");
   };
@@ -95,12 +121,31 @@ export const CreateProjectDialog = () => {
       return;
     }
 
+    if (!selectedEngineBundle) {
+      GUIToaster.show({
+        message: `必须选择一个引擎开发包`,
+        timeout: 2000,
+        intent: Intent.WARNING
+      });
+      return;
+    }
+
+    if (!selectedTemplateBundle) {
+      GUIToaster.show({
+        message: `请选择创建的项目类型（模板）`,
+        timeout: 2000,
+        intent: Intent.WARNING
+      });
+      return;
+    }
+
     // 创建项目
     setIsCreateLoading(true);
 
     const newProject = AVGProjectManager.createProject(
       projectName,
-      generateTutorial
+      selectedEngineBundle,
+      selectedTemplateBundle
     )
       .then((project) => {
         dispatch({
@@ -147,11 +192,92 @@ export const CreateProjectDialog = () => {
     [projectName]
   );
 
+  const optionStyles = {
+    menuList: (provided: any, state: any) => ({
+      ...provided,
+      maxHeight: "200px"
+    })
+  };
+
+  const renderOptions = (type: BundleType): BundleOption[] => {
+    const bundles = localBundles.filter(
+      (bundle) => bundle.bundleInfo.type == type
+    );
+
+    if (!bundles || !bundles.length) {
+      return [];
+    }
+
+    let options = [];
+    for (const bundle of bundles) {
+      options.push({
+        value: bundle.hash,
+        label: bundle.bundleInfo.name,
+        bundle
+      });
+    }
+
+    return options;
+  };
+
+  useMount(() => {
+    nameInputRef?.focus();
+
+    // 加载本地打包的数据
+    const bundles = Array.from(BundlesManager.localBundles.values());
+    setLocalBundles(bundles);
+  });
+
+  const dialogOpenning = () => {
+    // 初始化引擎列表
+    setEngineOptions(renderOptions(BundleType.Engine));
+    setTemplateOptions(renderOptions(BundleType.Template));
+  };
+
+  useEffect(() => {
+    // 获取默认值
+    let defaultEngineOption = engineOptions.find((v) => {
+      return v.value === defaultEngineBundleHash;
+    });
+
+    if (!defaultEngineOption && engineOptions.length) {
+      defaultEngineOption = engineOptions[0];
+    }
+
+    setSelectedEngineBundle(defaultEngineOption);
+    setSelectedTemplateBundle(renderOptions(BundleType.Template)[0]);
+  }, [engineOptions]);
+
+  const formatOptionLabel = ({
+    value,
+    label,
+    bundle
+  }: {
+    value: string;
+    label: string;
+    bundle: ILocalBundle;
+  }) => {
+    return (
+      <div style={{ display: "flex" }}>
+        <div>
+          {label} {"   "}
+          {defaultEngineBundleHash === bundle.hash && (
+            <Tag intent={Intent.SUCCESS}>默认</Tag>
+          )}
+        </div>
+        <div style={{ marginLeft: "10px", color: "#ccc" }}>
+          {bundle.bundleInfo.description}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Drawer
       className={"create-project-dialog"}
       isOpen={state.isCreateProjectDialogOpen}
       position={"bottom"}
+      size={400}
       title="创建游戏"
       icon="info-sign"
       canOutsideClickClose={true}
@@ -160,13 +286,9 @@ export const CreateProjectDialog = () => {
       autoFocus={true}
       enforceFocus={true}
       usePortal={true}
-      onClosed={() => {
-        dispatch({
-          type: AVGCreatorActionType.ToggleCreateProjectDialog,
-          payload: {
-            open: false
-          }
-        });
+      onOpening={dialogOpenning}
+      onClosing={() => {
+        handleCreateDialogClose();
       }}
     >
       <div className="container">
@@ -184,14 +306,31 @@ export const CreateProjectDialog = () => {
           />
         </FormGroup>
 
-        <FormGroup label={""} labelInfo={"(required)"}>
-          <Checkbox
-            defaultChecked={generateTutorial}
-            label="生成范例代码"
-            onChange={(event) => {
-              const checked = (event.target as HTMLInputElement).checked;
-              setGenerateTutorial(checked);
+        <FormGroup inline={false} label={"引擎版本"} labelFor="text-input">
+          <Select
+            options={engineOptions}
+            styles={optionStyles}
+            value={selectedEngineBundle}
+            formatOptionLabel={formatOptionLabel}
+            onChange={(value) => {
+              setSelectedEngineBundle(value as any);
             }}
+            isSearchable={false}
+          />
+        </FormGroup>
+
+        <FormGroup inline={false} label={"模板项目"} labelFor="text-input">
+          <Select
+            options={renderOptions(BundleType.Template)}
+            styles={optionStyles}
+            value={
+              selectedTemplateBundle ?? renderOptions(BundleType.Template)[0]
+            }
+            formatOptionLabel={formatOptionLabel}
+            onChange={(value) => {
+              setSelectedTemplateBundle(value as any);
+            }}
+            isSearchable={false}
           />
         </FormGroup>
       </div>

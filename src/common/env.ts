@@ -1,3 +1,4 @@
+import os from "os";
 import fs from "fs-extra";
 import path from "path";
 
@@ -11,6 +12,15 @@ export class Env {
     return Env.appDataDir;
   }
 
+  static getOSName() {
+    const platforms = {
+      darwin: "MacOS",
+      win32: "Windows"
+    };
+
+    return platforms[os.platform()];
+  }
+
   // 获取游戏模板工程目录
   static getBundleDir() {
     return path.join(this.getAppDataDir(), "avg-bundles/");
@@ -18,12 +28,17 @@ export class Env {
 
   // 获取游戏模板工程目录
   static getAVGProjectTemplateDir() {
-    return path.join(this.getAppDataDir(), "avg-bundles/project-templates");
+    return path.join(this.getBundleDir(), "project-templates");
   }
 
   // 获取游戏引擎包目录
   static getAVGEngineBundleDir() {
-    return path.join(this.getAppDataDir(), "avg-bundles/engines");
+    return path.join(this.getBundleDir(), "engines");
+  }
+
+  // 获取Electron镜像目录
+  static getElectronMirrorBundleDir() {
+    return path.join(this.getBundleDir(), "electron-mirrors");
   }
 
   // 获取工作目录

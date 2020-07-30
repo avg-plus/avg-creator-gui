@@ -5,3 +5,9 @@ export async function apiGetManifest<T>() {
 
   return body;
 }
+
+export async function apiGetElectronMirror<T>() {
+  const { body } = await got.get<T>(`bundle-update/electron-mirror`);
+
+  return body;
+}

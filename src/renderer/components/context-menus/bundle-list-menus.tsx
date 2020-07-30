@@ -26,7 +26,7 @@ export const BundleListItemContextMenu = (
   return (
     <Menu>
       {props.bundle.status === BundleStatus.Downloaded &&
-        props.bundle.type == BundleType.Engines && (
+        props.bundle.type == BundleType.Engine && (
           <>
             <Menu.Item
               icon="bookmark"

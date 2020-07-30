@@ -1,6 +1,7 @@
 import path from "path";
 import fs from "fs-extra";
 import { remote } from "electron";
+import * as Package from "../../../package.json";
 
 import AdmZip from "adm-zip";
 
@@ -9,12 +10,17 @@ import { DBProjects } from "../../common/database/db-project";
 import { LocalAppConfig } from "../../common/local-app-config";
 import { Env } from "../../common/env";
 import { TDAPP } from "../services/td-analytics";
+import { BundleItem } from "../components/bundles-manager-dialog/bundles-manager-dialog";
+import { BundleOption } from "../components/create-project-dialog/create-project-dialog";
+import { template } from "underscore";
 
 export class AVGProjectData {
   _id: string;
   name: string;
   description: string = "";
   dir: string;
+  engineHash: string;
+  templateHash: string;
   // host?: string = "127.0.0.1";
   // listenPort?: number;
   // screenWidth?: number = 800;
@@ -31,7 +37,11 @@ export class AVGProjectManager {
     return !isNullOrUndefined(workspaceDir);
   }
 
-  static async createProject(name: string, generateTutorial: boolean = true) {
+  static async createProject(
+    name: string,
+    engineBundle: BundleOption,
+    templateBundle: BundleOption
+  ) {
     // 名称是否已存在
     const existedProject = await DBProjects.findOne({ name });
     if (existedProject) {
@@ -53,21 +63,34 @@ export class AVGProjectManager {
     }
 
     // 查找模板项目
-    const templatesDir = Env.getAVGProjectTemplateDir();
-    const defaultTemplateBundleFile = path.join(templatesDir, "default.zip");
+    // const templatesDir = Env.getAVGProjectTemplateDir();
+    const defaultTemplateBundleFile = templateBundle.bundle.filename;
+    console.log("templateBundle", defaultTemplateBundleFile);
+
     if (!fs.existsSync(defaultTemplateBundleFile)) {
       remote.shell.moveItemToTrash(projectDir);
       throw "创建项目失败：无法读取模板项目";
     }
 
-    // 解压模板项目
+    // 解压模板项目到临时目录
     var zip = new AdmZip(defaultTemplateBundleFile);
-    zip.extractAllTo(projectDir, true);
+    const temp = path.join(
+      remote.app.getPath("temp"),
+      templateBundle.bundle.hash
+    );
+
+    fs.removeSync(temp);
+    zip.extractAllTo(temp);
+
+    // 拷贝到项目目录
+    fs.copySync(path.join(temp, "bundle"), projectDir);
 
     const project = new AVGProjectData();
     project.name = name;
     project.description = "";
     project.dir = projectDir;
+    project.templateHash = templateBundle.bundle.hash;
+    project.engineHash = engineBundle.bundle.hash;
 
     // 保存到数据库
     const doc = await DBProjects.insert({

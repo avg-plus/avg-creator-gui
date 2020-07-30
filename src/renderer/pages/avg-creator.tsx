@@ -14,6 +14,7 @@ import { ProjectListMainPanel } from "./project-list-main-panel";
 import { InitWorkspaceDialog } from "../components/initial-workspace-dialog/init-workspace-dialog";
 import classNames from "classnames";
 import { BundleManagerDialog } from "../components/bundles-manager-dialog/bundles-manager-dialog";
+import { ProjectDetailDialog } from "../components/project-detail-dialog/project-details-dialog";
 
 const AVGCreator = () => {
   const [state, dispatch] = useReducer(
@@ -84,7 +85,8 @@ const AVGCreator = () => {
             </div>
           </div>
 
-          <CreateProjectDialog />
+          {state.isCreateProjectDialogOpen && <CreateProjectDialog />}
+          <ProjectDetailDialog server={state.currentServer} />
           <InitWorkspaceDialog />
         </div>
       </div>

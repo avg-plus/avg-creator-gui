@@ -1,11 +1,16 @@
 import http, { IncomingMessage } from "http";
 import path from "path";
+import os from "os";
 import fs from "fs-extra";
+import child_process from "child_process";
 
 import { AVGProjectData } from "./../manager/project-manager";
 import connect from "connect";
 import serveStatic from "serve-static";
 import getPort from "get-port";
+import { BundlesManager } from "./bundles-manager/bundles-manager";
+import { remote } from "electron";
+import AdmZip from "adm-zip";
 
 export class GameRunner {
   private static engineServer: http.Server;
@@ -24,11 +29,79 @@ export class GameRunner {
     }
   }
 
-  static async serve(project: AVGProjectData) {
-    // 查找引擎 package
-    const engineBundleDir =
-      "/Users/angrypowman/Library/Application Support/avg.creator/avg-bundles/engines/.cache/AVGPlus-browser-v0.1.24_alpha";
+  private static async getAvalibleIPs() {
+    var ifaces = os.networkInterfaces();
+    if (!ifaces) {
+      return [];
+    }
 
+    Object.keys(ifaces).forEach((ifname) => {
+      if (!ifname) {
+        return;
+      }
+
+      var alias = 0;
+
+      ifaces[ifname]?.forEach(function (iface) {
+        if ("IPv4" !== iface.family || iface.internal !== false) {
+          return;
+        }
+
+        if (alias >= 1) {
+          console.log(ifname + ":" + alias, iface.address);
+        } else {
+          console.log(ifname, iface.address);
+        }
+        ++alias;
+      });
+    });
+  }
+
+  static async runAsDesktop() {
+    const electronPath = path.join(
+      __dirname,
+      "../runners/darwin-x64/Electron.app/Contents/MacOS/Electron"
+    );
+
+    console.log("electronPath", electronPath);
+
+    const getElectronPath = () => {
+      if (fs.existsSync(electronPath)) {
+        return electronPath;
+      } else {
+        throw new Error("执行游戏客户端程序异常。");
+      }
+    };
+
+    var child = child_process.spawn(
+      getElectronPath(),
+      [
+        "/private/var/folders/7g/v7z2nm295q3d224h570vyny40000gn/T/56920056c8866bc6cd1f3191fe211c33/bundle/main.electron.js"
+      ],
+      {
+        stdio: "inherit",
+        windowsHide: false
+      }
+    );
+  }
+
+  static async serve(project: AVGProjectData) {
+    console.log("serve", project, this.getAvalibleIPs());
+    const bundle = BundlesManager.getLocalBundleByHash(project.engineHash);
+    if (!bundle) {
+      throw "创建项目失败：无法读取模板项目";
+    }
+
+    // 查找引擎 package
+    const engineTemp = path.join(remote.app.getPath("temp"), bundle.hash);
+    fs.removeSync(engineTemp);
+
+    const zip = new AdmZip(bundle.filename);
+    zip.extractAllTo(engineTemp, true);
+
+    console.log("engineTemp", engineTemp);
+
+    const engineBundleDir = path.join(engineTemp, "bundle");
     const assetsDir = project.dir;
 
     await this.close();
@@ -47,23 +120,31 @@ export class GameRunner {
     fs.writeJsonSync(engineConfigFile, engineConfig);
 
     // 开启服务
-    this.engineServer = connect()
-      .use(serveStatic(engineBundleDir))
-      .listen(enginePort, () => {
-        console.log(`Engine Server started on ${engineURL}...`);
-      });
+    const p_Engine = new Promise<boolean>((resolve) => {
+      this.engineServer = connect()
+        .use(serveStatic(engineBundleDir))
+        .listen(enginePort, () => {
+          console.log(`Engine Server started on ${engineURL}...`);
+          resolve(true);
+        });
+    });
 
-    this.assetsServer = connect()
-      .use(
-        serveStatic(assetsDir, {
-          cacheControl: false,
-          setHeaders: (res) => {
-            res.setHeader("Access-Control-Allow-Origin", "*");
-          }
-        })
-      )
-      .listen(assetsPort, () => {
-        console.log(`Assets Server started on ${assetsURL} `);
-      });
+    const p_Assets = new Promise<boolean>((resolve) => {
+      this.assetsServer = connect()
+        .use(
+          serveStatic(assetsDir, {
+            cacheControl: false,
+            setHeaders: (res) => {
+              res.setHeader("Access-Control-Allow-Origin", "*");
+            }
+          })
+        )
+        .listen(assetsPort, () => {
+          console.log(`Assets Server started on ${assetsURL} `);
+          resolve(true);
+        });
+    });
+
+    return Promise.all([p_Engine, p_Assets]);
   }
 }

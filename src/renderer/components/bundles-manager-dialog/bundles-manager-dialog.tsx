@@ -1,36 +1,48 @@
 import React, { useState, useContext, useEffect } from "react";
-import { List } from "antd";
+import List from "antd/lib/list";
 
-import semver from "semver";
+import semver, { sort as semverSort } from "semver";
 
 import {
   IBundle,
   BundlesManager,
-  BundleType
+  BundleType,
+  BundleInfo
 } from "../../services/bundles-manager/bundles-manager";
 import { useMount } from "react-use";
 
 import "./bundles-manager-dialog.less";
 import { BundleListItem } from "./bundle-list-item";
-import { Button, ButtonGroup, Tabs, Tab } from "@blueprintjs/core";
+import {
+  Button,
+  ButtonGroup,
+  Tabs,
+  Tab,
+  Intent,
+  NonIdealState
+} from "@blueprintjs/core";
 import { CreatorContext } from "../../hooks/context";
 import { LocalAppConfig } from "../../../common/local-app-config";
 import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
+import { GUIToaster } from "../../services/toaster";
+import { BundleDesktopPage } from "./bundle-desktop-page";
 
 enum BundleFilterType {
   Templates = "Templates",
-  Engines = "Engines"
+  Engines = "Engines",
+  DesktopShell = "DesktopShell"
 }
 
 export enum BundleStatus {
   NotDownload,
+  Preparing,
   Downloading,
   Downloaded
 }
 
 export interface BundleItem extends IBundle {
   status: BundleStatus;
-  bundleInfo: any;
+  bundleInfo: BundleInfo;
   downloadProgress: number;
   transferred: number;
 }
@@ -89,14 +101,39 @@ export const BundleManagerDialog = () => {
     setIsBundleListLoading(false);
   };
 
+  const renderDesktopShell = () => {
+    return <BundleDesktopPage></BundleDesktopPage>;
+  };
+
   const renderList = (type: BundleType) => {
+    bundleList.filter((v) => v.type === type);
+
+    const sorted = bundleList
+      .filter((v) => v.type === type)
+      .sort((a, b) => {
+        // 设为默认的优先
+        // if (b.hash === defaultEngineBundleHash) {
+        //   return 1;
+        // }
+
+        if (a.bundleInfo && b.bundleInfo) {
+          if (semver.lt(a.bundleInfo.version, b.bundleInfo.version)) {
+            return 1;
+          }
+        } else {
+          return a.time - b.time;
+        }
+
+        return -1;
+      });
+
     return (
       <List
         className="bundle-list"
         itemLayout="horizontal"
         style={{ height: "100%" }}
         loading={isBundleListLoading}
-        dataSource={bundleList.filter((v) => v.type === type)}
+        dataSource={sorted}
         renderItem={(item) => (
           <BundleListItem key={item.hash} item={item}></BundleListItem>
         )}
@@ -120,13 +157,18 @@ export const BundleManagerDialog = () => {
           <Tab
             id={BundleFilterType.Engines}
             title="引擎"
-            panel={renderList(BundleType.Engines)}
+            panel={renderList(BundleType.Engine)}
             panelClassName="ember-panel"
           />
           <Tab
             id={BundleFilterType.Templates}
             title="模板项目"
-            panel={renderList(BundleType.Templates)}
+            panel={renderList(BundleType.Template)}
+          />
+          <Tab
+            id={BundleFilterType.DesktopShell}
+            title="桌面启动器"
+            panel={renderDesktopShell()}
           />
 
           <Tabs.Expander />

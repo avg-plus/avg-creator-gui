@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import _ from "underscore";
-import { List, Progress as AntdProgress } from "antd";
+import Progress from "antd/lib/progress";
+import List from "antd/lib/list";
 
 import { formatBytes } from "../../../common/utils";
 import { BundleItem, BundleStatus } from "./bundles-manager-dialog";
@@ -30,12 +31,14 @@ export const BundleListItem = (props: IBundleListItemProps) => {
   const forceUpdate = useForceUpdate();
 
   const renderDownloadStatus = (item: BundleItem) => {
-    if (item.status === BundleStatus.Downloaded) {
+    if (item.status === BundleStatus.Preparing) {
+      return "正在连接...";
+    } else if (item.status === BundleStatus.Downloaded) {
       return <Icon icon="tick" color={"green"}></Icon>;
     } else if (item.status === BundleStatus.Downloading) {
       return (
         <div style={{ width: 170 }}>
-          <AntdProgress
+          <Progress
             percent={+(item.downloadProgress * 100).toFixed(1)}
             size="small"
           />
@@ -48,18 +51,25 @@ export const BundleListItem = (props: IBundleListItemProps) => {
   };
 
   const handleBundleDownload = async (bundle: BundleItem) => {
-    const onUpdateCallback = _.throttle((context: BundleDownloadContext) => {
-      bundle.downloadProgress = context.progress.percent;
-      bundle.status = BundleStatus.Downloading;
-      bundle.transferred = context.progress.transferred;
+    const onUpdateCallback = _.throttle(
+      async (context: BundleDownloadContext) => {
+        bundle.downloadProgress = context.progress.percent;
+        bundle.status = BundleStatus.Downloading;
+        bundle.transferred = context.progress.transferred;
 
-      if (context.progress.percent >= 1) {
-        bundle.status = BundleStatus.Downloaded;
-      }
+        // 下载完成
+        if (context.progress.percent >= 1) {
+          bundle.status = BundleStatus.Downloaded;
 
-      forceUpdate();
-    }, 500);
+          await BundlesManager.loadLocalBundles();
+        }
 
+        forceUpdate();
+      },
+      300
+    );
+
+    bundle.status = BundleStatus.Preparing;
     await BundlesManager.downloadBundle(bundle, onUpdateCallback);
   };
 
@@ -78,7 +88,7 @@ export const BundleListItem = (props: IBundleListItemProps) => {
   };
 
   const handleSetAsDefault = async (bundle: BundleItem) => {
-    if (bundle.type !== BundleType.Engines) {
+    if (bundle.type !== BundleType.Engine) {
       return;
     }
 
@@ -90,24 +100,39 @@ export const BundleListItem = (props: IBundleListItemProps) => {
           bundleHash: bundle.hash
         }
       });
+
+      GUIToaster.show({
+        message: `设置 ${bundle.name} 为默认引擎`,
+        timeout: 2000,
+        intent: Intent.SUCCESS
+      });
     });
   };
 
   const renderTitle = () => {
-    if (props.item.type === BundleType.Engines) {
+    const title = () => {
+      if (
+        props.item.bundleInfo &&
+        props.item.status === BundleStatus.Downloaded
+      ) {
+        return <>{props.item.bundleInfo.name}</>;
+      } else {
+        return <>{props.item.name}</>;
+      }
+    };
+
+    if (props.item.type === BundleType.Engine) {
       const isDefault = state.defaultEngineBundleHash === props.item.hash;
       return (
         <>
-          {props.item.name} {"   "}
+          {title()} {"   "}
           {isDefault && props.item.status === BundleStatus.Downloaded && (
             <Tag intent={Intent.SUCCESS}>默认</Tag>
           )}
         </>
       );
-    } else if (props.item.type === BundleType.Templates) {
-      if (props.item.bundleInfo) {
-        return <>{props.item.bundleInfo.name}</>;
-      }
+    } else if (props.item.type === BundleType.Template) {
+      return title();
     }
 
     return props.item.name;

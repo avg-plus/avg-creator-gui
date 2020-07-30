@@ -1,10 +1,8 @@
 /** @format */
 
-import path from "path";
-
 import React, { useState, useContext, useEffect } from "react";
 
-import { Empty } from "antd";
+import Empty from "antd/lib/empty";
 import {
   Intent,
   Button,
@@ -13,7 +11,6 @@ import {
   Alignment,
   Alert
 } from "@blueprintjs/core";
-import { IPanelProps } from "@blueprintjs/core/lib/esnext";
 import { Scrollbars } from "react-custom-scrollbars";
 
 import { ProjectListItem } from "./project-list-item";
@@ -23,7 +20,6 @@ import { CreatorContext } from "../hooks/context";
 import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
 import styled from "styled-components";
 
-import "./project-list-main-panel.less";
 import { ProjectItemContextMenu } from "../components/context-menus/project-item-menus";
 import { ProjectListContextMenu } from "../components/context-menus/project-list-menus";
 import { GUIToaster } from "../services/toaster";
@@ -32,6 +28,9 @@ import { shell } from "electron";
 import { VSCode } from "../services/vscode";
 import { useHotkeys } from "react-hotkeys-hook";
 import { GameRunner } from "../services/game-runner";
+import { useForceUpdate } from "../hooks/use-forceupdate";
+
+import "./project-list-main-panel.less";
 
 const NoProjectHint = styled.label`
   font-size: 16px;
@@ -44,6 +43,8 @@ export const ProjectListMainPanel = () => {
   const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(
     false
   );
+
+  const [seletedItem, setSeletedItem] = useState<AVGProjectData | null>(null);
 
   useEffect(() => {
     AVGProjectManager.loadProjects().then((v) => {
@@ -80,30 +81,34 @@ export const ProjectListMainPanel = () => {
     setIsDeleteConfirmDialogOpen(true);
   };
 
-  const handleExploreDir = () => {
-    if (!state.selectedProjectItem) {
+  const handleExploreDir = (selectedProjectItem: AVGProjectData) => {
+    if (!selectedProjectItem) {
       return;
     }
 
-    shell.showItemInFolder(state.selectedProjectItem.dir);
+    shell.showItemInFolder(selectedProjectItem.dir);
   };
 
-  const handleOpenInVSCode = () => {
-    if (!state.selectedProjectItem) {
+  const handleOpenInVSCode = (selectedProjectItem: AVGProjectData) => {
+    if (!selectedProjectItem) {
       return;
     }
 
     try {
-      VSCode.run(state.selectedProjectItem.dir);
+      VSCode.run(selectedProjectItem.dir);
     } catch (error) {
       GUIToaster.show({ message: error, intent: Intent.DANGER });
     }
   };
 
-  const handleServeProject = () => {
-    if (state.selectedProjectItem) {
+  const handleServeProject = async (selectedProjectItem: AVGProjectData) => {
+    if (selectedProjectItem) {
       if (state.currentServer.isRunning) {
         GameRunner.close();
+        GUIToaster.show({
+          message: "停止服务",
+          intent: Intent.WARNING
+        });
         dispatch({
           type: AVGCreatorActionType.StartServer,
           payload: {
@@ -112,24 +117,36 @@ export const ProjectListMainPanel = () => {
           }
         });
       } else {
-        GameRunner.serve(state.selectedProjectItem);
-        dispatch({
-          type: AVGCreatorActionType.StartServer,
-          payload: {
-            serverProject: state.selectedProjectItem,
-            isRunning: true
+        try {
+          const serverStatus = await GameRunner.serve(selectedProjectItem);
+
+          if (serverStatus[0] && serverStatus[1]) {
+            GUIToaster.show({
+              message: "开启服务成功",
+              intent: Intent.SUCCESS
+            });
           }
-        });
+
+          dispatch({
+            type: AVGCreatorActionType.StartServer,
+            payload: {
+              serverProject: selectedProjectItem,
+              isRunning: true
+            }
+          });
+        } catch (error) {
+          GUIToaster.show({ message: error, intent: Intent.DANGER });
+        }
       }
     }
   };
 
   const handleConfirmDelete = () => {
-    if (!state.selectedProjectItem) {
+    if (!seletedItem) {
       return;
     }
 
-    AVGProjectManager.deleteProject(state.selectedProjectItem._id)
+    AVGProjectManager.deleteProject(seletedItem._id)
       .then(() => {
         GUIToaster.show({
           message: "删除成功",
@@ -148,18 +165,13 @@ export const ProjectListMainPanel = () => {
         dispatch({
           type: AVGCreatorActionType.RemoveProjectItem,
           payload: {
-            projectID: state.selectedProjectItem?._id
+            projectID: seletedItem?._id
           }
         });
 
         setIsDeleteConfirmDialogOpen(false);
 
-        dispatch({
-          type: AVGCreatorActionType.SelectProjectItem,
-          payload: {
-            project: null
-          }
-        });
+        setSeletedItem(null);
       });
   };
 
@@ -181,12 +193,8 @@ export const ProjectListMainPanel = () => {
     p: AVGProjectData | null
   ) => {
     event.stopPropagation();
-    dispatch({
-      type: AVGCreatorActionType.SelectProjectItem,
-      payload: {
-        project: p
-      }
-    });
+
+    setSeletedItem(p);
   };
 
   const isServingProject = (project: AVGProjectData | null) => {
@@ -194,13 +202,20 @@ export const ProjectListMainPanel = () => {
       return false;
     }
 
-    return project._id === state.currentServer.serverProject?._id;
+    return project._id === state.currentServer.serveProject?._id;
   };
 
   return (
     <>
-      {/* <div className="running-status-info-bar">
-        <p className="info">正在监听 http://localhost:2335, 点击打开</p>
+      {/* <div className="server-toolbar">
+        <Button
+          icon={isServingProject(seletedItem) ? "stop" : "play"}
+          intent={
+            isServingProject(seletedItem) ? Intent.DANGER : Intent.SUCCESS
+          }
+          text={isServingProject(seletedItem) ? "停止" : "运行"}
+          onClick={() => {}}
+        />
       </div> */}
 
       <Alert
@@ -216,7 +231,7 @@ export const ProjectListMainPanel = () => {
         style={{ width: "86%" }}
       >
         <p>
-          是否删除项目 <b>{state.selectedProjectItem?.name}</b> ？
+          是否删除项目 <b>{seletedItem?.name}</b> ？
         </p>
       </Alert>
 
@@ -229,12 +244,8 @@ export const ProjectListMainPanel = () => {
             return;
           }
           event.preventDefault();
-          dispatch({
-            type: AVGCreatorActionType.SelectProjectItem,
-            payload: {
-              project: null
-            }
-          });
+
+          setSeletedItem(null);
 
           ContextMenu.show(<ProjectListContextMenu dispatch={dispatch} />, {
             left: event.clientX,
@@ -282,7 +293,13 @@ export const ProjectListMainPanel = () => {
             <div
               key={p._id}
               onDoubleClick={() => {
-                // openSettingsPanel(p);
+                dispatch({
+                  type: AVGCreatorActionType.OpenProjectDetailDialog,
+                  payload: {
+                    open: true,
+                    project: p
+                  }
+                });
               }}
               onClick={(event) => {
                 handleSelectItem(event, p);
@@ -292,10 +309,17 @@ export const ProjectListMainPanel = () => {
 
                 ContextMenu.show(
                   <ProjectItemContextMenu
+                    server={state.currentServer}
                     onDelete={handleAlertDelete}
-                    onExploreDir={handleExploreDir}
-                    onOpenInVSCode={handleOpenInVSCode}
-                    onServe={handleServeProject}
+                    onExploreDir={() => {
+                      handleExploreDir(p);
+                    }}
+                    onOpenInVSCode={() => {
+                      handleOpenInVSCode(p);
+                    }}
+                    onServe={() => {
+                      handleServeProject(p);
+                    }}
                   />,
                   {
                     left: event.clientX,
@@ -306,10 +330,7 @@ export const ProjectListMainPanel = () => {
             >
               <div
                 className={`project-list-item ${
-                  state.selectedProjectItem &&
-                  state.selectedProjectItem._id === p._id
-                    ? "selected"
-                    : ""
+                  seletedItem && seletedItem._id === p._id ? "selected" : ""
                 }`}
               >
                 <ProjectListItem projectData={p} />
@@ -318,29 +339,6 @@ export const ProjectListMainPanel = () => {
           ))}
         </Scrollbars>
       </div>
-
-      {state.projects.length > 0 && (
-        <Navbar>
-          <Navbar.Group align={Alignment.LEFT}>
-            {state.selectedProjectItem && (
-              <Button
-                icon={
-                  isServingProject(state.selectedProjectItem) ? "stop" : "play"
-                }
-                intent={
-                  isServingProject(state.selectedProjectItem)
-                    ? Intent.DANGER
-                    : Intent.SUCCESS
-                }
-                text={
-                  isServingProject(state.selectedProjectItem) ? "停止" : "运行"
-                }
-                onClick={() => {}}
-              />
-            )}
-          </Navbar.Group>
-        </Navbar>
-      )}
     </>
   );
 };

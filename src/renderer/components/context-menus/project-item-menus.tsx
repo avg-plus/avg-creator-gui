@@ -1,7 +1,12 @@
-import { Menu } from "@blueprintjs/core";
-import React from "react";
+import { Menu, Intent } from "@blueprintjs/core";
+import React, { useContext, useEffect, useState } from "react";
+import { CreatorContext } from "../../hooks/context";
+import { stat } from "fs";
+import { AVGProjectData } from "../../manager/project-manager";
+import { IAVGServer } from "../../redux/reducers/avg-creator-reducers";
 
 interface IProjectItemContextMenuProps {
+  server: IAVGServer;
   onDelete: () => void;
   onExploreDir: () => void;
   onOpenInVSCode: () => void;
@@ -9,14 +14,22 @@ interface IProjectItemContextMenuProps {
 }
 
 export const ProjectItemContextMenu = (props: IProjectItemContextMenuProps) => {
+  const { state, dispatch } = useContext(CreatorContext);
+  const [running, setRunning] = useState(false);
+
+  // useEffect(() => {
+  //   setRunning(state.currentServer.isRunning);
+  // }, [props.server.]);
+
   return (
     <>
       <Menu>
-        {/* <Menu.Item icon="label" text="运行">
-          <Menu.Item icon="globe-network" text="浏览器" />
-          <Menu.Item icon="desktop" text="PC 桌面" />
-        </Menu.Item> */}
-        <Menu.Item icon="applications" onClick={props.onServe} text="运行" />
+        <Menu.Item
+          icon="applications"
+          onClick={props.onServe}
+          intent={!props.server.isRunning ? Intent.NONE : Intent.DANGER}
+          text={!props.server.isRunning ? "运行" : "停止"}
+        />
         <Menu.Item
           icon="code"
           onClick={props.onOpenInVSCode}
