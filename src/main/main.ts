@@ -15,10 +15,12 @@ app.on("ready", async () => {
     minWidth: 400,
     minHeight: 480,
     frame: false,
+    show: false,
+    transparent: true,
     thickFrame: false,
     center: true,
     resizable: true,
-    titleBarStyle: "hiddenInset",
+    titleBarStyle: "hidden",
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, "preload.js"),
@@ -26,7 +28,6 @@ app.on("ready", async () => {
     }
   });
 
-  mainWindow.hide();
   if (isDev && os.platform() === "darwin") {
     app.dock.setIcon("tools/icons/icon_512x512@2x.png");
   }
@@ -36,7 +37,7 @@ app.on("ready", async () => {
       mainWindow.show();
     }, 500);
     if (isDev) {
-      // mainWindow.webContents.openDevTools();
+      mainWindow.webContents.openDevTools();
     }
   });
 
