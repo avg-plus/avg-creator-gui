@@ -13,6 +13,7 @@ import { BundlesManager } from "./bundles-manager/bundles-manager";
 import { EnginePlatform } from "../../common/engine-platform";
 import { logger } from "../../common/lib/logger";
 import { AddressInfo } from "net";
+import { shell } from "electron";
 
 type ServerType = "Engine" | "Assets";
 
@@ -41,15 +42,19 @@ export class GameRunner {
     return this.assetsServer && this.assetsServer.listening;
   }
 
+  static openInBrowser(URL: string) {
+    shell.openExternal(URL);
+  }
+
   static async close() {
     if (this.engineServer) {
       this.engineServer.close(() => {
-        console.log(`Engine Server stopped.`);
+        logger.info(`Engine Server stopped.`);
       });
     }
     if (this.assetsServer) {
       this.assetsServer.close(() => {
-        console.log(`Assets Server stopped.`);
+        logger.info(`Assets Server stopped.`);
       });
     }
   }
@@ -73,9 +78,9 @@ export class GameRunner {
         }
 
         if (alias >= 1) {
-          console.log(ifname + ":" + alias, iface.address);
+          logger.info(ifname + ":" + alias, iface.address);
         } else {
-          console.log(ifname, iface.address);
+          logger.info(ifname, iface.address);
         }
         ++alias;
       });
@@ -102,7 +107,7 @@ export class GameRunner {
 
     // 运行进程
     const entry = `${engineBundleDir}/main.electron.js`;
-    console.log("electronExecutable", electronExecutable, entry);
+    logger.info("electronExecutable", electronExecutable, entry);
 
     if (this.desktopProcess) {
       this.desktopProcess.kill();

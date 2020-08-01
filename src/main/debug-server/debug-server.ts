@@ -1,6 +1,7 @@
 import WebSocket from "ws";
 import { DebugCommands } from "./commands";
 import { DATABASE } from "@blueprintjs/icons/lib/esm/generated/iconContents";
+import { logger } from "../../common/lib/logger";
 
 interface DebugProcessClient {
   PID: string;
@@ -18,7 +19,7 @@ export class DebugServer {
     this.wsServer = new WebSocket.Server({ port: 8080 });
     this.wsServer.on("connection", (socket: WebSocket) => {
       socket.on("message", (receivedData) => {
-        console.log("received: %s", receivedData);
+        logger.info("received: %s", receivedData);
 
         const message = JSON.parse(receivedData.toString());
 
@@ -26,7 +27,7 @@ export class DebugServer {
         const data = message.data;
 
         if (!message || !message.cmd) {
-          console.log("error: unknown command.");
+          logger.info("error: unknown command.");
           return;
         }
 
@@ -34,7 +35,7 @@ export class DebugServer {
       });
     });
 
-    console.log("Debug server started");
+    logger.info("Debug server started");
   }
 
   static async removeClient(PID: string) {

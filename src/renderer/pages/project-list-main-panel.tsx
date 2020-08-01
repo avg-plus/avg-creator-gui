@@ -9,7 +9,8 @@ import {
   ContextMenu,
   Navbar,
   Alignment,
-  Alert
+  Alert,
+  Tag
 } from "@blueprintjs/core";
 import { Scrollbars } from "react-custom-scrollbars";
 
@@ -32,6 +33,7 @@ import { useForceUpdate } from "../hooks/use-forceupdate";
 
 import "./project-list-main-panel.less";
 import { TDAPP } from "../services/td-analytics";
+import { logger } from "../../common/lib/logger";
 
 const NoProjectHint = styled.label`
   font-size: 16px;
@@ -49,7 +51,7 @@ export const ProjectListMainPanel = () => {
 
   useEffect(() => {
     AVGProjectManager.loadProjects().then((v) => {
-      console.log("loaded projects", v);
+      logger.info("loaded projects", v);
 
       dispatch({
         type: AVGCreatorActionType.SetProjectList,

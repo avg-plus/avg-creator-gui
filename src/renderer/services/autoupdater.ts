@@ -1,5 +1,6 @@
 import { remote } from "electron";
 import { GUIToaster } from "./toaster";
+import { logger } from "../../common/lib/logger";
 
 const app = remote.app;
 const autoUpdater = remote.autoUpdater;
@@ -12,7 +13,7 @@ export class AutoUpdater {
     try {
       autoUpdater.setFeedURL({ url: feed });
     } catch (error) {
-      console.log(error);
+      logger.error(error);
     }
 
     autoUpdater.on("checking-for-update", this.checkingForUpdate);

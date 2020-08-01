@@ -36,9 +36,9 @@ import {
   ILocalBundle,
   BundleType
 } from "../../services/bundles-manager/bundles-manager";
-import { logger } from "../../../common/lib/logger";
 import { LocalAppConfig } from "../../../common/local-app-config";
 import { useMount } from "react-use";
+import { logger } from "../../../common/lib/logger";
 
 export interface BundleOption {
   value: string;
@@ -97,7 +97,7 @@ export const CreateProjectDialog = () => {
   };
 
   const handleConfirmCreateProject = () => {
-    console.log("handleConfirmCreateProject", projectName);
+    logger.info("create project", projectName);
 
     if (!projectName || projectName.length === 0) {
       GUIToaster.show({

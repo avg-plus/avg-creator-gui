@@ -1,8 +1,9 @@
 import util from "util";
-import winston, { format } from "winston";
+import winston from "winston";
 import { TransformableInfo } from "logform";
 
 import packageInfo from "../../../package.json";
+import { Env } from "../env";
 
 const {
   combine,
@@ -56,22 +57,35 @@ const combinedFormat = (mode: FormatedMode = FormatedMode.Console) => {
   return combine(...formats);
 };
 
+const ConsoleTransport = new winston.transports.Console({
+  format: combinedFormat(FormatedMode.Console)
+});
+
+const FileTransports = [
+  new winston.transports.File({
+    filename: `${Env.getAppDataDir()}/logs/output.log}`,
+    format: combinedFormat(FormatedMode.File)
+  }),
+  new winston.transports.File({
+    filename: `${Env.getAppDataDir()}/logs/error.log}`,
+    level: "error",
+    format: combinedFormat(FormatedMode.File)
+  })
+];
+
+let transports: winston.transport[] = [];
+
+console.log("Current Env = ", process.env.NODE_ENV);
+
+if (Env.isProduction()) {
+  transports = [...FileTransports];
+} else {
+  transports = [ConsoleTransport, ...FileTransports];
+}
+
 export const logger = winston.createLogger({
   level: "debug",
   defaultMeta: { service: packageInfo.name },
   exitOnError: false,
-  transports: [
-    new winston.transports.Console({
-      format: combinedFormat(FormatedMode.Console)
-    }),
-    new winston.transports.File({
-      filename: "logs/output.log",
-      format: combinedFormat(FormatedMode.File)
-    }),
-    new winston.transports.File({
-      filename: "logs/error.log",
-      level: "error",
-      format: combinedFormat(FormatedMode.File)
-    })
-  ]
+  transports
 });

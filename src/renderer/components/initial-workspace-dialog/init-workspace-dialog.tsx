@@ -78,8 +78,6 @@ export const InitWorkspaceDialog = () => {
   };
 
   const handlePathChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
-
     setWorkspaceDir(e.target.value);
   };
 

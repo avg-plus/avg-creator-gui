@@ -103,7 +103,7 @@ export class BundlesManager {
   static async fetchElectronMirror() {
     const mirrors = await apiGetElectronMirror();
 
-    console.log("mirrors", mirrors);
+    logger.info("mirrors", mirrors);
 
     return mirrors;
   }
@@ -129,7 +129,7 @@ export class BundlesManager {
       }
     }
 
-    console.log("Load local bundles : ", this.localBundles);
+    logger.info("Load local bundles : ", this.localBundles);
 
     return this.localBundles;
   }

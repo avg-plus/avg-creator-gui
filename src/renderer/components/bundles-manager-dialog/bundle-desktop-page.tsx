@@ -6,6 +6,7 @@ import { useMount } from "react-use";
 import { BundlesManager } from "../../services/bundles-manager/bundles-manager";
 import { LocalAppConfig } from "../../../common/local-app-config";
 import { Env } from "../../../common/env";
+import { logger } from "../../../common/lib/logger";
 
 export const BundleDesktopPage = () => {
   const [electronMirrors, setElectronMirrors] = useState<any>();
@@ -29,7 +30,7 @@ export const BundleDesktopPage = () => {
     await BundlesManager.downloadElectronMirror(
       electronMirrors[os.platform()],
       (context) => {
-        console.log(context);
+        logger.info("downloading context", context);
 
         setDownloadProgress(context.progress.percent);
         setHasElectronMirror(false);

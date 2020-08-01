@@ -12,6 +12,7 @@ import { TDAPP } from "../services/td-analytics";
 import { BundleItem } from "../components/bundles-manager-dialog/bundles-manager-dialog";
 import { BundleOption } from "../components/create-project-dialog/create-project-dialog";
 import { template } from "underscore";
+import { logger } from "../../common/lib/logger";
 
 export class AVGProjectData {
   _id: string;
@@ -58,9 +59,7 @@ export class AVGProjectManager {
     }
 
     // 查找模板项目
-    // const templatesDir = Env.getAVGProjectTemplateDir();
     const defaultTemplateBundleFile = templateBundle.bundle.filename;
-    console.log("templateBundle", defaultTemplateBundleFile);
 
     if (!fs.existsSync(defaultTemplateBundleFile)) {
       remote.shell.moveItemToTrash(projectDir);
@@ -97,7 +96,7 @@ export class AVGProjectManager {
 
     project._id = doc._id;
 
-    console.log("Created project", JSON.stringify(project));
+    logger.info("Created project", JSON.stringify(project));
 
     return project;
   }

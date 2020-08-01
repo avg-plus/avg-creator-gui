@@ -1,7 +1,5 @@
-import os from "os";
 import fs from "fs-extra";
 import { execFile } from "child_process";
-import { shell } from "electron";
 import { Env } from "../../common/env";
 
 export class VSCode {

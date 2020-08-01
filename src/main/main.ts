@@ -4,6 +4,7 @@ import isDev from "electron-is-dev";
 import { resolve } from "app-root-path";
 
 import "./ipc";
+import path from "path";
 
 app.on("ready", async () => {
   const mainWindow = new BrowserWindow({
@@ -13,36 +14,33 @@ app.on("ready", async () => {
     height: 680,
     minWidth: 400,
     minHeight: 480,
-    frame: true,
+    frame: false,
     thickFrame: false,
     center: true,
     resizable: true,
     titleBarStyle: "hiddenInset",
     webPreferences: {
-      nodeIntegration: true
-      // allowRunningInsecureContent: true,
+      nodeIntegration: true,
+      preload: path.join(__dirname, "preload.js"),
+      allowRunningInsecureContent: true
     }
   });
 
+  mainWindow.hide();
+  if (isDev) {
+    app.dock.setIcon("tools/icons/icon_512x512@2x.png");
+  }
+
   mainWindow.once("ready-to-show", () => {
-    mainWindow.show();
+    setTimeout(() => {
+      mainWindow.show();
+    }, 500);
     if (isDev) {
       // mainWindow.webContents.openDevTools();
     }
   });
 
-  const devPath = "http://localhost:1124";
-  const prodPath = format({
-    pathname: resolve("dist/static/index.html"),
-    protocol: "file:",
-    slashes: true
-  });
-
-  const url = isDev ? devPath : prodPath;
-
   mainWindow.setMenu(null);
-  // mainWindow.loadURL(url)
-
   mainWindow.loadFile("./dist/static/index.html");
 });
 

@@ -2,15 +2,23 @@
 
 const Bundler = require("parcel-bundler");
 const path = require("path");
+const fs = require("fs-extra");
+
+const outDir = "./dist";
+
+async function copyFiles() {
+  fs.copySync("./static/icons", `${outDir}/static/icons`);
+}
 
 async function compileParcel(options = {}) {
   const entryFiles = [
     path.join(__dirname, "../static/index.html"),
+    path.join(__dirname, "../src/main/preload.ts"),
     path.join(__dirname, "../src/main/main.ts")
   ];
 
   const bundlerOptions = {
-    outDir: "./dist", // The out directory to put the build files in, defaults to dist
+    outDir, // The out directory to put the build files in, defaults to dist
     outFile: undefined, // The name of the outputFile
     publicUrl: "../", // The url to server on, defaults to dist
     watch: false, // whether to watch the files and rebuild them on change, defaults to process.env.NODE_ENV !== 'production'
@@ -44,6 +52,9 @@ async function compileParcel(options = {}) {
 module.exports = {
   compileParcel
 };
+
+// 复制文件
+copyFiles();
 
 if (require.main === module) {
   const watch = process.argv.includes("--watch");
