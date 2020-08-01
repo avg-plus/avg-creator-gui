@@ -5819,6 +5819,11 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
+custom-electron-titlebar@^3.2.3:
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/custom-electron-titlebar/-/custom-electron-titlebar-3.2.3.tgz#41da10b97958639e96a04275051bb5f78a666fc3"
+  integrity sha512-7DIZELlDoiAKT+i73XF9EG778M3/SYMmGa867cn3d0mLEEXDtEJq9sqM/u57vrtjolXKJ5ZJQ9hCCL2uxx9nxQ==
+
 d@1, d@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npm.taobao.org/d/download/d-1.0.1.tgz#8698095372d58dbee346ffd0c7093f99f8f9eb5a"

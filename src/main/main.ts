@@ -20,7 +20,7 @@ app.on("ready", async () => {
     thickFrame: false,
     center: true,
     resizable: true,
-    titleBarStyle: "hidden",
+    titleBarStyle: "hiddenInset",
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, "preload.js"),
@@ -28,6 +28,7 @@ app.on("ready", async () => {
     }
   });
 
+  // Mac 下开发模式下设置个图标，就是看着好看
   if (isDev && os.platform() === "darwin") {
     app.dock.setIcon("tools/icons/icon_512x512@2x.png");
   }
