@@ -14,6 +14,7 @@ import AVGCreator from "./pages/avg-creator";
 
 if (Env.getOSName() === "Windows") {
   new Titlebar({
+    titleHorizontalAlignment: "left",
     maximizable: true,
     minimizable: true,
     closeable: true,

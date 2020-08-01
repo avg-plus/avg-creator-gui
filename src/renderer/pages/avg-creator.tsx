@@ -15,6 +15,7 @@ import { InitWorkspaceDialog } from "../components/initial-workspace-dialog/init
 import classNames from "classnames";
 import { BundleManagerDialog } from "../components/bundles-manager-dialog/bundles-manager-dialog";
 import { ProjectDetailDialog } from "../components/project-detail-dialog/project-details-dialog";
+import { Env } from '../../common/env';
 
 const AVGCreator = () => {
   const [state, dispatch] = useReducer(
@@ -28,11 +29,11 @@ const AVGCreator = () => {
     <CreatorContext.Provider value={{ state, dispatch }}>
       <div className="bp3-dialog-container avg-window-container">
         <div className="bp3-dialog avg-window-dialog">
-          <div className="bp3-dialog-header avg-window-header">
+          {Env.getOSName() === "MacOS" && <div className="bp3-dialog-header avg-window-header">
             <h4 className="bp3-heading avg-window-header-title">
               AVGPlus Creator
             </h4>
-          </div>
+          </div>}
 
           <div className="bp3-dialog-body avg-window-body">
             <div className="toolbar">
