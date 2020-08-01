@@ -1,4 +1,4 @@
-import { format } from "url";
+import os from "os";
 import { BrowserWindow, app } from "electron";
 import isDev from "electron-is-dev";
 import { resolve } from "app-root-path";
@@ -27,7 +27,7 @@ app.on("ready", async () => {
   });
 
   mainWindow.hide();
-  if (isDev) {
+  if (isDev && os.platform() === "darwin") {
     app.dock.setIcon("tools/icons/icon_512x512@2x.png");
   }
 
