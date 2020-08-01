@@ -1,5 +1,5 @@
 import os from "os";
-import { BrowserWindow, app } from "electron";
+import { BrowserWindow, app, Menu } from "electron";
 import isDev from "electron-is-dev";
 import { resolve } from "app-root-path";
 
@@ -33,6 +33,8 @@ app.on("ready", async () => {
     app.dock.setIcon("tools/icons/icon_512x512@2x.png");
   }
 
+
+  Menu.setApplicationMenu(null);
   mainWindow.once("ready-to-show", () => {
     setTimeout(() => {
       mainWindow.show();
@@ -42,7 +44,6 @@ app.on("ready", async () => {
     }
   });
 
-  mainWindow.setMenu(null);
   mainWindow.loadFile("./dist/static/index.html");
 });
 
