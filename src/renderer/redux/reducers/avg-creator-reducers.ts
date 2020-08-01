@@ -9,6 +9,8 @@ import {
 
 export interface IAVGServer {
   serveProject: AVGProjectData | null;
+  engineURL: string;
+  assetsURL: string;
   isRunning: boolean;
 }
 
@@ -34,6 +36,8 @@ export const AVGCreatorInitialState: IAVGCreatorInitialState = {
   openedProject: null,
   currentServer: {
     serveProject: null,
+    engineURL: "",
+    assetsURL: "",
     isRunning: false
   },
   defaultEngineBundleHash: ""

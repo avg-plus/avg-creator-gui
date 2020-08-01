@@ -1,9 +1,8 @@
 import path from "path";
 import fs from "fs-extra";
 import { remote } from "electron";
-import * as Package from "../../../package.json";
 
-import AdmZip from "adm-zip";
+import extract from "extract-zip";
 
 import { isNullOrUndefined } from "util";
 import { DBProjects } from "../../common/database/db-project";
@@ -21,14 +20,8 @@ export class AVGProjectData {
   dir: string;
   engineHash: string;
   templateHash: string;
-  // host?: string = "127.0.0.1";
-  // listenPort?: number;
-  // screenWidth?: number = 800;
-  // screenHeight?: number = 600;
-  // isFullScreen?: boolean = false;
-  // textSpeed?: number = 80;
-  // autoPlay?: boolean = false;
-  // volume?: number = 100;
+  supportBrowser: boolean;
+  supportDesktop: boolean;
 }
 
 export class AVGProjectManager {
@@ -39,6 +32,8 @@ export class AVGProjectManager {
 
   static async createProject(
     name: string,
+    isSupportDesktop: boolean,
+    isSupportBrowser: boolean,
     engineBundle: BundleOption,
     templateBundle: BundleOption
   ) {
@@ -73,14 +68,13 @@ export class AVGProjectManager {
     }
 
     // 解压模板项目到临时目录
-    var zip = new AdmZip(defaultTemplateBundleFile);
     const temp = path.join(
       remote.app.getPath("temp"),
       templateBundle.bundle.hash
     );
 
     fs.removeSync(temp);
-    zip.extractAllTo(temp);
+    await extract(defaultTemplateBundleFile, { dir: temp });
 
     // 拷贝到项目目录
     fs.copySync(path.join(temp, "bundle"), projectDir);
@@ -91,6 +85,8 @@ export class AVGProjectManager {
     project.dir = projectDir;
     project.templateHash = templateBundle.bundle.hash;
     project.engineHash = engineBundle.bundle.hash;
+    project.supportBrowser = isSupportBrowser;
+    project.supportDesktop = isSupportDesktop;
 
     // 保存到数据库
     const doc = await DBProjects.insert({

@@ -31,6 +31,7 @@ import { GameRunner } from "../services/game-runner";
 import { useForceUpdate } from "../hooks/use-forceupdate";
 
 import "./project-list-main-panel.less";
+import { TDAPP } from "../services/td-analytics";
 
 const NoProjectHint = styled.label`
   font-size: 16px;
@@ -97,7 +98,7 @@ export const ProjectListMainPanel = () => {
     try {
       VSCode.run(selectedProjectItem.dir);
     } catch (error) {
-      GUIToaster.show({ message: error, intent: Intent.DANGER });
+      GUIToaster.show({ message: error, intent: Intent.DANGER, timeout: 4000 });
     }
   };
 
@@ -120,7 +121,7 @@ export const ProjectListMainPanel = () => {
         try {
           const serverStatus = await GameRunner.serve(selectedProjectItem);
 
-          if (serverStatus[0] && serverStatus[1]) {
+          if (serverStatus) {
             GUIToaster.show({
               message: "开启服务成功",
               intent: Intent.SUCCESS
@@ -135,7 +136,10 @@ export const ProjectListMainPanel = () => {
             }
           });
         } catch (error) {
-          GUIToaster.show({ message: error, intent: Intent.DANGER });
+          GUIToaster.show({
+            message: "启动服务错误：" + error.toString(),
+            intent: Intent.DANGER
+          });
         }
       }
     }
@@ -153,6 +157,8 @@ export const ProjectListMainPanel = () => {
           timeout: 2000,
           intent: Intent.SUCCESS
         });
+
+        TDAPP.onEvent("删除项目", "删除项目", seletedItem);
       })
       .catch((error) => {
         GUIToaster.show({

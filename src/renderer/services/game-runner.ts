@@ -9,12 +9,37 @@ import connect from "connect";
 import serveStatic from "serve-static";
 import getPort from "get-port";
 import { BundlesManager } from "./bundles-manager/bundles-manager";
-import { remote } from "electron";
-import AdmZip from "adm-zip";
+
+import { EnginePlatform } from "../../common/engine-platform";
+import { logger } from "../../common/lib/logger";
+import { AddressInfo } from "net";
+
+type ServerType = "Engine" | "Assets";
 
 export class GameRunner {
   private static engineServer: http.Server;
   private static assetsServer: http.Server;
+  private static desktopProcess: child_process.ChildProcess;
+
+  static getRunningServerURL(serverType: ServerType) {
+    const server =
+      serverType === "Engine" ? this.engineServer : this.assetsServer;
+
+    if (!server || !server.listening) {
+      return "";
+    }
+
+    const address = server.address() as AddressInfo;
+    return `http://${address.address}:${address.port}`;
+  }
+
+  static isWebServerRunning(serverType: ServerType) {
+    if (serverType === "Engine") {
+      return this.engineServer && this.engineServer.listening;
+    }
+
+    return this.assetsServer && this.assetsServer.listening;
+  }
 
   static async close() {
     if (this.engineServer) {
@@ -57,27 +82,35 @@ export class GameRunner {
     });
   }
 
-  static async runAsDesktop() {
-    const electronPath = path.join(
-      __dirname,
-      "../runners/darwin-x64/Electron.app/Contents/MacOS/Electron"
+  static async runAsDesktop(project: AVGProjectData) {
+    const engineBundleDir = BundlesManager.getLocalEngineDir(
+      project.engineHash,
+      EnginePlatform.Desktop
     );
 
-    console.log("electronPath", electronPath);
+    const electronExecutable = await BundlesManager.getElectronExecutable();
+    if (!electronExecutable) {
+      throw new Error("执行游戏客户端程序异常，请确认已安装桌面启动器支持。");
+    }
 
-    const getElectronPath = () => {
-      if (fs.existsSync(electronPath)) {
-        return electronPath;
-      } else {
-        throw new Error("执行游戏客户端程序异常。");
-      }
-    };
+    // 修改引擎配置文件
+    const engineConfigFile = path.join(engineBundleDir, "engine.json");
+    const engineConfig = fs.readJSONSync(engineConfigFile);
 
-    var child = child_process.spawn(
-      getElectronPath(),
-      [
-        "/private/var/folders/7g/v7z2nm295q3d224h570vyny40000gn/T/56920056c8866bc6cd1f3191fe211c33/bundle/main.electron.js"
-      ],
+    engineConfig.game_assets_root = project.dir;
+    fs.writeJsonSync(engineConfigFile, engineConfig);
+
+    // 运行进程
+    const entry = `${engineBundleDir}/main.electron.js`;
+    console.log("electronExecutable", electronExecutable, entry);
+
+    if (this.desktopProcess) {
+      this.desktopProcess.kill();
+    }
+
+    this.desktopProcess = child_process.spawn(
+      electronExecutable,
+      [`${engineBundleDir}/main.electron.js`],
       {
         stdio: "inherit",
         windowsHide: false
@@ -86,65 +119,89 @@ export class GameRunner {
   }
 
   static async serve(project: AVGProjectData) {
-    console.log("serve", project, this.getAvalibleIPs());
-    const bundle = BundlesManager.getLocalBundleByHash(project.engineHash);
-    if (!bundle) {
-      throw "创建项目失败：无法读取模板项目";
-    }
-
-    // 查找引擎 package
-    const engineTemp = path.join(remote.app.getPath("temp"), bundle.hash);
-    fs.removeSync(engineTemp);
-
-    const zip = new AdmZip(bundle.filename);
-    zip.extractAllTo(engineTemp, true);
-
-    console.log("engineTemp", engineTemp);
-
-    const engineBundleDir = path.join(engineTemp, "bundle");
-    const assetsDir = project.dir;
-
     await this.close();
 
-    const enginePort = 2333; //await getPort({ port: getPort.makeRange(2333, 3000) });
-    const assetsPort = 2336; //await getPort({ port: getPort.makeRange(3005, 3100) });
+    this.assetsServer = await this.serveAssets(project);
+    const assetsServerAddress = this.assetsServer.address() as AddressInfo;
+    if (
+      this.assetsServer &&
+      this.assetsServer.listening &&
+      assetsServerAddress
+    ) {
+      const assetsURL = `http://${assetsServerAddress.address}:${assetsServerAddress.port}`;
+      this.engineServer = await this.serveEngine(project, assetsURL);
+    }
 
-    const engineURL = `http://127.0.0.1:${enginePort}`;
-    const assetsURL = `http://127.0.0.1:${assetsPort}`;
+    // 如果引擎和资源服务有任意一个没启动，则清理
+    if (!this.assetsServer || !this.engineServer) {
+      this.assetsServer?.close();
+      this.engineServer?.close();
+
+      return false;
+    }
+
+    return true;
+  }
+
+  static async cleanServer() {
+    this.assetsServer?.close();
+    this.engineServer?.close();
+  }
+
+  static async serveAssets(project: AVGProjectData) {
+    const assetsDir = project.dir;
+
+    return this.runServer(assetsDir, {
+      cacheControl: false,
+      setHeaders: (res) => {
+        res.setHeader("Access-Control-Allow-Origin", "*");
+      }
+    });
+  }
+
+  static async serveEngine(project: AVGProjectData, assetServerURL: string) {
+    // 查找引擎 package
+    const engineBundleDir = BundlesManager.getLocalEngineDir(
+      project.engineHash,
+      EnginePlatform.Browser
+    );
 
     // 修改引擎配置文件
     const engineConfigFile = path.join(engineBundleDir, "engine.json");
     const engineConfig = fs.readJSONSync(engineConfigFile);
 
-    engineConfig.game_assets_root = assetsURL;
+    engineConfig.game_assets_root = assetServerURL;
     fs.writeJsonSync(engineConfigFile, engineConfig);
 
-    // 开启服务
-    const p_Engine = new Promise<boolean>((resolve) => {
-      this.engineServer = connect()
-        .use(serveStatic(engineBundleDir))
-        .listen(enginePort, () => {
-          console.log(`Engine Server started on ${engineURL}...`);
-          resolve(true);
-        });
-    });
+    return this.runServer(engineBundleDir);
+  }
 
-    const p_Assets = new Promise<boolean>((resolve) => {
-      this.assetsServer = connect()
-        .use(
-          serveStatic(assetsDir, {
-            cacheControl: false,
-            setHeaders: (res) => {
-              res.setHeader("Access-Control-Allow-Origin", "*");
-            }
+  static async runServer(
+    servePath: string,
+    staticOptions?: serveStatic.ServeStaticOptions,
+    hostname: string = "0.0.0.0",
+    port: number = 0
+  ) {
+    if (!port) {
+      port = await getPort({ port: getPort.makeRange(2333, 3000) });
+    }
+
+    const url = `http://${hostname}:${port}`;
+
+    try {
+      return await new Promise<http.Server>((resolve, reject) => {
+        const server = connect()
+          .use(serveStatic(servePath, staticOptions))
+          .listen(port, hostname, () => {
+            logger.info(`Server started on ${url}, serving ${servePath} ...`);
+            resolve(server);
           })
-        )
-        .listen(assetsPort, () => {
-          console.log(`Assets Server started on ${assetsURL} `);
-          resolve(true);
-        });
-    });
-
-    return Promise.all([p_Engine, p_Assets]);
+          .on("error", (error) => {
+            reject(error.message);
+          });
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }

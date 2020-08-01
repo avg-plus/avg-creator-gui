@@ -12,7 +12,7 @@ export class Env {
     return Env.appDataDir;
   }
 
-  static getOSName() {
+  static getOSName(): "MacOS" | "Windows" {
     const platforms = {
       darwin: "MacOS",
       win32: "Windows"

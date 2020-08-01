@@ -18,8 +18,8 @@ import {
   MenuItem,
   Tag
 } from "@blueprintjs/core";
+import Divider from "antd/lib/divider";
 import Select from "react-select";
-import Option from "react-select";
 
 import hotkeys from "hotkeys-js";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -37,10 +37,8 @@ import {
   BundleType
 } from "../../services/bundles-manager/bundles-manager";
 import { logger } from "../../../common/lib/logger";
-import { BundleItem } from "../bundles-manager-dialog/bundles-manager-dialog";
 import { LocalAppConfig } from "../../../common/local-app-config";
 import { useMount } from "react-use";
-import { useForceUpdate } from "../../hooks/use-forceupdate";
 
 export interface BundleOption {
   value: string;
@@ -70,6 +68,9 @@ export const CreateProjectDialog = () => {
   const [selectedTemplateBundle, setSelectedTemplateBundle] = useState<
     BundleOption
   >();
+
+  const [isSupportDesktop, setIsSupportDesktop] = useState<boolean>(true);
+  const [isSupportBrowser, setIsSupportBrowser] = useState<boolean>(true);
 
   const [engineOptions, setEngineOptions] = useState<BundleOption[]>([]);
   const [templateOptions, setTemplateOptions] = useState<BundleOption[]>([]);
@@ -121,6 +122,15 @@ export const CreateProjectDialog = () => {
       return;
     }
 
+    if (!isSupportBrowser && !isSupportDesktop) {
+      GUIToaster.show({
+        message: `至少要选择支持一个平台~`,
+        timeout: 2000,
+        intent: Intent.WARNING
+      });
+      return;
+    }
+
     if (!selectedEngineBundle) {
       GUIToaster.show({
         message: `必须选择一个引擎开发包`,
@@ -142,8 +152,10 @@ export const CreateProjectDialog = () => {
     // 创建项目
     setIsCreateLoading(true);
 
-    const newProject = AVGProjectManager.createProject(
+    AVGProjectManager.createProject(
       projectName,
+      isSupportDesktop,
+      isSupportBrowser,
       selectedEngineBundle,
       selectedTemplateBundle
     )
@@ -178,8 +190,6 @@ export const CreateProjectDialog = () => {
     event: React.FormEvent<HTMLInputElement>
   ) => {
     const text = (event.target as HTMLInputElement).value;
-    console.log("handleProjectNameInputChanged", text);
-
     setProjectName(text);
   };
 
@@ -191,13 +201,6 @@ export const CreateProjectDialog = () => {
     { filter: () => true },
     [projectName]
   );
-
-  const optionStyles = {
-    menuList: (provided: any, state: any) => ({
-      ...provided,
-      maxHeight: "200px"
-    })
-  };
 
   const renderOptions = (type: BundleType): BundleOption[] => {
     const bundles = localBundles.filter(
@@ -272,15 +275,22 @@ export const CreateProjectDialog = () => {
     );
   };
 
+  const optionStyles = {
+    menuList: (provided: any, state: any) => ({
+      ...provided,
+      maxHeight: "200px"
+    })
+  };
+
   return (
     <Drawer
       className={"create-project-dialog"}
       isOpen={state.isCreateProjectDialogOpen}
       position={"bottom"}
-      size={400}
+      size={"80%"}
       title="创建游戏"
       icon="info-sign"
-      canOutsideClickClose={true}
+      canOutsideClickClose={false}
       onClose={handleCreateDialogClose}
       hasBackdrop={false}
       autoFocus={true}
@@ -303,6 +313,25 @@ export const CreateProjectDialog = () => {
             }}
             onChange={handleProjectNameInputChanged}
             placeholder="输入你的游戏名称"
+          />
+        </FormGroup>
+
+        <FormGroup inline={true} label={"跨平台支持"} labelFor="text-input">
+          <Checkbox
+            value="browser"
+            checked={isSupportDesktop}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setIsSupportDesktop(e.target.checked);
+            }}
+            label="桌面平台 Windows & MacOS"
+          />
+          <Checkbox
+            value="desktop"
+            checked={isSupportBrowser}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setIsSupportBrowser(e.target.checked);
+            }}
+            label="浏览器"
           />
         </FormGroup>
 

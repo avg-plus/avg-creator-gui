@@ -5,10 +5,15 @@ import {
   Elevation,
   Tag,
   Intent,
-  Icon,
+  Icon as BPIcon,
   Checkbox,
-  Button
+  Button,
+  ButtonGroup,
+  AnchorButton
 } from "@blueprintjs/core";
+
+import Icon, { BugFilled } from "@ant-design/icons";
+
 import { CreatorContext } from "../../hooks/context";
 import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
 
@@ -16,6 +21,11 @@ import { IAVGServer } from "../../redux/reducers/avg-creator-reducers";
 import "./project-details-dialog.less";
 import classNames from "classnames";
 import { GameRunner } from "../../services/game-runner";
+import { DebugServer } from "../../../main/debug-server/debug-server";
+import Row from "antd/lib/row";
+import Col from "antd/lib/col";
+
+import VSCodeICON from "../../images/icons/vscode.svg";
 
 export interface IProjectDetailDialogProps {
   server: IAVGServer;
@@ -23,6 +33,25 @@ export interface IProjectDetailDialogProps {
 
 export const ProjectDetailDialog = (props: IProjectDetailDialogProps) => {
   const { state, dispatch } = useContext(CreatorContext);
+
+  const renderWebURL = () => {
+    const engineURL = GameRunner.getRunningServerURL("Engine");
+    if (state.openedProject?.supportBrowser) {
+      if (GameRunner.isWebServerRunning("Engine")) {
+        return (
+          <Button minimal={true} rightIcon={"share"}>
+            {engineURL}
+          </Button>
+        );
+      } else {
+        return <Tag>未启动</Tag>;
+      }
+    } else {
+      return "该项目不支持浏览器部署";
+    }
+
+    return "";
+  };
 
   return (
     <Drawer
@@ -57,9 +86,9 @@ export const ProjectDetailDialog = (props: IProjectDetailDialogProps) => {
             className="status-tag"
             icon={
               state.currentServer.isRunning ? (
-                <Icon icon={"play"} />
+                <BPIcon icon={"play"} />
               ) : (
-                <Icon icon={"stop"} />
+                <BPIcon icon={"stop"} />
               )
             }
             intent={
@@ -70,22 +99,59 @@ export const ProjectDetailDialog = (props: IProjectDetailDialogProps) => {
           </Tag>
 
           <div className="status-info-container">
-            {/* <div className={""}>{state.currentServer}</div> */}
+            <Row className="info-row">
+              <Col span={12}>
+                <BugFilled /> 调试服务器
+              </Col>
+              <Col span={12}>col-12</Col>
+            </Row>
+            <Row className="info-row">
+              <Col span={12}>
+                <BugFilled /> 工程目录
+              </Col>
+              <Col span={12}>
+                <ButtonGroup minimal={true}>
+                  <Button className={"path-text"} fill={true}>
+                    用 VSCode 打开 <Icon component={VSCodeICON}></Icon>
+                  </Button>
+                  <AnchorButton rightIcon="caret-down"></AnchorButton>
+                </ButtonGroup>
+              </Col>
+            </Row>
+            <Row className="info-row">
+              <Col span={12}>
+                <BugFilled /> 浏览器 URL
+              </Col>
+              <Col span={12}>{renderWebURL()}</Col>
+            </Row>
           </div>
 
           <div className="options-container">
-            <Checkbox checked={true} label="通过 HTTP 监听资源目录" />
+            <Checkbox checked={true} label="自动刷新" />
+            <Checkbox checked={true} label="热加载" />
           </div>
 
-          <Button
-            onClick={() => {
-              GameRunner.runAsDesktop();
-            }}
-          >
-            打开
-          </Button>
-
-          <div className={"footer"}></div>
+          <div className={"footer"}>
+            <Button
+              onClick={async () => {
+                if (state.openedProject) {
+                  await DebugServer.start();
+                  await GameRunner.runAsDesktop(state.openedProject);
+                }
+              }}
+            >
+              打开
+            </Button>
+            <Button
+              onClick={async () => {
+                if (state.openedProject) {
+                  await GameRunner.serve(state.openedProject);
+                }
+              }}
+            >
+              打开
+            </Button>
+          </div>
         </div>
       </>
     </Drawer>

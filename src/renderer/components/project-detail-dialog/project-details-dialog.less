@@ -4,9 +4,9 @@
 .status-card {
   margin: 0;
   position: absolute;
-  width: 400px !important;
-  height: 260px !important;
-  top: @OFFSET - 20;
+  width: 90% !important;
+  height: 90% !important;
+  top: @OFFSET;
   left: @OFFSET;
   transform: translate(-@OFFSET, -@OFFSET;);
   border-radius: @RADIUS;
@@ -22,11 +22,28 @@
 
   .status-tag {
     position: absolute;
-    top: 9.5%;
+    top: 5%;
     right: 5%;
   }
 
   .status-info-container {
+    padding: 0px 20px;
+
+    .info-row {
+      font-size: 2.2vh;
+      font-weight: 200;
+      padding-bottom: 10px;
+      padding-top: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .path-text {
+      .bp3-button-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
   }
 
   .options-container {
@@ -41,5 +58,8 @@
     border-radius: 0 0 @RADIUS @RADIUS;
     width: 100%;
     height: 40px;
+
+    // text-align: center;
+    // padding: 10px;
   }
 }
