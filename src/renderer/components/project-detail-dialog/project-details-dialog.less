@@ -1,11 +1,12 @@
 @OFFSET: 50%;
 @RADIUS: 3px;
+@FRAME_PADDING: 20px;
 
 .status-card {
   margin: 0;
   position: absolute;
   width: 90% !important;
-  height: 90% !important;
+  height: 80% !important;
   top: @OFFSET;
   left: @OFFSET;
   transform: translate(-@OFFSET, -@OFFSET;);
@@ -16,7 +17,7 @@
   .title {
     font-size: 1.5rem;
     color: #4a4a4a;
-    padding: 20px;
+    padding: @FRAME_PADDING;
     font-weight: 200;
   }
 
@@ -27,7 +28,7 @@
   }
 
   .status-info-container {
-    padding: 0px 20px;
+    padding: 0px @FRAME_PADDING;
 
     .info-row {
       font-size: 2.2vh;
@@ -47,7 +48,12 @@
   }
 
   .options-container {
-    padding: 20px;
+    padding: @FRAME_PADDING;
+  }
+
+  .buttons-container {
+    padding: @FRAME_PADDING;
+    padding-top: 50%;
   }
 
   .footer {

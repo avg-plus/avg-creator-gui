@@ -4,6 +4,8 @@ import os from "os";
 import fs from "fs-extra";
 import child_process from "child_process";
 
+import getIP from "public-ip";
+
 import { AVGProjectData } from "./../manager/project-manager";
 import connect from "connect";
 import serveStatic from "serve-static";
@@ -14,23 +16,24 @@ import { EnginePlatform } from "../../common/engine-platform";
 import { logger } from "../../common/lib/logger";
 import { AddressInfo } from "net";
 import { shell } from "electron";
+import PubSub from "pubsub-js";
+import { SubcribeEvents } from "../../common/subcribe-events";
 
 type ServerType = "Engine" | "Assets";
 
 export class GameRunner {
   private static engineServer: http.Server;
   private static assetsServer: http.Server;
-  private static desktopProcess: child_process.ChildProcess;
+  static desktopProcess: child_process.ChildProcess;
+  static desktopProcessStatus: "normal" | "closed" = "closed";
 
-  static async getRunningServerURL(serverType: ServerType) {
+  static getRunningServerURL(serverType: ServerType) {
     const server =
       serverType === "Engine" ? this.engineServer : this.assetsServer;
 
     if (!server || !server.listening) {
       return "";
     }
-
-    logger.info("ip list: ", await this.getAvalibleIPs());
 
     const addressInfo = server.address() as AddressInfo;
     let ip = addressInfo.address;
@@ -66,11 +69,13 @@ export class GameRunner {
     }
   }
 
-  private static async getAvalibleIPs() {
+  private static async getAvalibleIPs(): Promise<string[]> {
     var ifaces = os.networkInterfaces();
     if (!ifaces) {
       return [];
     }
+
+    const IPs: string[] = [];
 
     Object.keys(ifaces).forEach((ifname) => {
       if (!ifname) {
@@ -89,11 +94,16 @@ export class GameRunner {
         } else {
           logger.info(ifname, iface.address);
         }
+
+        IPs.push(iface.address);
         ++alias;
       });
     });
 
-    return [];
+    const publicIP = await getIP.v4();
+    IPs.push(publicIP);
+
+    return IPs;
   }
 
   static async runAsDesktop(project: AVGProjectData) {
@@ -102,34 +112,68 @@ export class GameRunner {
       EnginePlatform.Desktop
     );
 
-    const electronExecutable = await BundlesManager.getElectronExecutable();
-    if (!electronExecutable) {
-      throw new Error("执行游戏客户端程序异常，请确认已安装桌面启动器支持。");
-    }
-
-    // 修改引擎配置文件
-    const engineConfigFile = path.join(engineBundleDir, "engine.json");
-    const engineConfig = fs.readJSONSync(engineConfigFile);
-
-    engineConfig.game_assets_root = project.dir;
-    fs.writeJsonSync(engineConfigFile, engineConfig);
-
-    // 运行进程
-    const entry = `${engineBundleDir}/main.electron.js`;
-    logger.info("electronExecutable", electronExecutable, entry);
-
-    if (this.desktopProcess) {
-      this.desktopProcess.kill();
-    }
-
-    this.desktopProcess = child_process.spawn(
-      electronExecutable,
-      [`${engineBundleDir}/main.electron.js`],
-      {
-        stdio: "inherit",
-        windowsHide: false
+    try {
+      const electronExecutable = await BundlesManager.getElectronExecutable();
+      if (!electronExecutable) {
+        throw new Error("执行游戏客户端程序异常，请确认已安装桌面启动器支持。");
       }
-    );
+
+      console.log("runAsDesktop 1", project);
+
+      // 修改引擎配置文件
+      const engineConfigFile = path.join(engineBundleDir, "engine.json");
+      const engineConfig = fs.readJSONSync(engineConfigFile);
+
+      engineConfig.game_assets_root = project.dir;
+      fs.writeJsonSync(engineConfigFile, engineConfig);
+
+      // 运行进程
+      const entry = `${engineBundleDir}/main.electron.js`;
+      logger.info("electronExecutable", electronExecutable, entry);
+
+      if (this.desktopProcess) {
+        this.desktopProcess.kill();
+      }
+
+      console.log("runAsDesktop 2", project);
+
+      this.desktopProcess = child_process.spawn(
+        electronExecutable,
+        [`${engineBundleDir}/main.electron.js`],
+        {
+          stdio: "inherit",
+          windowsHide: false
+        }
+      );
+
+      console.log("runAsDesktop 3", project);
+
+      if (this.desktopProcess) {
+        this.desktopProcessStatus = "normal";
+        PubSub.publish(SubcribeEvents.GameProcessChanged, {
+          status: "normal"
+        });
+
+        this.desktopProcess.on("close", () => {
+          this.desktopProcessStatus = "closed";
+          PubSub.publish(SubcribeEvents.GameProcessChanged, {
+            status: "closed"
+          });
+        });
+        this.desktopProcess.on("exit", () => {
+          this.desktopProcessStatus = "closed";
+          PubSub.publish(SubcribeEvents.GameProcessChanged, {
+            status: "closed"
+          });
+        });
+
+        return true;
+      }
+    } catch (error) {
+      throw new Error(error);
+    }
+
+    return false;
   }
 
   static async serve(project: AVGProjectData) {

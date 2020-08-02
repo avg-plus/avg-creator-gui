@@ -24,16 +24,14 @@ import styled from "styled-components";
 import { ProjectItemContextMenu } from "../components/context-menus/project-item-menus";
 import { ProjectListContextMenu } from "../components/context-menus/project-list-menus";
 import { GUIToaster } from "../services/toaster";
-import { Env } from "../../common/env";
 import { shell } from "electron";
 import { VSCode } from "../services/vscode";
-import { useHotkeys } from "react-hotkeys-hook";
 import { GameRunner } from "../services/game-runner";
-import { useForceUpdate } from "../hooks/use-forceupdate";
 
 import "./project-list-main-panel.less";
 import { TDAPP } from "../services/td-analytics";
 import { logger } from "../../common/lib/logger";
+import { useServe, useStopServe } from "../hooks/use-serve";
 
 const NoProjectHint = styled.label`
   font-size: 16px;
@@ -107,42 +105,9 @@ export const ProjectListMainPanel = () => {
   const handleServeProject = async (selectedProjectItem: AVGProjectData) => {
     if (selectedProjectItem) {
       if (state.currentServer.isRunning) {
-        GameRunner.close();
-        GUIToaster.show({
-          message: "停止服务",
-          intent: Intent.WARNING
-        });
-        dispatch({
-          type: AVGCreatorActionType.StartServer,
-          payload: {
-            serverProject: null,
-            isRunning: false
-          }
-        });
+        await useStopServe(dispatch);
       } else {
-        try {
-          const serverStatus = await GameRunner.serve(selectedProjectItem);
-
-          if (serverStatus) {
-            GUIToaster.show({
-              message: "开启服务成功",
-              intent: Intent.SUCCESS
-            });
-          }
-
-          dispatch({
-            type: AVGCreatorActionType.StartServer,
-            payload: {
-              serverProject: selectedProjectItem,
-              isRunning: true
-            }
-          });
-        } catch (error) {
-          GUIToaster.show({
-            message: "启动服务错误：" + error.toString(),
-            intent: Intent.DANGER
-          });
-        }
+        await useServe(selectedProjectItem, dispatch);
       }
     }
   };
@@ -339,7 +304,7 @@ export const ProjectListMainPanel = () => {
               <div
                 className={`project-list-item ${
                   seletedItem && seletedItem._id === p._id ? "selected" : ""
-                  }`}
+                }`}
               >
                 <ProjectListItem projectData={p} />
               </div>

@@ -23,6 +23,10 @@ export interface IAVGCreatorInitialState {
   projects: AVGProjectData[];
   openedProject: AVGProjectData | null;
   currentServer: IAVGServer;
+  currentDesktopProcess: {
+    status: "normal" | "closed";
+    PID: number;
+  };
   defaultEngineBundleHash: string;
 }
 
@@ -39,6 +43,10 @@ export const AVGCreatorInitialState: IAVGCreatorInitialState = {
     engineURL: "",
     assetsURL: "",
     isRunning: false
+  },
+  currentDesktopProcess: {
+    status: "closed",
+    PID: 0
   },
   defaultEngineBundleHash: ""
 };
@@ -84,6 +92,15 @@ export function AVGCreatorReducer(
         currentServer: {
           serverProject: action.payload.serverProject,
           isRunning: action.payload.isRunning
+        }
+      };
+    }
+    case AVGCreatorActionType.LaunchGame: {
+      return {
+        ...state,
+        currentDesktopProcess: {
+          PID: action.payload.PID,
+          status: action.payload.status
         }
       };
     }

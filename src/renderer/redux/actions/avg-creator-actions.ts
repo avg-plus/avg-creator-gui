@@ -32,6 +32,9 @@ export enum AVGCreatorActionType {
   // 开启服务
   StartServer = "StartServer",
 
+  // 启动游戏客户端
+  LaunchGame = "LaunchGame",
+
   // 设置默认引擎
   SetDefaultEngine = "SetDefaultEngine"
 }

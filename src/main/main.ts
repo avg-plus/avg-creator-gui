@@ -1,7 +1,8 @@
 import os from "os";
 import { BrowserWindow, app, Menu } from "electron";
 import isDev from "electron-is-dev";
-import { resolve } from "app-root-path";
+
+process.env.NODE_ENV = isDev ? "development" : "production";
 
 import "./ipc";
 import path from "path";
@@ -24,7 +25,7 @@ app.on("ready", async () => {
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, "preload.js"),
-      allowRunningInsecureContent: true
+      allowRunningInsecureContent: false
     }
   });
 
@@ -32,7 +33,6 @@ app.on("ready", async () => {
   if (isDev && os.platform() === "darwin") {
     app.dock.setIcon("tools/icons/icon_512x512@2x.png");
   }
-
 
   Menu.setApplicationMenu(null);
   mainWindow.once("ready-to-show", () => {

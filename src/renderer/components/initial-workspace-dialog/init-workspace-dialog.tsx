@@ -88,7 +88,7 @@ export const InitWorkspaceDialog = () => {
   return (
     <Dialog
       className={"dialog-container"}
-      icon="info-sign"
+      // icon="info-sign"
       title="设置工作目录"
       isOpen={state.isSetWorkspaceDialogOpen}
       usePortal={true}

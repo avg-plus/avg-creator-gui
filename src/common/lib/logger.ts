@@ -63,11 +63,11 @@ const ConsoleTransport = new winston.transports.Console({
 
 const FileTransports = [
   new winston.transports.File({
-    filename: `${Env.getAppDataDir()}/logs/output.log}`,
+    filename: `${Env.getAppDataDir()}/logs/output.log`,
     format: combinedFormat(FormatedMode.File)
   }),
   new winston.transports.File({
-    filename: `${Env.getAppDataDir()}/logs/error.log}`,
+    filename: `${Env.getAppDataDir()}/logs/error.log`,
     level: "error",
     format: combinedFormat(FormatedMode.File)
   })

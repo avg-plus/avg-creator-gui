@@ -1,6 +1,6 @@
-import { combineReducers } from "redux";
-import APIListReducer from "./api-list-reducers";
+// import { combineReducers } from "redux";
+// import APIListReducer from "./api-list-reducers";
 
-export default combineReducers({
-  APIListReducer,
-});
+// export default combineReducers({
+//   APIListReducer,
+// });

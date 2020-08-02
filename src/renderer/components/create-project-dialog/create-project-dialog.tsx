@@ -289,7 +289,7 @@ export const CreateProjectDialog = () => {
       position={"bottom"}
       size={"80%"}
       title="创建游戏"
-      icon="info-sign"
+      // icon="info-sign"
       canOutsideClickClose={false}
       onClose={handleCreateDialogClose}
       hasBackdrop={false}

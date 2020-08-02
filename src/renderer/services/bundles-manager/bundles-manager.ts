@@ -233,6 +233,9 @@ export class BundlesManager {
 
   static async getElectronExecutable() {
     const desktopShellConfig = LocalAppConfig.get("desktopShell");
+    if (!desktopShellConfig || !desktopShellConfig.SHA256) {
+      throw new Error("调试游戏失败，无法找到桌面端启动器。");
+    }
 
     const win32Executable = "electron.exe";
     const macOSExecutable = "Electron.app/Contents/MacOS/Electron";
