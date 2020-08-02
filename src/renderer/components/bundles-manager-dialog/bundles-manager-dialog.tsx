@@ -63,42 +63,50 @@ export const BundleManagerDialog = () => {
 
   // 拉取资源列表
   const fetchManifest = async () => {
-    setIsBundleListLoading(true);
-    setBundleList([]);
+    try {
+      setIsBundleListLoading(true);
+      setBundleList([]);
 
-    const localBundles = await BundlesManager.loadLocalBundles();
-    const manifest = await BundlesManager.fetchManifest();
+      const localBundles = await BundlesManager.loadLocalBundles();
+      const manifest = await BundlesManager.fetchManifest();
 
-    const list = [];
-    for (const bundle of manifest.bundles) {
-      const bundleItem = bundle as BundleItem;
-      bundleItem.status = BundleStatus.NotDownload;
+      const list = [];
+      for (const bundle of manifest.bundles) {
+        const bundleItem = bundle as BundleItem;
+        bundleItem.status = BundleStatus.NotDownload;
 
-      const localBundle = localBundles.get(bundleItem.hash);
-      if (localBundle) {
-        bundleItem.status = BundleStatus.Downloaded;
-        bundleItem.bundleInfo = localBundle.bundleInfo;
+        const localBundle = localBundles.get(bundleItem.hash);
+        if (localBundle) {
+          bundleItem.status = BundleStatus.Downloaded;
+          bundleItem.bundleInfo = localBundle.bundleInfo;
+        }
+
+        list.push(bundleItem);
       }
 
-      list.push(bundleItem);
-    }
+      setBundleList(list);
 
-    setBundleList(list);
-
-    // 设置默认
-    const defaultEngineBundleHash = LocalAppConfig.get(
-      "defaultEngine"
-    ) as string;
-    if (defaultEngineBundleHash && defaultEngineBundleHash.length) {
-      dispatch({
-        type: AVGCreatorActionType.SetDefaultEngine,
-        payload: {
-          bundleHash: defaultEngineBundleHash
-        }
+      // 设置默认
+      const defaultEngineBundleHash = LocalAppConfig.get(
+        "defaultEngine"
+      ) as string;
+      if (defaultEngineBundleHash && defaultEngineBundleHash.length) {
+        dispatch({
+          type: AVGCreatorActionType.SetDefaultEngine,
+          payload: {
+            bundleHash: defaultEngineBundleHash
+          }
+        });
+      }
+    } catch (error) {
+      GUIToaster.show({
+        message: "加载资源列表错误：" + error.toString(),
+        intent: Intent.DANGER,
+        timeout: 3000
       });
+    } finally {
+      setIsBundleListLoading(false);
     }
-
-    setIsBundleListLoading(false);
   };
 
   const renderDesktopShell = () => {

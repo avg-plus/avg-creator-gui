@@ -19,6 +19,7 @@ import AdmZip from "adm-zip";
 import { remote } from "electron";
 import { EnginePlatform } from "../../../common/engine-platform";
 import { LocalAppConfig } from "../../../common/local-app-config";
+import { GUIToaster } from "../toaster";
 
 export enum BundleType {
   Engine = "engine",
@@ -86,18 +87,22 @@ export class BundlesManager {
   static localBundles = new Map<string, ILocalBundle>();
 
   static async fetchManifest() {
-    const manifest = await apiGetManifest<IBundleManifest>();
+    try {
+      const manifest = await apiGetManifest<IBundleManifest>();
 
-    logger.info("response", manifest);
+      logger.info("response", manifest);
 
-    // 保存配置到本地
-    const saveDir = Env.getAppDataDir();
-    fs.writeJSONSync(path.join(saveDir, "manifest.json"), manifest);
+      // 保存配置到本地
+      const saveDir = Env.getAppDataDir();
+      fs.writeJSONSync(path.join(saveDir, "manifest.json"), manifest);
 
-    BundlesManager.manifest = manifest;
-    BundlesManager.domain = manifest.domain;
+      BundlesManager.manifest = manifest;
+      BundlesManager.domain = manifest.domain;
 
-    return manifest;
+      return manifest;
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   static async fetchElectronMirror() {
@@ -208,7 +213,7 @@ export class BundlesManager {
     // 查找引擎 package
     const bundle = BundlesManager.getLocalBundleByHash(engineHash);
     if (!bundle) {
-      throw "读取 AVGPlus Core 失败，请确认对应的 Engine 数据存在。";
+      throw new Error("读取 AVGPlus Core 失败，请确认对应的 Engine 数据存在。");
     }
 
     const engineTemp = path.join(remote.app.getPath("temp"), engineHash);
