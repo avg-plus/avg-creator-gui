@@ -22,7 +22,7 @@ export class GameRunner {
   private static assetsServer: http.Server;
   private static desktopProcess: child_process.ChildProcess;
 
-  static getRunningServerURL(serverType: ServerType) {
+  static async getRunningServerURL(serverType: ServerType) {
     const server =
       serverType === "Engine" ? this.engineServer : this.assetsServer;
 
@@ -30,8 +30,15 @@ export class GameRunner {
       return "";
     }
 
-    const address = server.address() as AddressInfo;
-    return `http://${address.address}:${address.port}`;
+    logger.info("ip list: ", await this.getAvalibleIPs());
+
+    const addressInfo = server.address() as AddressInfo;
+    let ip = addressInfo.address;
+    if (ip === "0.0.0.0") {
+      ip = "127.0.0.1";
+    }
+
+    return `http://${ip}:${addressInfo.port}`;
   }
 
   static isWebServerRunning(serverType: ServerType) {
@@ -85,6 +92,8 @@ export class GameRunner {
         ++alias;
       });
     });
+
+    return [];
   }
 
   static async runAsDesktop(project: AVGProjectData) {

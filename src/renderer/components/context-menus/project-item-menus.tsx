@@ -14,7 +14,6 @@ interface IProjectItemContextMenuProps {
 }
 
 export const ProjectItemContextMenu = (props: IProjectItemContextMenuProps) => {
-  const { state, dispatch } = useContext(CreatorContext);
   const [running, setRunning] = useState(false);
 
   // useEffect(() => {

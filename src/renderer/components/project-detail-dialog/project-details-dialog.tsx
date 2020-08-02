@@ -39,8 +39,8 @@ export interface IProjectDetailDialogProps {
 export const ProjectDetailDialog = (props: IProjectDetailDialogProps) => {
   const { state, dispatch } = useContext(CreatorContext);
 
-  const renderWebURL = () => {
-    const engineURL = GameRunner.getRunningServerURL("Engine");
+  const renderWebURL = async () => {
+    const engineURL = await GameRunner.getRunningServerURL("Engine");
     if (state.openedProject?.supportBrowser) {
       if (GameRunner.isWebServerRunning("Engine")) {
         return (
