@@ -11,7 +11,7 @@
     "package": "run-s electron:build",
     "test:package": "electron-builder --dir",
     "electron:start": "nodemon --watch dist/src/main --exec \"electron .\"",
-    "electron:build": "ELECTRON_MIRROR=\"https://npm.taobao.org/mirrors/electron/\" electron-builder --config tools/packager.js",
+    "electron:build": " electron-builder --config tools/packager.js",
     "main:watch": "node tools/parcel-build.js --watch --env NODE_ENV=development ",
     "parcel:build": "run-s main:build renderer:build"
   },

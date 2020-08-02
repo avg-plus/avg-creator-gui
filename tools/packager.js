@@ -17,7 +17,11 @@ module.exports = {
     target: [
       {
         target: "nsis",
-        arch: ["ia32"]
+        arch: ["x64"]
+      },
+      {
+        target: "zip",
+        arch: ["x64"]
       }
     ]
   }
