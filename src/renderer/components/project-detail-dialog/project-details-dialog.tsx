@@ -223,13 +223,14 @@ export const ProjectDetailDialog = (props: IProjectDetailDialogProps) => {
                       await useKillGame();
                     }
                   }
-                  setIsGameStatusLoading(false);
                 } catch (error) {
                   GUIToaster.show({
                     message: error.message,
                     intent: Intent.DANGER,
                     timeout: 4000
                   });
+                } finally {
+                  setIsGameStatusLoading(false);
                 }
               }}
             >
