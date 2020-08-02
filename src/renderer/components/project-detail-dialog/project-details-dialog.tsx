@@ -71,10 +71,10 @@ export const ProjectDetailDialog = (props: IProjectDetailDialogProps) => {
           className={"path-text"}
           outlined={true}
           fill={true}
-          onClick={() => {
+          onClick={async () => {
             try {
               if (state.openedProject) {
-                VSCode.run(state.openedProject.dir);
+                await VSCode.run(state.openedProject.dir);
               }
             } catch (error) {
               GUIToaster.show({
@@ -137,8 +137,8 @@ export const ProjectDetailDialog = (props: IProjectDetailDialogProps) => {
               state.currentServer.isRunning ? (
                 <BPIcon icon={"play"} />
               ) : (
-                <BPIcon icon={"stop"} />
-              )
+                  <BPIcon icon={"stop"} />
+                )
             }
             intent={
               state.currentServer.isRunning ? Intent.SUCCESS : Intent.DANGER

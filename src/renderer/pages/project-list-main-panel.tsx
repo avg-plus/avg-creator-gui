@@ -92,13 +92,13 @@ export const ProjectListMainPanel = () => {
     shell.showItemInFolder(selectedProjectItem.dir);
   };
 
-  const handleOpenInVSCode = (selectedProjectItem: AVGProjectData) => {
+  const handleOpenInVSCode = async (selectedProjectItem: AVGProjectData) => {
     if (!selectedProjectItem) {
       return;
     }
 
     try {
-      VSCode.run(selectedProjectItem.dir);
+      await VSCode.run(selectedProjectItem.dir);
     } catch (error) {
       GUIToaster.show({ message: error, intent: Intent.DANGER, timeout: 4000 });
     }
@@ -339,7 +339,7 @@ export const ProjectListMainPanel = () => {
               <div
                 className={`project-list-item ${
                   seletedItem && seletedItem._id === p._id ? "selected" : ""
-                }`}
+                  }`}
               >
                 <ProjectListItem projectData={p} />
               </div>
