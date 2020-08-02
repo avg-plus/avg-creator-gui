@@ -39,6 +39,7 @@ import { useServe, useStopServe } from "../../hooks/use-serve";
 import { useLaunchGame, useKillGame } from "../../hooks/use-launch-game";
 import { SubcribeEvents } from "../../../common/subcribe-events";
 import { logger } from "../../../common/lib/logger";
+import { shell } from 'electron';
 
 export interface IProjectDetailDialogProps {
   server: IAVGServer;
@@ -128,7 +129,11 @@ export const ProjectDetailDialog = (props: IProjectDetailDialogProps) => {
           position={"bottom"}
           content={
             <Menu>
-              <MenuItem icon={"folder-shared-open"} text="打开目录"></MenuItem>
+              <MenuItem icon={"folder-shared-open"} onClick={() => {
+                if (state.openedProject) {
+                  shell.showItemInFolder(state.openedProject?.dir)
+                }
+              }} text="打开目录"></MenuItem>
             </Menu>
           }
           target={
@@ -174,8 +179,8 @@ export const ProjectDetailDialog = (props: IProjectDetailDialogProps) => {
               isGameLaunching ? (
                 <BPIcon icon={"play"} />
               ) : (
-                <BPIcon icon={"stop"} />
-              )
+                  <BPIcon icon={"stop"} />
+                )
             }
             intent={isGameLaunching ? Intent.SUCCESS : Intent.DANGER}
           >
