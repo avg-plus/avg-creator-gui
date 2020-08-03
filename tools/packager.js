@@ -17,7 +17,7 @@ module.exports = {
     icon: "tools/icons/icon_512x512@2x.png",
     target: [
       {
-        target: "nsis",
+        target: "squirrel",
         arch: ["x64"]
       },
       {
