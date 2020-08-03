@@ -8,6 +8,7 @@ module.exports = {
   files: ["dist/**/*"],
   asar: true,
   mac: {
+    identity: null, // 不签名
     hardenedRuntime: true,
     icon: "tools/icons/icon_512x512@2x.png",
     target: ["dir"]

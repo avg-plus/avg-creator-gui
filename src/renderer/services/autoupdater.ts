@@ -2,40 +2,48 @@ import os from "os";
 import { remote } from "electron";
 import { GUIToaster } from "./toaster";
 import { logger } from "../../common/lib/logger";
+import updater from "electron-simple-updater";
 
-const app = remote.app;
-const autoUpdater = remote.autoUpdater;
+// const app = remote.app;
+// const autoUpdater = remote.autoUpdater;
 
 const UpdateServer = "http://ws.avg-engine.com:5000";
-const feed = `${UpdateServer}/update/${process.platform}/${app.getVersion()}`;
-var platform = os.platform() + "_" + os.arch(); // usually returns darwin_64
-var version = app.getVersion();
+// const feed = `${UpdateServer}/update/${process.platform}/${app.getVersion()}`;
 
-const feedURL = `${UpdateServer}/update/` + platform + "/" + version;
+// const feedURL = `${UpdateServer}/update/` + platform + "/" + version;
 
 export class AutoUpdater {
   static init() {
     try {
-      logger.info("Init autoUpdater feed url: ", feedURL);
-      // autoUpdater.setFeedURL({ url: feed });
-      autoUpdater.setFeedURL({
-        url: feedURL
+      // logger.info("Init autoUpdater feed url: ", feedURL);
+
+      const s = updater.init({
+        autoDownload: true,
+        logger: logger,
+        channel: "prod",
+        version: remote.app.getVersion(),
+        url: "https://api.avg-engine.com/creator-gui/check-update"
       });
+
+      // autoUpdater.setFeedURL({ url: feed });
+      // autoUpdater.setFeedURL({
+      //   url: feedURL
+      // });
     } catch (error) {
       logger.error(error);
     }
 
-    autoUpdater.checkForUpdates();
+    // autoUpdater.checkForUpdates();
 
-    autoUpdater.on("checking-for-update", this.checkingForUpdate);
-    autoUpdater.on("update-available", this.updateAvailable);
-    autoUpdater.on("update-not-available", this.updateNotAvailable);
-    autoUpdater.on("update-downloaded", this.updateDownloaded);
+    // autoUpdater.on("checking-for-update", this.checkingForUpdate);
+    // autoUpdater.on("update-available", this.updateAvailable);
+    // autoUpdater.on("update-not-available", this.updateNotAvailable);
+    // autoUpdater.on("update-downloaded", this.updateDownloaded);
 
-    setInterval(() => {
-      logger.info("checking for updates ...");
-      autoUpdater.checkForUpdates();
-    }, 5000);
+    // setInterval(() => {
+    //   logger.info("checking for updates ...");
+    //   autoUpdater.checkForUpdates();
+    // }, 5000);
   }
 
   static updateDownloaded(
@@ -51,7 +59,7 @@ export class AutoUpdater {
     // The update will automatically be installed the next time the
     // app launches. If you want to, you can force the installation
     // now:
-    autoUpdater.quitAndInstall();
+    // autoUpdater.quitAndInstall();
   }
 
   static updateNotAvailable() {
