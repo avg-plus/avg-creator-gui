@@ -1,3 +1,4 @@
+import os from "os";
 import { remote } from "electron";
 import { GUIToaster } from "./toaster";
 import { logger } from "../../common/lib/logger";
@@ -7,23 +8,32 @@ const autoUpdater = remote.autoUpdater;
 
 const UpdateServer = "http://ws.avg-engine.com:5000";
 const feed = `${UpdateServer}/update/${process.platform}/${app.getVersion()}`;
+var platform = os.platform() + "_" + os.arch(); // usually returns darwin_64
+var version = app.getVersion();
+
+const feedURL = `${UpdateServer}/update/` + platform + "/" + version;
 
 export class AutoUpdater {
   static init() {
     try {
-      autoUpdater.setFeedURL({ url: feed });
+      logger.info("Init autoUpdater feed url: ", feedURL);
+      // autoUpdater.setFeedURL({ url: feed });
+      autoUpdater.setFeedURL({
+        url: feedURL
+      });
     } catch (error) {
       logger.error(error);
     }
+
+    autoUpdater.checkForUpdates();
 
     autoUpdater.on("checking-for-update", this.checkingForUpdate);
     autoUpdater.on("update-available", this.updateAvailable);
     autoUpdater.on("update-not-available", this.updateNotAvailable);
     autoUpdater.on("update-downloaded", this.updateDownloaded);
 
-    autoUpdater.checkForUpdates();
-
     setInterval(() => {
+      logger.info("checking for updates ...");
       autoUpdater.checkForUpdates();
     }, 5000);
   }
@@ -35,9 +45,9 @@ export class AutoUpdater {
     date: Date,
     updateURL: string
   ) {
-    console.log("The autoUpdater has downloaded an update!");
-    console.log(`The new release is named ${name} and was released on ${date}`);
-    console.log(`The release notes are: ${notes}`);
+    logger.info("The autoUpdater has downloaded an update!");
+    logger.info(`The new release is named ${name} and was released on ${date}`);
+    logger.info(`The release notes are: ${notes}`);
     // The update will automatically be installed the next time the
     // app launches. If you want to, you can force the installation
     // now:
@@ -45,15 +55,15 @@ export class AutoUpdater {
   }
 
   static updateNotAvailable() {
-    console.log("The autoUpdater has not found any updates :(");
+    logger.info("The autoUpdater has not found any updates :(");
   }
 
   static updateAvailable() {
-    console.log("The autoUpdater has found an update!");
+    logger.info("The autoUpdater has found an update!");
   }
 
   static checkingForUpdate() {
-    console.log("The autoUpdater is checking for an update");
+    logger.info("The autoUpdater is checking for an update");
   }
 }
 export default new AutoUpdater();
