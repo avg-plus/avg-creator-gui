@@ -118,8 +118,6 @@ export class GameRunner {
         throw new Error("执行游戏客户端程序异常，请确认已安装桌面启动器支持。");
       }
 
-      console.log("runAsDesktop 1", project);
-
       // 修改引擎配置文件
       const engineConfigFile = path.join(engineBundleDir, "engine.json");
       const engineConfig = fs.readJSONSync(engineConfigFile);
@@ -135,8 +133,6 @@ export class GameRunner {
         this.desktopProcess.kill();
       }
 
-      console.log("runAsDesktop 2", project);
-
       this.desktopProcess = child_process.spawn(
         electronExecutable,
         [`${engineBundleDir}/main.electron.js`],
@@ -145,8 +141,6 @@ export class GameRunner {
           windowsHide: false
         }
       );
-
-      console.log("runAsDesktop 3", project);
 
       if (this.desktopProcess) {
         this.desktopProcessStatus = "normal";
