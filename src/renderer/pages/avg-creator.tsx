@@ -9,13 +9,23 @@ import {
   AVGCreatorInitialState
 } from "../redux/reducers/avg-creator-reducers";
 import { CreateProjectDialog } from "../components/create-project-dialog/create-project-dialog";
-import { ButtonGroup, Button, Icon } from "@blueprintjs/core";
+import {
+  ButtonGroup,
+  Button,
+  Icon,
+  Menu,
+  Popover,
+  Position,
+  MenuItem,
+  MenuDivider
+} from "@blueprintjs/core";
 import { ProjectListMainPanel } from "./project-list-main-panel";
 import { InitWorkspaceDialog } from "../components/initial-workspace-dialog/init-workspace-dialog";
 import classNames from "classnames";
 import { BundleManagerDialog } from "../components/bundles-manager-dialog/bundles-manager-dialog";
 import { ProjectDetailDialog } from "../components/project-detail-dialog/project-details-dialog";
-import { Env } from '../../common/env';
+import { Env } from "../../common/env";
+import { MainContextMenu } from "../components/context-menus/main-menus";
 
 const AVGCreator = () => {
   const [state, dispatch] = useReducer(
@@ -25,15 +35,21 @@ const AVGCreator = () => {
 
   const [bundleManagerOpenned, setBundleManagerOpenned] = useState(false);
 
+  const renderSettingMenu = () => {
+    return <MainContextMenu />;
+  };
+
   return (
     <CreatorContext.Provider value={{ state, dispatch }}>
       <div className="bp3-dialog-container avg-window-container">
         <div className="bp3-dialog avg-window-dialog">
-          {Env.getOSName() === "MacOS" && <div className="bp3-dialog-header avg-window-header">
-            <h4 className="bp3-heading avg-window-header-title">
-              AVGPlus Creator
-            </h4>
-          </div>}
+          {Env.getOSName() === "MacOS" && (
+            <div className="bp3-dialog-header avg-window-header">
+              <h4 className="bp3-heading avg-window-header-title">
+                AVGPlus Creator
+              </h4>
+            </div>
+          )}
 
           <div className="bp3-dialog-body avg-window-body">
             <div className="toolbar">
@@ -80,14 +96,16 @@ const AVGCreator = () => {
               </div>
             </div>
             <div className="avg-creator-footer">
-              <ButtonGroup minimal={true} alignText={"right"}>
-                <Button icon={<Icon icon="cog" />} color="red" />
-              </ButtonGroup>
+              <Popover content={renderSettingMenu()} position={Position.TOP}>
+                <ButtonGroup minimal={true} alignText={"right"}>
+                  <Button icon={<Icon icon="cog" />} color="red" />
+                </ButtonGroup>
+              </Popover>
             </div>
           </div>
 
           {state.isCreateProjectDialogOpen && <CreateProjectDialog />}
-          <ProjectDetailDialog server={state.currentServer} />
+          <ProjectDetailDialog />
           <InitWorkspaceDialog />
         </div>
       </div>

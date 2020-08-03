@@ -91,7 +91,9 @@ export function AVGCreatorReducer(
         ...state,
         currentServer: {
           serverProject: action.payload.serverProject,
-          isRunning: action.payload.isRunning
+          isRunning: action.payload.isRunning,
+          engineURL: "",
+          assetsURL: ""
         }
       };
     }

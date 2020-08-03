@@ -6,6 +6,9 @@ process.env.NODE_ENV = isDev ? "development" : "production";
 
 import "./ipc";
 import path from "path";
+import { AutoUpdater } from "../renderer/services/autoupdater";
+
+app.commandLine.appendSwitch("in-process-gpu");
 
 app.on("ready", async () => {
   const mainWindow = new BrowserWindow({
@@ -15,6 +18,8 @@ app.on("ready", async () => {
     height: 680,
     minWidth: 400,
     minHeight: 480,
+    maxWidth: 600,
+    maxHeight: 800,
     frame: false,
     show: false,
     transparent: true,
@@ -24,7 +29,7 @@ app.on("ready", async () => {
     titleBarStyle: "hiddenInset",
     webPreferences: {
       nodeIntegration: true,
-      preload: path.join(__dirname, "preload.js"),
+      // preload: path.join(__dirname, "preload.js"),
       allowRunningInsecureContent: false
     }
   });

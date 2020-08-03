@@ -44,7 +44,7 @@ export interface IProjectDetailDialogProps {
   server: IAVGServer;
 }
 
-export const ProjectDetailDialog = (props: IProjectDetailDialogProps) => {
+export const ProjectDetailDialog = () => {
   const { state, dispatch } = useContext(CreatorContext);
   const [isGameLaunching, setIsGameLaunching] = useState(false);
   const [isGameStatusLoading, setIsGameStatusLoading] = useState(false);
@@ -63,7 +63,7 @@ export const ProjectDetailDialog = (props: IProjectDetailDialogProps) => {
     return () => {
       PubSub.unsubscribe(token);
     };
-  });
+  }, []);
 
   const renderWebURL = () => {
     const engineURL = GameRunner.getRunningServerURL("Engine");

@@ -225,7 +225,7 @@ export const ProjectListMainPanel = () => {
             top: event.clientY
           });
         }}
-        onClick={(event) => {
+        onMouseDown={(event) => {
           handleSelectItem(event, null);
         }}
       >
@@ -274,7 +274,7 @@ export const ProjectListMainPanel = () => {
                   }
                 });
               }}
-              onClick={(event) => {
+              onMouseDown={(event) => {
                 handleSelectItem(event, p);
               }}
               onContextMenu={(event) => {

@@ -23,12 +23,13 @@ export const ProjectItemContextMenu = (props: IProjectItemContextMenuProps) => {
   return (
     <>
       <Menu>
-        <Menu.Item
+        {/* <Menu.Item
           icon="applications"
           onClick={props.onServe}
           intent={!props.server.isRunning ? Intent.NONE : Intent.DANGER}
           text={!props.server.isRunning ? "运行" : "停止"}
-        />
+        /> */}
+        <Menu.Item icon="applications" intent={Intent.NONE} text={"项目详情"} />
         <Menu.Item
           icon="code"
           onClick={props.onOpenInVSCode}
