@@ -17,7 +17,7 @@ app.on("ready", async () => {
     width: 460,
     height: 680,
     minWidth: 400,
-    minHeight: 480,
+    minHeight: 680,
     maxWidth: 600,
     maxHeight: 800,
     frame: false,
@@ -25,6 +25,7 @@ app.on("ready", async () => {
     transparent: true,
     thickFrame: false,
     center: true,
+    hasShadow: true,
     resizable: true,
     titleBarStyle: "hiddenInset",
     webPreferences: {
@@ -43,7 +44,8 @@ app.on("ready", async () => {
   mainWindow.once("ready-to-show", () => {
     setTimeout(() => {
       mainWindow.show();
-    }, 500);
+    }, 1);
+
     if (isDev) {
       mainWindow.webContents.openDevTools();
     }

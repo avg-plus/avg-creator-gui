@@ -1,8 +1,12 @@
-import React from "react";
-import { MenuDivider, Menu, MenuItem } from "@blueprintjs/core";
+import React, { useState } from "react";
+import { MenuDivider, Menu, MenuItem, Alert } from "@blueprintjs/core";
 import { shell, app, remote } from "electron";
 
-export const MainContextMenu = () => {
+interface IMainContextMenuProps {
+  onOpenAboutDialog: () => void;
+}
+
+export const MainContextMenu = (props: IMainContextMenuProps) => {
   const openURL = (url: string) => {
     shell.openExternal(url);
   };
@@ -10,8 +14,8 @@ export const MainContextMenu = () => {
   return (
     <>
       <Menu>
-        <MenuDivider title="设置" />
-        <MenuItem text="偏好设置..." icon="settings" />
+        {/* <MenuDivider title="设置" />
+        <MenuItem text="偏好设置..." icon="settings" /> */}
 
         <MenuDivider title="版本" />
         <MenuItem text="版本日志" icon="document" />
@@ -28,7 +32,13 @@ export const MainContextMenu = () => {
           icon="chat"
           onClick={(e: any) => openURL("https://community.avg-engine.com/")}
         />
-        <MenuItem text="关于 AVGPlus Creator" icon="info-sign" />
+        <MenuItem
+          text="关于 AVGPlus Creator"
+          icon="info-sign"
+          onClick={() => {
+            props.onOpenAboutDialog();
+          }}
+        />
 
         <MenuDivider />
         <MenuItem

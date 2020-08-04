@@ -26,6 +26,8 @@ import { BundleManagerDialog } from "../components/bundles-manager-dialog/bundle
 import { ProjectDetailDialog } from "../components/project-detail-dialog/project-details-dialog";
 import { Env } from "../../common/env";
 import { MainContextMenu } from "../components/context-menus/main-menus";
+import { AboutDialog } from "../components/about-dialog/about-dialog";
+import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
 
 const AVGCreator = () => {
   const [state, dispatch] = useReducer(
@@ -36,7 +38,18 @@ const AVGCreator = () => {
   const [bundleManagerOpenned, setBundleManagerOpenned] = useState(false);
 
   const renderSettingMenu = () => {
-    return <MainContextMenu />;
+    return (
+      <MainContextMenu
+        onOpenAboutDialog={() => {
+          dispatch({
+            type: AVGCreatorActionType.OpenAboutDialog,
+            payload: {
+              open: true
+            }
+          });
+        }}
+      />
+    );
   };
 
   return (
@@ -107,6 +120,7 @@ const AVGCreator = () => {
           {state.isCreateProjectDialogOpen && <CreateProjectDialog />}
           <ProjectDetailDialog />
           <InitWorkspaceDialog />
+          <AboutDialog />
         </div>
       </div>
     </CreatorContext.Provider>

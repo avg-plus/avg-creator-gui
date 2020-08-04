@@ -24,11 +24,6 @@ export class AutoUpdater {
         version: remote.app.getVersion(),
         url: "https://api.avg-engine.com/creator-gui/check-update"
       });
-
-      // autoUpdater.setFeedURL({ url: feed });
-      // autoUpdater.setFeedURL({
-      //   url: feedURL
-      // });
     } catch (error) {
       logger.error(error);
     }
@@ -44,6 +39,10 @@ export class AutoUpdater {
     //   logger.info("checking for updates ...");
     //   autoUpdater.checkForUpdates();
     // }, 5000);
+  }
+
+  static checkUpdate() {
+    const currentVersion = remote.app.getVersion();
   }
 
   static updateDownloaded(

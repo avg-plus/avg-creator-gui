@@ -11,6 +11,9 @@ export enum AVGCreatorActionType {
   // 打开项目详情
   OpenProjectDetailDialog = "OpenProjectDetailDialog",
 
+  // 打开关于对话框
+  OpenAboutDialog = "OpenAboutDialog",
+
   // 打开设置工作目录对话框
   ToggleSetWorkspaceDialog = "ToggleSetWorkspaceDialog",
 

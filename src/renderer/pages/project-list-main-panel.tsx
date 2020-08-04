@@ -170,6 +170,16 @@ export const ProjectListMainPanel = () => {
     setSeletedItem(p);
   };
 
+  const handleOpenProject = (project: AVGProjectData) => {
+    dispatch({
+      type: AVGCreatorActionType.OpenProjectDetailDialog,
+      payload: {
+        open: true,
+        project: project
+      }
+    });
+  };
+
   const isServingProject = (project: AVGProjectData | null) => {
     if (!project) {
       return false;
@@ -266,13 +276,7 @@ export const ProjectListMainPanel = () => {
             <div
               key={p._id}
               onDoubleClick={() => {
-                dispatch({
-                  type: AVGCreatorActionType.OpenProjectDetailDialog,
-                  payload: {
-                    open: true,
-                    project: p
-                  }
-                });
+                handleOpenProject(p);
               }}
               onMouseDown={(event) => {
                 handleSelectItem(event, p);
@@ -283,6 +287,9 @@ export const ProjectListMainPanel = () => {
                 ContextMenu.show(
                   <ProjectItemContextMenu
                     server={state.currentServer}
+                    onOpenProjectDetail={() => {
+                      handleOpenProject(p);
+                    }}
                     onDelete={handleAlertDelete}
                     onExploreDir={() => {
                       handleExploreDir(p);
