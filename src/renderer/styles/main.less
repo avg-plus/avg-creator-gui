@@ -4,7 +4,12 @@
 :not(input):not(textarea)::before {
   -webkit-user-select: none;
   user-select: none;
-  // cursor: !important;
+}
+
+// 允许文本选择
+.text-selectable > div {
+  user-select: text !important;
+  cursor: text !important;
 }
 
 // 禁止按钮描边

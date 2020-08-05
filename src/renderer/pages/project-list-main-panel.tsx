@@ -49,7 +49,7 @@ export const ProjectListMainPanel = () => {
 
   useEffect(() => {
     AVGProjectManager.loadProjects().then((v) => {
-      logger.info("loaded projects", v);
+      logger.debug("loaded projects", v);
 
       dispatch({
         type: AVGCreatorActionType.SetProjectList,
@@ -170,6 +170,16 @@ export const ProjectListMainPanel = () => {
     setSeletedItem(p);
   };
 
+  const handleOpenProject = (project: AVGProjectData) => {
+    dispatch({
+      type: AVGCreatorActionType.OpenProjectDetailDialog,
+      payload: {
+        open: true,
+        project: project
+      }
+    });
+  };
+
   const isServingProject = (project: AVGProjectData | null) => {
     if (!project) {
       return false;
@@ -229,88 +239,85 @@ export const ProjectListMainPanel = () => {
           handleSelectItem(event, null);
         }}
       >
-        <Scrollbars>
-          {state.projects.length === 0 && (
-            <Empty
-              imageStyle={{
-                height: 160
-              }}
-              description={
-                <NoProjectHint>
-                  {!AVGProjectManager.isWorkspaceInit() &&
-                    "设置一个目录，用于储存你的游戏项目"}
-                  {AVGProjectManager.isWorkspaceInit() &&
-                    "使用 AVGPlus 开发你的第一个文字冒险游戏"}
-                </NoProjectHint>
-              }
-            >
-              {!AVGProjectManager.isWorkspaceInit() && (
-                <Button
-                  className="bp3-icon-inbox"
-                  intent={Intent.PRIMARY}
-                  onClick={handleInitWorkspace}
-                >
-                  初始化工作目录
-                </Button>
-              )}
-
-              {AVGProjectManager.isWorkspaceInit() && (
-                <Button className="bp3-icon-add" onClick={handleCreateProject}>
-                  创建游戏
-                </Button>
-              )}
-            </Empty>
-          )}
-
-          {state.projects.map((p: AVGProjectData) => (
-            <div
-              key={p._id}
-              onDoubleClick={() => {
-                dispatch({
-                  type: AVGCreatorActionType.OpenProjectDetailDialog,
-                  payload: {
-                    open: true,
-                    project: p
-                  }
-                });
-              }}
-              onMouseDown={(event) => {
-                handleSelectItem(event, p);
-              }}
-              onContextMenu={(event) => {
-                handleSelectItem(event, p);
-
-                ContextMenu.show(
-                  <ProjectItemContextMenu
-                    server={state.currentServer}
-                    onDelete={handleAlertDelete}
-                    onExploreDir={() => {
-                      handleExploreDir(p);
-                    }}
-                    onOpenInVSCode={() => {
-                      handleOpenInVSCode(p);
-                    }}
-                    onServe={() => {
-                      handleServeProject(p);
-                    }}
-                  />,
-                  {
-                    left: event.clientX,
-                    top: event.clientY
-                  }
-                );
-              }}
-            >
-              <div
-                className={`project-list-item ${
-                  seletedItem && seletedItem._id === p._id ? "selected" : ""
-                }`}
+        {/* <Scrollbars> */}
+        {state.projects.length === 0 && (
+          <Empty
+            imageStyle={{
+              height: 160
+            }}
+            description={
+              <NoProjectHint>
+                {!AVGProjectManager.isWorkspaceInit() &&
+                  "设置一个目录，用于储存你的游戏项目"}
+                {AVGProjectManager.isWorkspaceInit() &&
+                  "使用 AVGPlus 开发你的第一个文字冒险游戏"}
+              </NoProjectHint>
+            }
+          >
+            {!AVGProjectManager.isWorkspaceInit() && (
+              <Button
+                className="bp3-icon-inbox"
+                intent={Intent.PRIMARY}
+                onClick={handleInitWorkspace}
               >
-                <ProjectListItem projectData={p} />
-              </div>
+                初始化工作目录
+              </Button>
+            )}
+
+            {AVGProjectManager.isWorkspaceInit() && (
+              <Button className="bp3-icon-add" onClick={handleCreateProject}>
+                创建游戏
+              </Button>
+            )}
+          </Empty>
+        )}
+
+        {state.projects.map((p: AVGProjectData) => (
+          <div
+            key={p._id}
+            onDoubleClick={() => {
+              handleOpenProject(p);
+            }}
+            onMouseDown={(event) => {
+              handleSelectItem(event, p);
+            }}
+            onContextMenu={(event) => {
+              handleSelectItem(event, p);
+
+              ContextMenu.show(
+                <ProjectItemContextMenu
+                  server={state.currentServer}
+                  onOpenProjectDetail={() => {
+                    handleOpenProject(p);
+                  }}
+                  onDelete={handleAlertDelete}
+                  onExploreDir={() => {
+                    handleExploreDir(p);
+                  }}
+                  onOpenInVSCode={() => {
+                    handleOpenInVSCode(p);
+                  }}
+                  onServe={() => {
+                    handleServeProject(p);
+                  }}
+                />,
+                {
+                  left: event.clientX,
+                  top: event.clientY
+                }
+              );
+            }}
+          >
+            <div
+              className={`project-list-item ${
+                seletedItem && seletedItem._id === p._id ? "selected" : ""
+              }`}
+            >
+              <ProjectListItem projectData={p} />
             </div>
-          ))}
-        </Scrollbars>
+          </div>
+        ))}
+        {/* </Scrollbars> */}
       </div>
     </>
   );

@@ -8,6 +8,7 @@ import { IAVGServer } from "../../redux/reducers/avg-creator-reducers";
 interface IProjectItemContextMenuProps {
   server: IAVGServer;
   onDelete: () => void;
+  onOpenProjectDetail: () => void;
   onExploreDir: () => void;
   onOpenInVSCode: () => void;
   onServe: () => void;
@@ -29,7 +30,12 @@ export const ProjectItemContextMenu = (props: IProjectItemContextMenuProps) => {
           intent={!props.server.isRunning ? Intent.NONE : Intent.DANGER}
           text={!props.server.isRunning ? "运行" : "停止"}
         /> */}
-        <Menu.Item icon="applications" intent={Intent.NONE} text={"项目详情"} />
+        <Menu.Item
+          icon="applications"
+          intent={Intent.NONE}
+          text={"项目详情"}
+          onClick={props.onOpenProjectDetail}
+        />
         <Menu.Item
           icon="code"
           onClick={props.onOpenInVSCode}

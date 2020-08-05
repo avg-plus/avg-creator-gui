@@ -59,12 +59,12 @@ export class GameRunner {
   static async close() {
     if (this.engineServer) {
       this.engineServer.close(() => {
-        logger.info(`Engine Server stopped.`);
+        logger.debug(`Engine Server stopped.`);
       });
     }
     if (this.assetsServer) {
       this.assetsServer.close(() => {
-        logger.info(`Assets Server stopped.`);
+        logger.debug(`Assets Server stopped.`);
       });
     }
   }
@@ -90,9 +90,9 @@ export class GameRunner {
         }
 
         if (alias >= 1) {
-          logger.info(ifname + ":" + alias, iface.address);
+          logger.debug(ifname + ":" + alias, iface.address);
         } else {
-          logger.info(ifname, iface.address);
+          logger.debug(ifname, iface.address);
         }
 
         IPs.push(iface.address);
@@ -127,7 +127,7 @@ export class GameRunner {
 
       // 运行进程
       const entry = `${engineBundleDir}/main.electron.js`;
-      logger.info("electronExecutable", electronExecutable, entry);
+      logger.debug("electronExecutable", electronExecutable, entry);
 
       if (this.desktopProcess) {
         this.desktopProcess.kill();
@@ -135,7 +135,7 @@ export class GameRunner {
 
       this.desktopProcess = child_process.spawn(
         electronExecutable,
-        [`${engineBundleDir}/main.electron.js`],
+        [`${engineBundleDir}/main.electron.js`, "--debug=127.0.0.1:56100"],
         {
           stdio: "inherit",
           windowsHide: false
@@ -245,7 +245,7 @@ export class GameRunner {
         const server = connect()
           .use(serveStatic(servePath, staticOptions))
           .listen(port, hostname, () => {
-            logger.info(`Server started on ${url}, serving ${servePath} ...`);
+            logger.debug(`Server started on ${url}, serving ${servePath} ...`);
             resolve(server);
           })
           .on("error", (error) => {

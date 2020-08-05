@@ -31,6 +31,7 @@ export class DebugServer {
       }
     });
   }
+
   static async start() {
     await this.stop();
 
@@ -40,7 +41,7 @@ export class DebugServer {
 
     this.wsServer.on("connection", (socket: WebSocket) => {
       socket.on("message", (receivedData) => {
-        logger.info("received: %s", receivedData);
+        logger.debug("received: %s", receivedData);
 
         const message = JSON.parse(receivedData.toString());
 
@@ -48,7 +49,7 @@ export class DebugServer {
         const data = message.data;
 
         if (!message || !message.cmd) {
-          logger.info("error: unknown command.");
+          logger.debug("error: unknown command.");
           return;
         }
 
@@ -68,7 +69,7 @@ export class DebugServer {
       this.onServerStatusChanged(WSServerStatus.Closed);
     });
 
-    logger.info("Debug server started");
+    logger.debug("Debug server started");
   }
 
   private static onServerStatusChanged(status: WSServerStatus) {
@@ -116,7 +117,22 @@ export class DebugServer {
           socket,
           PID: data.PID
         });
+
+        // 尝试发送一个
+        setTimeout(() => {
+          this.sendMessage(socket, {
+            cmd: "reload_player",
+            data: {
+              script: "particle.snow()"
+            }
+          });
+        }, 3000);
+
         break;
     }
+  }
+
+  private static async sendMessage(socket: WebSocket, data: any) {
+    socket.send(JSON.stringify(data));
   }
 }

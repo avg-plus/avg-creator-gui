@@ -17,7 +17,8 @@ import {
   Popover,
   Position,
   MenuItem,
-  MenuDivider
+  MenuDivider,
+  Dialog
 } from "@blueprintjs/core";
 import { ProjectListMainPanel } from "./project-list-main-panel";
 import { InitWorkspaceDialog } from "../components/initial-workspace-dialog/init-workspace-dialog";
@@ -26,6 +27,9 @@ import { BundleManagerDialog } from "../components/bundles-manager-dialog/bundle
 import { ProjectDetailDialog } from "../components/project-detail-dialog/project-details-dialog";
 import { Env } from "../../common/env";
 import { MainContextMenu } from "../components/context-menus/main-menus";
+import { AboutDialog } from "../components/about-dialog/about-dialog";
+import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
+import { ChangeLogDialog } from "../components/changelog-dialog/changelog-dialog";
 
 const AVGCreator = () => {
   const [state, dispatch] = useReducer(
@@ -36,7 +40,18 @@ const AVGCreator = () => {
   const [bundleManagerOpenned, setBundleManagerOpenned] = useState(false);
 
   const renderSettingMenu = () => {
-    return <MainContextMenu />;
+    return (
+      <MainContextMenu
+        onOpenAboutDialog={() => {
+          dispatch({
+            type: AVGCreatorActionType.OpenAboutDialog,
+            payload: {
+              open: true
+            }
+          });
+        }}
+      />
+    );
   };
 
   return (
@@ -107,6 +122,8 @@ const AVGCreator = () => {
           {state.isCreateProjectDialogOpen && <CreateProjectDialog />}
           <ProjectDetailDialog />
           <InitWorkspaceDialog />
+          <AboutDialog />
+          {/* <ChangeLogDialog /> */}
         </div>
       </div>
     </CreatorContext.Provider>

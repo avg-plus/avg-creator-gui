@@ -17,7 +17,7 @@ app.on("ready", async () => {
     width: 460,
     height: 680,
     minWidth: 400,
-    minHeight: 480,
+    minHeight: 680,
     maxWidth: 600,
     maxHeight: 800,
     frame: false,
@@ -25,6 +25,7 @@ app.on("ready", async () => {
     transparent: true,
     thickFrame: false,
     center: true,
+    hasShadow: true,
     resizable: true,
     titleBarStyle: "hiddenInset",
     webPreferences: {
@@ -36,14 +37,15 @@ app.on("ready", async () => {
 
   // Mac 下开发模式下设置个图标，就是看着好看
   if (isDev && os.platform() === "darwin") {
-    app.dock.setIcon("tools/icons/icon_512x512@2x.png");
+    app.dock.setIcon("pack-data/icons/icon_512x512@2x.png");
   }
 
   Menu.setApplicationMenu(null);
   mainWindow.once("ready-to-show", () => {
     setTimeout(() => {
       mainWindow.show();
-    }, 500);
+    }, 1);
+
     if (isDev) {
       mainWindow.webContents.openDevTools();
     }

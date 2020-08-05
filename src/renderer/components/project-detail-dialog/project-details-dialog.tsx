@@ -39,7 +39,7 @@ import { useServe, useStopServe } from "../../hooks/use-serve";
 import { useLaunchGame, useKillGame } from "../../hooks/use-launch-game";
 import { SubcribeEvents } from "../../../common/subcribe-events";
 import { logger } from "../../../common/lib/logger";
-import { shell } from 'electron';
+import { shell } from "electron";
 
 export interface IProjectDetailDialogProps {
   server: IAVGServer;
@@ -54,7 +54,7 @@ export const ProjectDetailDialog = () => {
     const token = PubSub.subscribe(
       SubcribeEvents.GameProcessChanged,
       (event: SubcribeEvents, data: any) => {
-        logger.info("Received :", event, data);
+        logger.debug("Received :", event, data);
 
         const { status } = data;
         setIsGameLaunching(status === "normal" ? true : false);
@@ -129,11 +129,15 @@ export const ProjectDetailDialog = () => {
           position={"bottom"}
           content={
             <Menu>
-              <MenuItem icon={"folder-shared-open"} onClick={() => {
-                if (state.openedProject) {
-                  shell.showItemInFolder(state.openedProject?.dir)
-                }
-              }} text="打开目录"></MenuItem>
+              <MenuItem
+                icon={"folder-shared-open"}
+                onClick={() => {
+                  if (state.openedProject) {
+                    shell.showItemInFolder(state.openedProject?.dir);
+                  }
+                }}
+                text="打开目录"
+              ></MenuItem>
             </Menu>
           }
           target={
@@ -179,8 +183,8 @@ export const ProjectDetailDialog = () => {
               isGameLaunching ? (
                 <BPIcon icon={"play"} />
               ) : (
-                  <BPIcon icon={"stop"} />
-                )
+                <BPIcon icon={"stop"} />
+              )
             }
             intent={isGameLaunching ? Intent.SUCCESS : Intent.DANGER}
           >

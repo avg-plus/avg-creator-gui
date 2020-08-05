@@ -18,6 +18,7 @@ export interface IAVGCreatorInitialState {
   isSettingPanelOpen: boolean;
   isShowPanelHeader: boolean;
   isCreateProjectDialogOpen: boolean;
+  isAboutDialogOpen: boolean;
   isProjectDetailDialogOpen: boolean;
   isSetWorkspaceDialogOpen: boolean;
   projects: AVGProjectData[];
@@ -34,6 +35,7 @@ export const AVGCreatorInitialState: IAVGCreatorInitialState = {
   isSettingPanelOpen: true,
   isShowPanelHeader: false,
   isCreateProjectDialogOpen: false,
+  isAboutDialogOpen: false,
   isProjectDetailDialogOpen: false,
   isSetWorkspaceDialogOpen: false,
   projects: [],
@@ -54,7 +56,7 @@ export const AVGCreatorInitialState: IAVGCreatorInitialState = {
 export function AVGCreatorReducer(
   state: IAVGCreatorInitialState,
   action: AVGCreatorAction
-) {
+): IAVGCreatorInitialState {
   switch (action.type) {
     case AVGCreatorActionType.OpenSettingPanel:
       return { ...state, isSettingPanelOpen: true, isShowPanelHeader: true };
@@ -67,6 +69,11 @@ export function AVGCreatorReducer(
         ...state,
         isProjectDetailDialogOpen: action.payload.open,
         openedProject: action.payload.project
+      };
+    case AVGCreatorActionType.OpenAboutDialog:
+      return {
+        ...state,
+        isAboutDialogOpen: action.payload.open
       };
     case AVGCreatorActionType.ToggleSetWorkspaceDialog:
       return { ...state, isSetWorkspaceDialogOpen: action.payload.open };
@@ -90,7 +97,7 @@ export function AVGCreatorReducer(
       return {
         ...state,
         currentServer: {
-          serverProject: action.payload.serverProject,
+          serveProject: action.payload.serverProject,
           isRunning: action.payload.isRunning,
           engineURL: "",
           assetsURL: ""

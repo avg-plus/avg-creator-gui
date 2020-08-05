@@ -12,7 +12,8 @@ export class Database {
     const appDataDir = path.join(app.getPath("appData"), app.getName());
     this.datastore = Datastore.create({
       filename: path.join(appDataDir, "db", name),
-      autoload: true
+      autoload: true,
+      timestampData: true
     });
   }
 }

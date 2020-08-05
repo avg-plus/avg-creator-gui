@@ -30,7 +30,7 @@ export const BundleDesktopPage = () => {
     await BundlesManager.downloadElectronMirror(
       electronMirrors[os.platform()],
       (context) => {
-        logger.info("downloading context", context);
+        logger.debug("downloading context", context);
 
         setDownloadProgress(context.progress.percent);
         setHasElectronMirror(false);
