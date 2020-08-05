@@ -5,10 +5,13 @@ import "../../common/local-app-config";
 import { AutoUpdater } from "./autoupdater";
 import { logger } from "../../common/lib/logger";
 import { remote } from "electron";
+import { Env } from "../../common/env";
 
 export class AppInit {
   static start() {
-    logger.info("App start: ", remote.app.getVersion(), os.platform());
+    logger.debug("App start: ", remote.app.getVersion(), os.platform());
+
+    logger.debug("appDataDir", Env.getAppDataDir());
 
     // Blueprint 焦点设置
     FocusStyleManager.onlyShowFocusOnTabs();

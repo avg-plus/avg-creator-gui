@@ -1,13 +1,13 @@
-/* tslint:disable */
-
-const Bundler = require("parcel-bundler");
-const path = require("path");
-const fs = require("fs-extra");
+import * as Bundler from "parcel-bundler";
+import * as path from "path";
+import * as fs from "fs-extra";
+import * as ParcelBundler from "parcel-bundler";
 
 const outDir = "./dist";
 
 async function copyFiles() {
   fs.copySync("./static/icons", `${outDir}/static/icons`);
+  fs.copyFileSync("./CHANGELOG.md", `${outDir}/CHANGELOG.md`);
 }
 
 async function compileParcel(options = {}) {
@@ -17,7 +17,7 @@ async function compileParcel(options = {}) {
     path.join(__dirname, "../src/main/main.ts")
   ];
 
-  const bundlerOptions = {
+  const bundlerOptions: ParcelBundler.ParcelOptions = {
     outDir, // The out directory to put the build files in, defaults to dist
     outFile: undefined, // The name of the outputFile
     publicUrl: "../", // The url to server on, defaults to dist

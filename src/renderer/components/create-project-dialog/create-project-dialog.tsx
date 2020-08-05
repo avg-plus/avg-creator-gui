@@ -97,7 +97,7 @@ export const CreateProjectDialog = () => {
   };
 
   const handleConfirmCreateProject = () => {
-    logger.info("create project", projectName);
+    logger.debug("create project", projectName);
 
     if (!projectName || projectName.length === 0) {
       GUIToaster.show({

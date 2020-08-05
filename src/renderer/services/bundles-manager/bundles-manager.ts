@@ -90,7 +90,7 @@ export class BundlesManager {
     try {
       const manifest = await apiGetManifest<IBundleManifest>();
 
-      logger.info("response", manifest);
+      logger.debug("response", manifest);
 
       // 保存配置到本地
       const saveDir = Env.getAppDataDir();
@@ -108,7 +108,7 @@ export class BundlesManager {
   static async fetchElectronMirror() {
     const mirrors = await apiGetElectronMirror();
 
-    logger.info("mirrors", mirrors);
+    logger.debug("mirrors", mirrors);
 
     return mirrors;
   }
@@ -134,7 +134,7 @@ export class BundlesManager {
       }
     }
 
-    logger.info("Load local bundles : ", this.localBundles);
+    logger.debug("Load local bundles : ", this.localBundles);
 
     return this.localBundles;
   }

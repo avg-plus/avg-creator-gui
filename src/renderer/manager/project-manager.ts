@@ -96,7 +96,7 @@ export class AVGProjectManager {
 
     project._id = doc._id;
 
-    logger.info("Created project", JSON.stringify(project));
+    logger.debug("Created project", JSON.stringify(project));
 
     return project;
   }
@@ -120,6 +120,6 @@ export class AVGProjectManager {
   }
 
   static async loadProjects() {
-    return await DBProjects.find({});
+    return await DBProjects.find({}).sort({ createdAt: 1 });
   }
 }

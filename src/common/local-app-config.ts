@@ -6,7 +6,7 @@ import { logger } from "./lib/logger";
 const app = remote.app;
 
 const appDataDir = path.join(app.getPath("appData"), app.getName());
-// logger.info("Init config from AppData dir : ", appDataDir);
+// logger.debug("Init config from AppData dir : ", appDataDir);
 
 export const LocalAppConfig = nconf
   .env()

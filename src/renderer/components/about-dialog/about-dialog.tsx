@@ -26,16 +26,15 @@ export const AboutDialog = () => {
         });
       }}
     >
-      <Text className={"text-selectable"}>
-        版本: {remote.app.getVersion()}
-        <br />
+      {/* <Text className={"text-selectable"}>
+        版本: {remote.app.getVersion() }
         Electron: {process.versions.electron} <br />
         Chrome: {process.versions.chrome} <br />
         Node.js: {process.versions.node}
         <br />
         操作系统: {os.platform()} {os.arch()} <br />
-      </Text>
-      {/* <div className={"selectable"}>
+      </Text> */}
+      <div className={"text-selectable"}>
         <div>版本: {remote.app.getVersion()}</div>
         <div>Electron: {process.versions.electron}</div>
         <div>Chrome: {process.versions.chrome}</div>
@@ -43,7 +42,7 @@ export const AboutDialog = () => {
         <div>
           操作系统: {os.platform()} {os.arch()} {}
         </div>
-      </div> */}
+      </div>
     </Alert>
   );
 };

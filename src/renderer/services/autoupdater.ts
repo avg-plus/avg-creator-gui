@@ -15,7 +15,7 @@ const UpdateServer = "http://ws.avg-engine.com:5000";
 export class AutoUpdater {
   static init() {
     try {
-      // logger.info("Init autoUpdater feed url: ", feedURL);
+      // logger.debug("Init autoUpdater feed url: ", feedURL);
 
       const s = updater.init({
         autoDownload: true,
@@ -36,7 +36,7 @@ export class AutoUpdater {
     // autoUpdater.on("update-downloaded", this.updateDownloaded);
 
     // setInterval(() => {
-    //   logger.info("checking for updates ...");
+    //   logger.debug("checking for updates ...");
     //   autoUpdater.checkForUpdates();
     // }, 5000);
   }
@@ -52,9 +52,11 @@ export class AutoUpdater {
     date: Date,
     updateURL: string
   ) {
-    logger.info("The autoUpdater has downloaded an update!");
-    logger.info(`The new release is named ${name} and was released on ${date}`);
-    logger.info(`The release notes are: ${notes}`);
+    logger.debug("The autoUpdater has downloaded an update!");
+    logger.debug(
+      `The new release is named ${name} and was released on ${date}`
+    );
+    logger.debug(`The release notes are: ${notes}`);
     // The update will automatically be installed the next time the
     // app launches. If you want to, you can force the installation
     // now:
@@ -62,15 +64,15 @@ export class AutoUpdater {
   }
 
   static updateNotAvailable() {
-    logger.info("The autoUpdater has not found any updates :(");
+    logger.debug("The autoUpdater has not found any updates :(");
   }
 
   static updateAvailable() {
-    logger.info("The autoUpdater has found an update!");
+    logger.debug("The autoUpdater has found an update!");
   }
 
   static checkingForUpdate() {
-    logger.info("The autoUpdater is checking for an update");
+    logger.debug("The autoUpdater is checking for an update");
   }
 }
 export default new AutoUpdater();
