@@ -3,46 +3,28 @@ import { remote } from "electron";
 import { GUIToaster } from "./toaster";
 import { logger } from "../../common/lib/logger";
 import updater from "electron-simple-updater";
-
-// const app = remote.app;
-// const autoUpdater = remote.autoUpdater;
-
-const UpdateServer = "http://ws.avg-engine.com:5000";
-// const feed = `${UpdateServer}/update/${process.platform}/${app.getVersion()}`;
-
-// const feedURL = `${UpdateServer}/update/` + platform + "/" + version;
+import { apiGetUpdate } from "./APIs/software-update-api";
 
 export class AutoUpdater {
   static init() {
     try {
-      // logger.debug("Init autoUpdater feed url: ", feedURL);
-
-      const s = updater.init({
-        autoDownload: true,
-        logger: logger,
-        channel: "prod",
-        version: remote.app.getVersion(),
-        url: "https://api.avg-engine.com/creator-gui/check-update"
-      });
     } catch (error) {
       logger.error(error);
     }
-
-    // autoUpdater.checkForUpdates();
-
-    // autoUpdater.on("checking-for-update", this.checkingForUpdate);
-    // autoUpdater.on("update-available", this.updateAvailable);
-    // autoUpdater.on("update-not-available", this.updateNotAvailable);
-    // autoUpdater.on("update-downloaded", this.updateDownloaded);
-
-    // setInterval(() => {
-    //   logger.debug("checking for updates ...");
-    //   autoUpdater.checkForUpdates();
-    // }, 5000);
   }
 
-  static checkUpdate() {
+  static async checkingForUpdate() {
     const currentVersion = remote.app.getVersion();
+    const currentPlatform = `${remote.process.platform}-${remote.process.arch}`;
+    logger.debug(
+      "The autoUpdater is checking for an update... current version = ",
+      currentVersion,
+      currentPlatform
+    );
+
+    // 拉取更新信息
+    const updateInfo = await apiGetUpdate();
+    logger.debug("Fetch update infos: ", updateInfo);
   }
 
   static updateDownloaded(
@@ -69,10 +51,6 @@ export class AutoUpdater {
 
   static updateAvailable() {
     logger.debug("The autoUpdater has found an update!");
-  }
-
-  static checkingForUpdate() {
-    logger.debug("The autoUpdater is checking for an update");
   }
 }
 export default new AutoUpdater();

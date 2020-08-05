@@ -1,4 +1,4 @@
-import http, { IncomingMessage } from "http";
+import http from "http";
 import path from "path";
 import os from "os";
 import fs from "fs-extra";

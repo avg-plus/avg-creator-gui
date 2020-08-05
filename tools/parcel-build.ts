@@ -27,7 +27,7 @@ async function compileParcel(options = {}) {
     contentHash: false, // Disable content hash from being included on the filename
     minify: true, // Minify files, enabled if process.env.NODE_ENV === 'production'
     scopeHoist: false, // turn on experimental scope hoisting/tree shaking flag, for smaller production bundles
-    target: "electron", // browser/node/electron, defaults to browser
+    target: "node", // browser/node/electron, defaults to browser
     // https: { // Define a custom {key, cert} pair, use true to generate one or false to use http
     //   cert: './ssl/c.crt', // path to custom certificate
     //   key: './ssl/k.key' // path to custom key

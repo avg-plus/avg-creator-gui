@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { MenuDivider, Menu, MenuItem, Alert } from "@blueprintjs/core";
 import { shell, app, remote } from "electron";
+import { AutoUpdater } from "../../services/autoupdater";
 
 interface IMainContextMenuProps {
   onOpenAboutDialog: () => void;
@@ -11,6 +12,10 @@ export const MainContextMenu = (props: IMainContextMenuProps) => {
     shell.openExternal(url);
   };
 
+  const handleCheckUpdate = async () => {
+    await AutoUpdater.checkingForUpdate();
+  };
+
   return (
     <>
       <Menu>
@@ -19,7 +24,11 @@ export const MainContextMenu = (props: IMainContextMenuProps) => {
 
         <MenuDivider title="版本" />
         <MenuItem text="版本日志" icon="document" />
-        <MenuItem text="检查更新..." icon="automatic-updates" />
+        <MenuItem
+          text="检查更新..."
+          icon="automatic-updates"
+          onClick={handleCheckUpdate}
+        />
 
         <MenuDivider title="链接" />
         <MenuItem
