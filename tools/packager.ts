@@ -5,7 +5,7 @@ const Platform = builder.Platform;
 
 const build = async () => {
   await builder.build({
-    targets: Platform.MAC.createTarget(),
+    targets: Platform.current().createTarget(),
     config: {
       productName: "AVGPlus Creator", //项目名 这也是生成的exe文件的前缀名
       appId: "com.avgplus.creator", //包名
@@ -22,10 +22,19 @@ const build = async () => {
         icon: "pack-data/icons/icon_512x512@2x.png",
         target: ["dir", "dmg"]
       },
+      nsis: {
+        oneClick: false,
+        perMachine: true,
+        allowToChangeInstallationDirectory: true,
+        createDesktopShortcut: true,
+        createStartMenuShortcut: true,
+        runAfterFinish: true
+      },
       win: {
         icon: "pack-data/icons/icon_512x512@2x.png",
         target: [
           {
+
             target: "nsis",
             arch: ["x64"]
           },
