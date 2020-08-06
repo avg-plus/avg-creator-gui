@@ -43,6 +43,11 @@ class _Env {
   }
 
   // 获取游戏模板工程目录
+  getUpdatesDir() {
+    return path.join(this.getAppDataDir(), "updates/");
+  }
+
+  // 获取游戏模板工程目录
   getBundleDir() {
     return path.join(this.getAppDataDir(), "avg-bundles/");
   }

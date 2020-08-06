@@ -21,7 +21,7 @@ import { IconNames } from "@blueprintjs/icons";
 import { LocalAppConfig } from "../../../common/local-app-config";
 import { remote } from "electron";
 
-export const InitWorkspaceDialog = () => {
+export default () => {
   const { state, dispatch } = useContext(CreatorContext);
 
   const [workspaceDir, setWorkspaceDir] = useState("");

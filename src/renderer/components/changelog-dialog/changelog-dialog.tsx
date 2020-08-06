@@ -8,7 +8,7 @@ import { Dialog } from "@blueprintjs/core";
 import "./changelog-dialog.less";
 import RootPath from "app-root-path";
 
-export const ChangeLogDialog = () => {
+export default () => {
   const CHANGELOG = path.join(RootPath.path, "dist", "CHANGELOG.md");
   const content = fs.readFileSync(CHANGELOG).toString("utf8");
 

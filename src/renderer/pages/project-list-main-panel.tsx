@@ -32,6 +32,7 @@ import "./project-list-main-panel.less";
 import { TDAPP } from "../services/td-analytics";
 import { logger } from "../../common/lib/logger";
 import { useServe, useStopServe } from "../hooks/use-serve";
+import { useMount } from "react-use";
 
 const NoProjectHint = styled.label`
   font-size: 16px;
@@ -39,7 +40,7 @@ const NoProjectHint = styled.label`
   font-weight: 200;
 `;
 
-export const ProjectListMainPanel = () => {
+export default () => {
   const { state, dispatch } = useContext(CreatorContext);
   const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(
     false
@@ -47,7 +48,7 @@ export const ProjectListMainPanel = () => {
 
   const [seletedItem, setSeletedItem] = useState<AVGProjectData | null>(null);
 
-  useEffect(() => {
+  useMount(() => {
     AVGProjectManager.loadProjects().then((v) => {
       logger.debug("loaded projects", v);
 
@@ -58,7 +59,7 @@ export const ProjectListMainPanel = () => {
         }
       });
     });
-  }, []);
+  });
 
   const openSettingsPanel = (project: AVGProjectData) => {
     // openPanel({
@@ -190,17 +191,6 @@ export const ProjectListMainPanel = () => {
 
   return (
     <>
-      {/* <div className="server-toolbar">
-        <Button
-          icon={isServingProject(seletedItem) ? "stop" : "play"}
-          intent={
-            isServingProject(seletedItem) ? Intent.DANGER : Intent.SUCCESS
-          }
-          text={isServingProject(seletedItem) ? "停止" : "运行"}
-          onClick={() => {}}
-        />
-      </div> */}
-
       <Alert
         cancelButtonText="取消"
         confirmButtonText="移到回收站"

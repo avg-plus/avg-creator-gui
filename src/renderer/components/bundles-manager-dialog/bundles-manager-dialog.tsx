@@ -47,7 +47,7 @@ export interface BundleItem extends IBundle {
   transferred: number;
 }
 
-export const BundleManagerDialog = () => {
+export default () => {
   const { state, dispatch } = useContext(CreatorContext);
 
   const [currentFilter, setCurrentFilter] = useState(BundleFilterType.Engines);

@@ -17,6 +17,9 @@ export enum AVGCreatorActionType {
   // 打开设置工作目录对话框
   ToggleSetWorkspaceDialog = "ToggleSetWorkspaceDialog",
 
+  // 检查更新提醒
+  CheckUpdateAlert = "CheckUpdateAlert",
+
   // 增加项目
   AddProjectItem = "AddProjectItem",
 

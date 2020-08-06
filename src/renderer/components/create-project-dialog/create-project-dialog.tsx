@@ -46,7 +46,7 @@ export interface BundleOption {
   bundle: ILocalBundle;
 }
 
-export const CreateProjectDialog = () => {
+export default () => {
   const { state, dispatch } = useContext(CreatorContext);
 
   const [projectName, setProjectName] = useState("");

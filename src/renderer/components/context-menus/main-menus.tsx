@@ -1,27 +1,37 @@
-import React, { useState } from "react";
-import { MenuDivider, Menu, MenuItem, Alert } from "@blueprintjs/core";
+import React, { useState, useContext } from "react";
+import { MenuDivider, Menu, MenuItem, Alert, Dialog } from "@blueprintjs/core";
 import { shell, app, remote } from "electron";
 import { AutoUpdater } from "../../services/autoupdater";
+import { GUIToaster } from "../../services/toaster";
+import { CreatorContext } from "../../hooks/context";
+import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
 
 interface IMainContextMenuProps {
   onOpenAboutDialog: () => void;
 }
 
-export const MainContextMenu = (props: IMainContextMenuProps) => {
+export default (props: IMainContextMenuProps) => {
+  const { state, dispatch } = useContext(CreatorContext);
+
   const openURL = (url: string) => {
     shell.openExternal(url);
   };
 
   const handleCheckUpdate = async () => {
-    await AutoUpdater.checkingForUpdate();
+    const item = await AutoUpdater.checkingForUpdates();
+
+    dispatch({
+      type: AVGCreatorActionType.CheckUpdateAlert,
+      payload: {
+        open: true,
+        updateItem: item
+      }
+    });
   };
 
   return (
     <>
       <Menu>
-        {/* <MenuDivider title="设置" />
-        <MenuItem text="偏好设置..." icon="settings" /> */}
-
         <MenuDivider title="版本" />
         <MenuItem text="版本日志" icon="document" />
         <MenuItem
