@@ -1,10 +1,6 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "target": "es5",
-    "moduleResolution": "node",
-    "noImplicitAny": false
+    "module": "commonjs"
   }
 }

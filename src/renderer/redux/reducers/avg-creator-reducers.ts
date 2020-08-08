@@ -2,11 +2,8 @@ import {
   AVGCreatorActionType,
   AVGCreatorAction
 } from "./../actions/avg-creator-actions";
-import {
-  AVGProjectData,
-  AVGProjectManager
-} from "../../manager/project-manager";
-import { UpdateItemConfig } from "../../services/autoupdater";
+import { AVGProjectData } from "../../manager/project-manager";
+import { UpdateItem } from "../../services/autoupdater";
 
 export interface IAVGServer {
   serveProject: AVGProjectData | null;
@@ -24,7 +21,14 @@ export interface IAVGCreatorInitialState {
   isSetWorkspaceDialogOpen: boolean;
   checkUpdateAlert: {
     open: boolean;
-    updateItem: UpdateItemConfig | null;
+    status:
+      | "Alert"
+      | "Downloading"
+      | "DownloadFinished"
+      | "InstallLocalPending"
+      | "Cancelled"
+      | "Error";
+    updateItem: UpdateItem | null;
   };
   silentUpdateAvailable: boolean;
   projects: AVGProjectData[];
@@ -46,6 +50,7 @@ export const AVGCreatorInitialState: IAVGCreatorInitialState = {
   isSetWorkspaceDialogOpen: false,
   checkUpdateAlert: {
     open: false,
+    status: "Alert",
     updateItem: null
   },
   silentUpdateAvailable: false,
@@ -92,6 +97,7 @@ export function AVGCreatorReducer(
         ...state,
         checkUpdateAlert: {
           open: payload.open,
+          status: payload.status,
           updateItem: payload.updateItem
         }
       };

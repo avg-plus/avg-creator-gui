@@ -18,12 +18,26 @@ export default (props: IMainContextMenuProps) => {
   };
 
   const handleCheckUpdate = async () => {
+    const localPendingUpdates = AutoUpdater.getLocalPendingUpdates();
+    if (localPendingUpdates) {
+      dispatch({
+        type: AVGCreatorActionType.CheckUpdateAlert,
+        payload: {
+          open: true,
+          status: "InstallLocalPending",
+          updateItem: localPendingUpdates
+        }
+      });
+      return;
+    }
+
     const item = await AutoUpdater.checkingForUpdates();
 
     dispatch({
       type: AVGCreatorActionType.CheckUpdateAlert,
       payload: {
         open: true,
+        status: "Alert",
         updateItem: item
       }
     });
