@@ -1,9 +1,48 @@
+import * as path from "path";
+import * as fs from "fs-extra";
 import * as builder from "electron-builder";
 import * as PackageJson from "../package.json";
+import * as SemVer from "semver";
+import * as program from "commander";
 
-const Platform = builder.Platform;
+program
+  .option(
+    "-v, --version-tag [versionTag]",
+    "发布的版本，在不同的版本标记上递增"
+  )
+  .description(
+    `可选： major, premajor, minor, preminor, patch, prepatch, prerelease`
+  )
+  .option("-i, --identifier [identifier]", "版本后缀", "beta");
+
+if (!program.versionTag) {
+  program.versionTag = "prepatch";
+}
+
+const updateVersion = async () => {
+  const PackageFile = path.resolve(__dirname, "../package.json");
+
+  let packageInfo = PackageJson;
+  const originalVersion = `v${packageInfo.version}`;
+
+  const newVersion = SemVer.inc(
+    packageInfo.version,
+    program.versionTag,
+    program.identifier
+  );
+
+  if (newVersion) {
+    console.log(`[!] 更新版本信息 ... ${originalVersion} => ${newVersion}`);
+
+    packageInfo.version = newVersion;
+    fs.writeJSONSync(PackageFile, packageInfo, { spaces: 2 });
+  }
+};
 
 const build = async () => {
+  const Platform = builder.Platform;
+
+  // 构建
   await builder.build({
     targets: Platform.MAC.createTarget(),
     config: {
@@ -15,7 +54,7 @@ const build = async () => {
         output: "build"
       },
       files: ["dist/**/*"],
-      asar: false,
+      asar: true,
       mac: {
         identity: null, // 不签名
         hardenedRuntime: true,
@@ -40,3 +79,4 @@ const build = async () => {
 };
 
 build();
+updateVersion();
