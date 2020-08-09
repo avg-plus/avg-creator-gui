@@ -140,7 +140,7 @@ export default () => {
 
   useEffect(() => {
     setDownloadingStatus(downloadingStatus);
-    return () => {};
+    return () => { };
   }, [downloadingStatus]);
 
   const handleDownload = async (updateItem: UpdateItem) => {
@@ -193,7 +193,7 @@ export default () => {
       LocalAppConfig.save();
     })
       .then(
-        () => {},
+        () => { },
         (reason: RequestError) => {
           logger.error("Download error: ", reason.message);
 
@@ -219,12 +219,18 @@ export default () => {
           });
         }
       )
-      .catch((reason: string) => {});
+      .catch((reason: string) => { });
   };
 
   const quitAndInstall = async (filename: string) => {
+    logger.debug("quitAndInstall", filename)
+
     // 打开安装程序
-    spawnSync("open", [filename]);
+    if (Env.getOSName() === "MacOS") {
+      spawnSync("open", [filename]);
+    } else {
+      spawnSync(filename, []);
+    }
 
     // 删除待安装记录
     // LocalAppConfig.clear("pendingUpdates");
