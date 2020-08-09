@@ -20,6 +20,7 @@ import { Env } from "../../common/env";
 import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
 import { useMount } from "react-use";
 import { AutoUpdater } from "../services/autoupdater";
+import UpdateAlertDialog from "../components/update-dialog/update-alert";
 
 const ProjectListMainPanel = React.lazy(() =>
   import("./project-list-main-panel")
@@ -53,9 +54,9 @@ const AboutDialog = React.lazy(() =>
   import("../components/about-dialog/about-dialog")
 );
 
-const UpdateAlertDialog = React.lazy(() =>
-  import("../components/update-dialog/update-alert")
-);
+// const UpdateAlertDialog = React.lazy(() =>
+//   import("../components/update-dialog/update-alert")
+// );
 
 const AVGCreator = () => {
   const [state, dispatch] = useReducer(
