@@ -3,33 +3,59 @@
 import "./avg-creator.less";
 
 import { CreatorContext } from "../hooks/context";
-import React, { useReducer, useState } from "react";
+import React, { useReducer, useState, Suspense } from "react";
 import {
   AVGCreatorReducer,
   AVGCreatorInitialState
 } from "../redux/reducers/avg-creator-reducers";
-import { CreateProjectDialog } from "../components/create-project-dialog/create-project-dialog";
 import {
   ButtonGroup,
   Button,
   Icon,
-  Menu,
   Popover,
-  Position,
-  MenuItem,
-  MenuDivider,
-  Dialog
+  Position
 } from "@blueprintjs/core";
-import { ProjectListMainPanel } from "./project-list-main-panel";
-import { InitWorkspaceDialog } from "../components/initial-workspace-dialog/init-workspace-dialog";
 import classNames from "classnames";
-import { BundleManagerDialog } from "../components/bundles-manager-dialog/bundles-manager-dialog";
-import { ProjectDetailDialog } from "../components/project-detail-dialog/project-details-dialog";
 import { Env } from "../../common/env";
-import { MainContextMenu } from "../components/context-menus/main-menus";
-import { AboutDialog } from "../components/about-dialog/about-dialog";
 import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
-import { ChangeLogDialog } from "../components/changelog-dialog/changelog-dialog";
+import { useMount } from "react-use";
+import { AutoUpdater } from "../services/autoupdater";
+
+const ProjectListMainPanel = React.lazy(() =>
+  import("./project-list-main-panel")
+);
+
+const ChangeLogDialog = React.lazy(() =>
+  import("../components/changelog-dialog/changelog-dialog")
+);
+
+const CreateProjectDialog = React.lazy(() =>
+  import("../components/create-project-dialog/create-project-dialog")
+);
+
+const BundleManagerDialog = React.lazy(() =>
+  import("../components/bundles-manager-dialog/bundles-manager-dialog")
+);
+
+const ProjectDetailDialog = React.lazy(() =>
+  import("../components/project-detail-dialog/project-details-dialog")
+);
+
+const InitWorkspaceDialog = React.lazy(() =>
+  import("../components/initial-workspace-dialog/init-workspace-dialog")
+);
+
+const MainContextMenu = React.lazy(() =>
+  import("../components/context-menus/main-menus")
+);
+
+const AboutDialog = React.lazy(() =>
+  import("../components/about-dialog/about-dialog")
+);
+
+const UpdateAlertDialog = React.lazy(() =>
+  import("../components/update-dialog/update-alert")
+);
 
 const AVGCreator = () => {
   const [state, dispatch] = useReducer(
@@ -37,20 +63,38 @@ const AVGCreator = () => {
     AVGCreatorInitialState
   );
 
+  const [lazyLoadFlag, setLazyLoadFlag] = useState(false);
+  setTimeout(() => {
+    setLazyLoadFlag(true);
+  }, 1);
+
+  useMount(() => {
+    if (AutoUpdater.isAppUpdated()) {
+      dispatch({
+        type: AVGCreatorActionType.OpenChangeLogDialog,
+        payload: {
+          open: true
+        }
+      });
+    }
+  });
+
   const [bundleManagerOpenned, setBundleManagerOpenned] = useState(false);
 
   const renderSettingMenu = () => {
     return (
-      <MainContextMenu
-        onOpenAboutDialog={() => {
-          dispatch({
-            type: AVGCreatorActionType.OpenAboutDialog,
-            payload: {
-              open: true
-            }
-          });
-        }}
-      />
+      <Suspense fallback={<></>}>
+        <MainContextMenu
+          onOpenAboutDialog={() => {
+            dispatch({
+              type: AVGCreatorActionType.OpenAboutDialog,
+              payload: {
+                open: true
+              }
+            });
+          }}
+        />{" "}
+      </Suspense>
     );
   };
 
@@ -97,7 +141,9 @@ const AVGCreator = () => {
                     "component-hidden": bundleManagerOpenned
                   })}
                 >
-                  <ProjectListMainPanel />
+                  <Suspense fallback={<></>}>
+                    <ProjectListMainPanel />
+                  </Suspense>
                 </div>
 
                 <div
@@ -106,7 +152,9 @@ const AVGCreator = () => {
                     "component-hidden": !bundleManagerOpenned
                   })}
                 >
-                  <BundleManagerDialog />
+                  <Suspense fallback={<></>}>
+                    <BundleManagerDialog />
+                  </Suspense>
                 </div>
               </div>
             </div>
@@ -119,11 +167,16 @@ const AVGCreator = () => {
             </div>
           </div>
 
-          {state.isCreateProjectDialogOpen && <CreateProjectDialog />}
-          <ProjectDetailDialog />
-          <InitWorkspaceDialog />
-          <AboutDialog />
-          {/* <ChangeLogDialog /> */}
+          {lazyLoadFlag && (
+            <Suspense fallback={<></>}>
+              {state.isCreateProjectDialogOpen && <CreateProjectDialog />}
+              {state.isAboutDialogOpen && <AboutDialog />}
+              {state.isProjectDetailDialogOpen && <ProjectDetailDialog />}
+              {state.isSetWorkspaceDialogOpen && <InitWorkspaceDialog />}
+              {state.checkUpdateAlert.open && <UpdateAlertDialog />}
+              {state.isChangeLogDialogOpen && <ChangeLogDialog />}
+            </Suspense>
+          )}
         </div>
       </div>
     </CreatorContext.Provider>

@@ -6,14 +6,11 @@ process.env.NODE_ENV = isDev ? "development" : "production";
 
 import "./ipc";
 import path from "path";
-import { AutoUpdater } from "../renderer/services/autoupdater";
 
 app.commandLine.appendSwitch("in-process-gpu");
 
 app.on("ready", async () => {
   const mainWindow = new BrowserWindow({
-    x: 0,
-    y: 0,
     width: 460,
     height: 680,
     minWidth: 400,
@@ -30,7 +27,7 @@ app.on("ready", async () => {
     titleBarStyle: "hiddenInset",
     webPreferences: {
       nodeIntegration: true,
-      // preload: path.join(__dirname, "preload.js"),
+      preload: path.join(__dirname, "preload.js"),
       allowRunningInsecureContent: false
     }
   });
@@ -41,15 +38,15 @@ app.on("ready", async () => {
   }
 
   Menu.setApplicationMenu(null);
-  mainWindow.once("ready-to-show", () => {
-    setTimeout(() => {
-      mainWindow.show();
-    }, 1);
 
+  mainWindow.webContents.once("dom-ready", () => {
+    mainWindow.show();
     if (isDev) {
       mainWindow.webContents.openDevTools();
     }
   });
+
+  mainWindow.once("ready-to-show", () => {});
 
   mainWindow.loadFile("./dist/static/index.html");
 });

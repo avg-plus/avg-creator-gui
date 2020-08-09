@@ -46,7 +46,7 @@ export interface BundleOption {
   bundle: ILocalBundle;
 }
 
-export const CreateProjectDialog = () => {
+export default () => {
   const { state, dispatch } = useContext(CreatorContext);
 
   const [projectName, setProjectName] = useState("");
@@ -87,7 +87,7 @@ export const CreateProjectDialog = () => {
 
   const handleCreateDialogClose = () => {
     dispatch({
-      type: AVGCreatorActionType.ToggleCreateProjectDialog,
+      type: AVGCreatorActionType.OpenCreateProjectDialog,
       payload: {
         open: false
       }
@@ -168,7 +168,7 @@ export const CreateProjectDialog = () => {
         });
 
         dispatch({
-          type: AVGCreatorActionType.ToggleCreateProjectDialog,
+          type: AVGCreatorActionType.OpenCreateProjectDialog,
           payload: {
             open: false
           }

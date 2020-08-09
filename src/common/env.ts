@@ -4,7 +4,6 @@ import path from "path";
 
 import { remote } from "electron";
 import { LocalAppConfig } from "./local-app-config";
-import { logger } from "./lib/logger";
 
 const app = remote.app;
 
@@ -40,6 +39,11 @@ class _Env {
     };
 
     return platforms[os.platform()];
+  }
+
+  // 获取游戏模板工程目录
+  getUpdatesDir() {
+    return path.join(this.getAppDataDir(), "updates/");
   }
 
   // 获取游戏模板工程目录

@@ -21,7 +21,7 @@ import { IconNames } from "@blueprintjs/icons";
 import { LocalAppConfig } from "../../../common/local-app-config";
 import { remote } from "electron";
 
-export const InitWorkspaceDialog = () => {
+export default () => {
   const { state, dispatch } = useContext(CreatorContext);
 
   const [workspaceDir, setWorkspaceDir] = useState("");
@@ -39,7 +39,7 @@ export const InitWorkspaceDialog = () => {
 
   const handleDialogClose = async () => {
     dispatch({
-      type: AVGCreatorActionType.ToggleSetWorkspaceDialog,
+      type: AVGCreatorActionType.OpenSetWorkspaceDialog,
       payload: {
         open: false
       }

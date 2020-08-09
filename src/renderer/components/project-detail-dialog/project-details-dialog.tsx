@@ -1,12 +1,9 @@
-import React, { useContext, Fragment, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   Drawer,
-  Card,
-  Elevation,
   Tag,
   Intent,
   Icon as BPIcon,
-  Checkbox,
   Button,
   ButtonGroup,
   AnchorButton,
@@ -45,7 +42,7 @@ export interface IProjectDetailDialogProps {
   server: IAVGServer;
 }
 
-export const ProjectDetailDialog = () => {
+export default () => {
   const { state, dispatch } = useContext(CreatorContext);
   const [isGameLaunching, setIsGameLaunching] = useState(false);
   const [isGameStatusLoading, setIsGameStatusLoading] = useState(false);

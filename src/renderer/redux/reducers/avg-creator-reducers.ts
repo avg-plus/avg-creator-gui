@@ -2,10 +2,8 @@ import {
   AVGCreatorActionType,
   AVGCreatorAction
 } from "./../actions/avg-creator-actions";
-import {
-  AVGProjectData,
-  AVGProjectManager
-} from "../../manager/project-manager";
+import { AVGProjectData } from "../../manager/project-manager";
+import { UpdateItem } from "../../services/autoupdater";
 
 export interface IAVGServer {
   serveProject: AVGProjectData | null;
@@ -21,6 +19,19 @@ export interface IAVGCreatorInitialState {
   isAboutDialogOpen: boolean;
   isProjectDetailDialogOpen: boolean;
   isSetWorkspaceDialogOpen: boolean;
+  isChangeLogDialogOpen: boolean;
+  checkUpdateAlert: {
+    open: boolean;
+    status:
+      | "Alert"
+      | "Downloading"
+      | "DownloadFinished"
+      | "InstallLocalPending"
+      | "Cancelled"
+      | "Error";
+    updateItem: UpdateItem | null;
+  };
+  silentUpdateAvailable: boolean;
   projects: AVGProjectData[];
   openedProject: AVGProjectData | null;
   currentServer: IAVGServer;
@@ -38,6 +49,13 @@ export const AVGCreatorInitialState: IAVGCreatorInitialState = {
   isAboutDialogOpen: false,
   isProjectDetailDialogOpen: false,
   isSetWorkspaceDialogOpen: false,
+  isChangeLogDialogOpen: false,
+  checkUpdateAlert: {
+    open: false,
+    status: "Alert",
+    updateItem: null
+  },
+  silentUpdateAvailable: false,
   projects: [],
   openedProject: null,
   currentServer: {
@@ -57,36 +75,44 @@ export function AVGCreatorReducer(
   state: IAVGCreatorInitialState,
   action: AVGCreatorAction
 ): IAVGCreatorInitialState {
+  const payload = action.payload;
   switch (action.type) {
-    case AVGCreatorActionType.OpenSettingPanel:
-      return { ...state, isSettingPanelOpen: true, isShowPanelHeader: true };
-    case AVGCreatorActionType.CloseSettingPanel:
-      return { ...state, isSettingPanelOpen: false, isShowPanelHeader: false };
-    case AVGCreatorActionType.ToggleCreateProjectDialog:
-      return { ...state, isCreateProjectDialogOpen: action.payload.open };
+    case AVGCreatorActionType.OpenCreateProjectDialog:
+      return { ...state, isCreateProjectDialogOpen: payload.open };
     case AVGCreatorActionType.OpenProjectDetailDialog:
       return {
         ...state,
-        isProjectDetailDialogOpen: action.payload.open,
-        openedProject: action.payload.project
+        isProjectDetailDialogOpen: payload.open,
+        openedProject: payload.project
       };
     case AVGCreatorActionType.OpenAboutDialog:
       return {
         ...state,
-        isAboutDialogOpen: action.payload.open
+        isAboutDialogOpen: payload.open
       };
-    case AVGCreatorActionType.ToggleSetWorkspaceDialog:
-      return { ...state, isSetWorkspaceDialogOpen: action.payload.open };
+    case AVGCreatorActionType.CheckUpdateAlert:
+      return {
+        ...state,
+        checkUpdateAlert: {
+          open: payload.open,
+          status: payload.status,
+          updateItem: payload.updateItem
+        }
+      };
+    case AVGCreatorActionType.OpenSetWorkspaceDialog:
+      return { ...state, isSetWorkspaceDialogOpen: payload.open };
+    case AVGCreatorActionType.OpenChangeLogDialog:
+      return { ...state, isChangeLogDialogOpen: payload.open };
     case AVGCreatorActionType.SetProjectList:
-      return { ...state, projects: action.payload.projects };
+      return { ...state, projects: payload.projects };
     case AVGCreatorActionType.AddProjectItem:
       return {
         ...state,
-        projects: state.projects.concat(action.payload.project)
+        projects: state.projects.concat(payload.project)
       };
     case AVGCreatorActionType.RemoveProjectItem:
       const projects = state.projects.filter((v) => {
-        return v._id !== action.payload.projectID;
+        return v._id !== payload.projectID;
       });
 
       return {
@@ -97,8 +123,8 @@ export function AVGCreatorReducer(
       return {
         ...state,
         currentServer: {
-          serveProject: action.payload.serverProject,
-          isRunning: action.payload.isRunning,
+          serveProject: payload.serverProject,
+          isRunning: payload.isRunning,
           engineURL: "",
           assetsURL: ""
         }
@@ -108,15 +134,15 @@ export function AVGCreatorReducer(
       return {
         ...state,
         currentDesktopProcess: {
-          PID: action.payload.PID,
-          status: action.payload.status
+          PID: payload.PID,
+          status: payload.status
         }
       };
     }
     case AVGCreatorActionType.SetDefaultEngine: {
       return {
         ...state,
-        defaultEngineBundleHash: action.payload.bundleHash
+        defaultEngineBundleHash: payload.bundleHash
       };
     }
     default:

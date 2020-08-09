@@ -7,7 +7,7 @@ import { CreatorContext } from "../../hooks/context";
 import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
 import { remote } from "electron";
 
-export const AboutDialog = () => {
+export default () => {
   const { state, dispatch } = useContext(CreatorContext);
 
   return (
