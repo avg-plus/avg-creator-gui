@@ -36,14 +36,37 @@ export class AutoUpdater {
     }
   }
 
+  // 是否应该显示更新日志
+  static shouldShowChangeLogs() {
+    // 1. 检查配置里记录的版本不是当前版本号，则认为是更新版本后的第一次启动
+    // 2. 启动后默认把记录的版本号更新为当前版本号
+    const firstLaunchOfVersion = LocalAppConfig.get("firstLaunchOfVersion");
+    const currentVersion = remote.app.getVersion();
+
+    if (
+      firstLaunchOfVersion &&
+      SemVer.compare(currentVersion, firstLaunchOfVersion)
+    ) {
+      LocalAppConfig.set("firstLaunchOfVersion", currentVersion);
+      LocalAppConfig.save();
+      return true;
+    }
+
+    return false;
+  }
+
   // 是否有本地
   static getLocalPendingUpdates() {
     const pendingUpdates = LocalAppConfig.get(
       "pendingUpdates"
     ) as LocalPendingUpdateItem;
 
-    if (!pendingUpdates.filename || fs.existsSync(pendingUpdates.filename)) {
-      return false;
+    if (!pendingUpdates) {
+      return null;
+    }
+
+    if (!pendingUpdates.filename || !fs.existsSync(pendingUpdates.filename)) {
+      return null;
     }
 
     return pendingUpdates;

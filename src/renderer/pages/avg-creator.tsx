@@ -18,6 +18,8 @@ import {
 import classNames from "classnames";
 import { Env } from "../../common/env";
 import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
+import { useMount } from "react-use";
+import { AutoUpdater } from "../services/autoupdater";
 
 const ProjectListMainPanel = React.lazy(() =>
   import("./project-list-main-panel")
@@ -61,10 +63,14 @@ const AVGCreator = () => {
     AVGCreatorInitialState
   );
 
-  const [s, s_] = useState(false);
+  const [lazyLoadFlag, setLazyLoadFlag] = useState(false);
   setTimeout(() => {
-    s_(true);
+    setLazyLoadFlag(true);
   }, 1);
+
+  useMount(() => {
+    AutoUpdater.shouldShowChangeLogs();
+  });
 
   const [bundleManagerOpenned, setBundleManagerOpenned] = useState(false);
 
@@ -154,14 +160,14 @@ const AVGCreator = () => {
             </div>
           </div>
 
-          {s && (
+          {lazyLoadFlag && (
             <Suspense fallback={<></>}>
               {state.isCreateProjectDialogOpen && <CreateProjectDialog />}
               {state.isAboutDialogOpen && <AboutDialog />}
               {state.isProjectDetailDialogOpen && <ProjectDetailDialog />}
               {state.isSetWorkspaceDialogOpen && <InitWorkspaceDialog />}
               {state.checkUpdateAlert.open && <UpdateAlertDialog />}
-              {/* <ChangeLogDialog /> */}
+              <ChangeLogDialog />
             </Suspense>
           )}
         </div>

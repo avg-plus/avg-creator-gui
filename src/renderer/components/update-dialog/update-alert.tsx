@@ -218,6 +218,19 @@ export default () => {
       .catch((reason: string) => {});
   };
 
+  const quitAndInstall = async (filename: string) => {
+    // 打开安装程序
+    spawnSync("open", [filename]);
+
+    // 删除待安装记录
+    LocalAppConfig.remove("pendingUpdates");
+
+    // 退出程序
+    if (Env.isProduction()) {
+      remote.app.quit();
+    }
+  };
+
   const handleConfirm = async () => {
     const status = state.checkUpdateAlert.status;
 
@@ -227,6 +240,8 @@ export default () => {
       case "Alert": {
         if (shouldUpdate && updateItem) {
           handleDownload(updateItem);
+        } else {
+          handleClose();
         }
         break;
       }
@@ -235,18 +250,13 @@ export default () => {
         break;
       }
       case "DownloadFinished": {
-        spawnSync("open", [downloadedFile]);
-        if (Env.isProduction()) {
-          remote.app.quit();
-        }
+        quitAndInstall(downloadedFile);
+
         break;
       }
       case "InstallLocalPending": {
         if (updateItem) {
-          spawnSync("open", [(updateItem as LocalPendingUpdateItem).filename]);
-        }
-        if (Env.isProduction()) {
-          remote.app.quit();
+          quitAndInstall((updateItem as LocalPendingUpdateItem).filename);
         }
         break;
       }

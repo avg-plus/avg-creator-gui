@@ -1,5 +1,13 @@
 import React, { useState, useContext } from "react";
-import { MenuDivider, Menu, MenuItem, Alert, Dialog } from "@blueprintjs/core";
+import {
+  MenuDivider,
+  Menu,
+  MenuItem,
+  Alert,
+  Dialog,
+  Tag,
+  Intent
+} from "@blueprintjs/core";
 import { shell, app, remote } from "electron";
 import { AutoUpdater } from "../../services/autoupdater";
 import { GUIToaster } from "../../services/toaster";
@@ -47,14 +55,15 @@ export default (props: IMainContextMenuProps) => {
     <>
       <Menu>
         <MenuDivider title="版本" />
-        <MenuItem text="版本日志" icon="document" />
+        <MenuItem text="版本日志" icon="history" />
         <MenuItem
           text="检查更新..."
           icon="automatic-updates"
+          // labelElement={<Tag intent={Intent.DANGER}>有新版本</Tag>}
           onClick={handleCheckUpdate}
         />
 
-        <MenuDivider title="链接" />
+        <MenuDivider title="线上资源" />
         <MenuItem
           text="主页"
           icon="globe-network"
@@ -65,6 +74,18 @@ export default (props: IMainContextMenuProps) => {
           icon="chat"
           onClick={(e: any) => openURL("https://community.avg-engine.com/")}
         />
+        <MenuItem
+          text="使用文档"
+          icon="document"
+          onClick={(e: any) => openURL("https://docs.avg-engine.com/")}
+        />
+        <MenuItem
+          text="线上引擎"
+          icon="play"
+          onClick={(e: any) => openURL("https://play.avg-engine.com/")}
+        />
+        <MenuDivider />
+
         <MenuItem
           text="关于 AVGPlus Creator"
           icon="info-sign"

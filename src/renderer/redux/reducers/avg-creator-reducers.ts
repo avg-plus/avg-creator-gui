@@ -19,6 +19,7 @@ export interface IAVGCreatorInitialState {
   isAboutDialogOpen: boolean;
   isProjectDetailDialogOpen: boolean;
   isSetWorkspaceDialogOpen: boolean;
+  isChangeLogDialogOpen: boolean;
   checkUpdateAlert: {
     open: boolean;
     status:
@@ -48,6 +49,7 @@ export const AVGCreatorInitialState: IAVGCreatorInitialState = {
   isAboutDialogOpen: false,
   isProjectDetailDialogOpen: false,
   isSetWorkspaceDialogOpen: false,
+  isChangeLogDialogOpen: false,
   checkUpdateAlert: {
     open: false,
     status: "Alert",
