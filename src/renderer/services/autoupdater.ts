@@ -37,18 +37,30 @@ export class AutoUpdater {
   }
 
   // 是否应该显示更新日志
-  static shouldShowChangeLogs() {
-    // 1. 检查配置里记录的版本不是当前版本号，则认为是更新版本后的第一次启动
+  static isAppUpdated() {
+    // 1. 检查配置里待定记录的版本不是当前版本号，则认为是更新版本后的第一次启动
     // 2. 启动后默认把记录的版本号更新为当前版本号
-    const firstLaunchOfVersion = LocalAppConfig.get("firstLaunchOfVersion");
+    const updateVersion = LocalAppConfig.get("updateVersion") as string;
+    // const pendingUpdateVersion = this.getLocalPendingUpdates()?.version;
     const currentVersion = remote.app.getVersion();
 
-    if (
-      firstLaunchOfVersion &&
-      SemVer.compare(currentVersion, firstLaunchOfVersion)
-    ) {
-      LocalAppConfig.set("firstLaunchOfVersion", currentVersion);
+    if (!updateVersion) {
+      LocalAppConfig.set("updateVersion", currentVersion);
       LocalAppConfig.save();
+      return false;
+    }
+
+    logger.debug("isAppUpdated", updateVersion);
+
+    // 待定的版本为空，或者待定版本和当前启动的版本不一致
+    if (updateVersion && updateVersion !== currentVersion) {
+      // 设置更新版本为当前版本
+      LocalAppConfig.set("updateVersion", currentVersion);
+
+      // 删除待定更新记录
+      LocalAppConfig.clear("pendingUpdates");
+      LocalAppConfig.save();
+
       return true;
     }
 

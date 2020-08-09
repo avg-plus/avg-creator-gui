@@ -1,10 +1,4 @@
 export enum AVGCreatorActionType {
-  // 进入设置面板
-  OpenSettingPanel = "OpenSettingPanel",
-
-  // 退出设置面板
-  CloseSettingPanel = "CloseSettingPanel",
-
   // 打开创建项目对话框
   OpenCreateProjectDialog = "OpenCreateProjectDialog",
 
@@ -16,6 +10,9 @@ export enum AVGCreatorActionType {
 
   // 打开设置工作目录对话框
   OpenSetWorkspaceDialog = "OpenSetWorkspaceDialog",
+
+  // 打开更新日志对话框
+  OpenChangeLogDialog = "OpenChangeLogDialog",
 
   // 检查更新提醒
   CheckUpdateAlert = "CheckUpdateAlert",

@@ -77,10 +77,6 @@ export function AVGCreatorReducer(
 ): IAVGCreatorInitialState {
   const payload = action.payload;
   switch (action.type) {
-    case AVGCreatorActionType.OpenSettingPanel:
-      return { ...state, isSettingPanelOpen: true, isShowPanelHeader: true };
-    case AVGCreatorActionType.CloseSettingPanel:
-      return { ...state, isSettingPanelOpen: false, isShowPanelHeader: false };
     case AVGCreatorActionType.OpenCreateProjectDialog:
       return { ...state, isCreateProjectDialogOpen: payload.open };
     case AVGCreatorActionType.OpenProjectDetailDialog:
@@ -105,6 +101,8 @@ export function AVGCreatorReducer(
       };
     case AVGCreatorActionType.OpenSetWorkspaceDialog:
       return { ...state, isSetWorkspaceDialogOpen: payload.open };
+    case AVGCreatorActionType.OpenChangeLogDialog:
+      return { ...state, isChangeLogDialogOpen: payload.open };
     case AVGCreatorActionType.SetProjectList:
       return { ...state, projects: payload.projects };
     case AVGCreatorActionType.AddProjectItem:

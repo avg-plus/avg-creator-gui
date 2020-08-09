@@ -118,16 +118,6 @@ export class DebugServer {
           PID: data.PID
         });
 
-        // 尝试发送一个
-        setTimeout(() => {
-          this.sendMessage(socket, {
-            cmd: "reload_player",
-            data: {
-              script: "particle.snow()"
-            }
-          });
-        }, 3000);
-
         break;
     }
   }

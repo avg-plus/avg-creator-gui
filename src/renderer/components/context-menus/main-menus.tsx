@@ -27,7 +27,9 @@ export default (props: IMainContextMenuProps) => {
 
   const handleCheckUpdate = async () => {
     const localPendingUpdates = AutoUpdater.getLocalPendingUpdates();
-    if (localPendingUpdates) {
+    const currentVersion = remote.app.getVersion();
+
+    if (localPendingUpdates && localPendingUpdates.version !== currentVersion) {
       dispatch({
         type: AVGCreatorActionType.CheckUpdateAlert,
         payload: {
@@ -51,11 +53,24 @@ export default (props: IMainContextMenuProps) => {
     });
   };
 
+  const handleShowChangeLogDialog = () => {
+    dispatch({
+      type: AVGCreatorActionType.OpenChangeLogDialog,
+      payload: {
+        open: true
+      }
+    });
+  };
+
   return (
     <>
       <Menu>
         <MenuDivider title="版本" />
-        <MenuItem text="版本日志" icon="history" />
+        <MenuItem
+          text="版本日志"
+          icon="history"
+          onClick={handleShowChangeLogDialog}
+        />
         <MenuItem
           text="检查更新..."
           icon="automatic-updates"

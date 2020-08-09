@@ -4,7 +4,6 @@ import path from "path";
 
 import { remote } from "electron";
 import { LocalAppConfig } from "./local-app-config";
-import { logger } from "./lib/logger";
 
 const app = remote.app;
 

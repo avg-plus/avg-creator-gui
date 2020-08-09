@@ -6,7 +6,6 @@ process.env.NODE_ENV = isDev ? "development" : "production";
 
 import "./ipc";
 import path from "path";
-import { AutoUpdater } from "../renderer/services/autoupdater";
 
 app.commandLine.appendSwitch("in-process-gpu");
 
@@ -42,13 +41,12 @@ app.on("ready", async () => {
 
   mainWindow.webContents.once("dom-ready", () => {
     mainWindow.show();
-    mainWindow.webContents.openDevTools();
-  });
-
-  mainWindow.once("ready-to-show", () => {
     if (isDev) {
+      mainWindow.webContents.openDevTools();
     }
   });
+
+  mainWindow.once("ready-to-show", () => {});
 
   mainWindow.loadFile("./dist/static/index.html");
 });

@@ -48,8 +48,12 @@ export default () => {
   const renderDescriptions = (descriptions: string[]) => {
     console.log("renderDescriptions", descriptions);
 
-    return descriptions.map((v) => {
-      return <div>{v}</div>;
+    return descriptions.map((v, index) => {
+      return (
+        <div>
+          {index + 1}. {v}
+        </div>
+      );
     });
   };
 
@@ -223,7 +227,7 @@ export default () => {
     spawnSync("open", [filename]);
 
     // 删除待安装记录
-    LocalAppConfig.remove("pendingUpdates");
+    // LocalAppConfig.clear("pendingUpdates");
 
     // 退出程序
     if (Env.isProduction()) {

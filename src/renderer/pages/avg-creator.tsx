@@ -69,7 +69,14 @@ const AVGCreator = () => {
   }, 1);
 
   useMount(() => {
-    AutoUpdater.shouldShowChangeLogs();
+    if (AutoUpdater.isAppUpdated()) {
+      dispatch({
+        type: AVGCreatorActionType.OpenChangeLogDialog,
+        payload: {
+          open: true
+        }
+      });
+    }
   });
 
   const [bundleManagerOpenned, setBundleManagerOpenned] = useState(false);
@@ -167,7 +174,7 @@ const AVGCreator = () => {
               {state.isProjectDetailDialogOpen && <ProjectDetailDialog />}
               {state.isSetWorkspaceDialogOpen && <InitWorkspaceDialog />}
               {state.checkUpdateAlert.open && <UpdateAlertDialog />}
-              <ChangeLogDialog />
+              {state.isChangeLogDialogOpen && <ChangeLogDialog />}
             </Suspense>
           )}
         </div>
