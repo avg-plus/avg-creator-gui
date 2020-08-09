@@ -81,7 +81,7 @@ export function AVGCreatorReducer(
       return { ...state, isSettingPanelOpen: true, isShowPanelHeader: true };
     case AVGCreatorActionType.CloseSettingPanel:
       return { ...state, isSettingPanelOpen: false, isShowPanelHeader: false };
-    case AVGCreatorActionType.ToggleCreateProjectDialog:
+    case AVGCreatorActionType.OpenCreateProjectDialog:
       return { ...state, isCreateProjectDialogOpen: payload.open };
     case AVGCreatorActionType.OpenProjectDetailDialog:
       return {
@@ -103,7 +103,7 @@ export function AVGCreatorReducer(
           updateItem: payload.updateItem
         }
       };
-    case AVGCreatorActionType.ToggleSetWorkspaceDialog:
+    case AVGCreatorActionType.OpenSetWorkspaceDialog:
       return { ...state, isSetWorkspaceDialogOpen: payload.open };
     case AVGCreatorActionType.SetProjectList:
       return { ...state, projects: payload.projects };

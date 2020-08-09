@@ -71,7 +71,7 @@ export default () => {
 
   const handleInitWorkspace = async () => {
     dispatch({
-      type: AVGCreatorActionType.ToggleSetWorkspaceDialog,
+      type: AVGCreatorActionType.OpenSetWorkspaceDialog,
       payload: {
         open: true
       }
@@ -155,7 +155,7 @@ export default () => {
 
   const handleCreateProject = async () => {
     dispatch({
-      type: AVGCreatorActionType.ToggleCreateProjectDialog,
+      type: AVGCreatorActionType.OpenCreateProjectDialog,
       payload: {
         open: true
       }

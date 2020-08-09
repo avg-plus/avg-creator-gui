@@ -87,7 +87,7 @@ export default () => {
 
   const handleCreateDialogClose = () => {
     dispatch({
-      type: AVGCreatorActionType.ToggleCreateProjectDialog,
+      type: AVGCreatorActionType.OpenCreateProjectDialog,
       payload: {
         open: false
       }
@@ -168,7 +168,7 @@ export default () => {
         });
 
         dispatch({
-          type: AVGCreatorActionType.ToggleCreateProjectDialog,
+          type: AVGCreatorActionType.OpenCreateProjectDialog,
           payload: {
             open: false
           }

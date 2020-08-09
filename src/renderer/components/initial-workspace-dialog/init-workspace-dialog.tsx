@@ -39,7 +39,7 @@ export default () => {
 
   const handleDialogClose = async () => {
     dispatch({
-      type: AVGCreatorActionType.ToggleSetWorkspaceDialog,
+      type: AVGCreatorActionType.OpenSetWorkspaceDialog,
       payload: {
         open: false
       }

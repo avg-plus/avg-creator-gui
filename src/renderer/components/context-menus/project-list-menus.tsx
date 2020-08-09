@@ -13,7 +13,7 @@ interface IProjectListContextMenuProps {
 export const ProjectListContextMenu = (props: IProjectListContextMenuProps) => {
   const handleCreateProject = () => {
     props.dispatch({
-      type: AVGCreatorActionType.ToggleCreateProjectDialog,
+      type: AVGCreatorActionType.OpenCreateProjectDialog,
       payload: {
         open: true
       }
