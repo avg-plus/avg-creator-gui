@@ -1,10 +1,8 @@
 import http from "http";
 import path from "path";
-import os from "os";
+import URL from "url";
 import fs from "fs-extra";
 import child_process from "child_process";
-
-import getIP from "public-ip";
 
 import { AVGProjectData } from "./../manager/project-manager";
 import connect from "connect";
@@ -37,8 +35,10 @@ export class GameRunner {
 
     const addressInfo = server.address() as AddressInfo;
     let ip = addressInfo.address;
-    if (ip === "0.0.0.0") {
+    if (ip === "0.0.0.0" || ip === "::") {
       ip = "127.0.0.1";
+    } else if (ip.includes(":")) {
+      ip = `[${ip}]`;
     }
 
     return `http://${ip}:${addressInfo.port}`;
@@ -67,43 +67,6 @@ export class GameRunner {
         logger.debug(`Assets Server stopped.`);
       });
     }
-  }
-
-  private static async getAvalibleIPs(): Promise<string[]> {
-    var ifaces = os.networkInterfaces();
-    if (!ifaces) {
-      return [];
-    }
-
-    const IPs: string[] = [];
-
-    Object.keys(ifaces).forEach((ifname) => {
-      if (!ifname) {
-        return;
-      }
-
-      var alias = 0;
-
-      ifaces[ifname]?.forEach(function (iface) {
-        if ("IPv4" !== iface.family || iface.internal !== false) {
-          return;
-        }
-
-        if (alias >= 1) {
-          logger.debug(ifname + ":" + alias, iface.address);
-        } else {
-          logger.debug(ifname, iface.address);
-        }
-
-        IPs.push(iface.address);
-        ++alias;
-      });
-    });
-
-    const publicIP = await getIP.v4();
-    IPs.push(publicIP);
-
-    return IPs;
   }
 
   static async runAsDesktop(project: AVGProjectData) {
@@ -180,8 +143,10 @@ export class GameRunner {
       this.assetsServer.listening &&
       assetsServerAddress
     ) {
-      const assetsURL = `http://${assetsServerAddress.address}:${assetsServerAddress.port}`;
-      this.engineServer = await this.serveEngine(project, assetsURL);
+      this.engineServer = await this.serveEngine(
+        project,
+        assetsServerAddress.port
+      );
     }
 
     // 如果引擎和资源服务有任意一个没启动，则清理
@@ -202,16 +167,17 @@ export class GameRunner {
 
   static async serveAssets(project: AVGProjectData) {
     const assetsDir = project.dir;
-
-    return this.runServer(assetsDir, {
+    const { serveStatic, server } = await this.runServer();
+    serveStatic(assetsDir, {
       cacheControl: false,
       setHeaders: (res) => {
         res.setHeader("Access-Control-Allow-Origin", "*");
       }
     });
+    return server;
   }
 
-  static async serveEngine(project: AVGProjectData, assetServerURL: string) {
+  static async serveEngine(project: AVGProjectData, assetPort: number) {
     // 查找引擎 package
     const engineBundleDir = BundlesManager.getLocalEngineDir(
       project.engineHash,
@@ -222,38 +188,71 @@ export class GameRunner {
     const engineConfigFile = path.join(engineBundleDir, "engine.json");
     const engineConfig = fs.readJSONSync(engineConfigFile);
 
-    engineConfig.game_assets_root = assetServerURL;
-    fs.writeJsonSync(engineConfigFile, engineConfig);
+    const { app, server, serveStatic } = await this.runServer();
+    app.use(
+      "/engine.json",
+      (req: connect.IncomingMessage, res: http.ServerResponse) => {
+        let url = `http://127.0.0.1:${assetPort}/`;
+        const header = req.headers["referer"] || req.headers["host"] || "";
+        if (header) {
+          if (header.startsWith("http")) {
+            // referer或者带http(s)://的host
+            const u = URL.parse(header);
+            url = `${u.protocol}//${u.hostname}:${assetPort}/`;
+          } else {
+            // 注意ipv6
+            const host = header.split(":");
+            host.pop();
+            const schema = req.headers["HTTPS"] ? "https:" : "http:";
+            url = `${schema}//${host.join(":")}:${assetPort}/`;
+          }
+        }
+        res.end(
+          JSON.stringify({
+            ...engineConfig,
+            game_assets_root: url
+          })
+        );
+      }
+    );
 
-    return this.runServer(engineBundleDir);
+    serveStatic(engineBundleDir);
+    return server;
   }
 
-  static async runServer(
-    servePath: string,
-    staticOptions?: serveStatic.ServeStaticOptions,
-    hostname: string = "0.0.0.0",
-    port: number = 0
-  ) {
+  static async runServer(port: number = 0) {
     if (!port) {
       port = await getPort({ port: getPort.makeRange(2333, 3000) });
     }
 
-    const url = `http://${hostname}:${port}`;
+    const app = connect();
 
-    try {
-      return await new Promise<http.Server>((resolve, reject) => {
-        const server = connect()
-          .use(serveStatic(servePath, staticOptions))
-          .listen(port, hostname, () => {
-            logger.debug(`Server started on ${url}, serving ${servePath} ...`);
-            resolve(server);
-          })
-          .on("error", (error) => {
-            reject(error.message);
-          });
-      });
-    } catch (error) {
-      throw new Error(error);
-    }
+    const server = await new Promise<http.Server>((resolve, reject) => {
+      const server = app
+        .listen(port, () => {
+          let host = (server.address() as AddressInfo).address || "";
+          if (host.includes(":")) {
+            host = `[${host}]`;
+          }
+          host += (server.address() as AddressInfo).port;
+          logger.debug(`Server started on http://${host}`);
+          resolve(server);
+        })
+        .on("error", (error) => {
+          reject(error.message);
+        });
+      return server;
+    });
+
+    return {
+      app,
+      server,
+      port,
+      serveStatic(path: string, options?: serveStatic.ServeStaticOptions) {
+        app.use(serveStatic(path, options));
+        logger.debug(`\t\tserving ${path}...`);
+        return this;
+      }
+    };
   }
 }
