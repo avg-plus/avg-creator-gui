@@ -1,7 +1,7 @@
 /** @format */
 
 import React from "react";
-import "./app.less";
+import "./App.less";
 import { Titlebar, Color } from "custom-electron-titlebar";
 
 import { Env } from "../common/env";

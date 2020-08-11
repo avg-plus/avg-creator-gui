@@ -1,9 +1,15 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "allowJs": true,
+    "allowJs": false,
     "allowSyntheticDefaultImports": true,
+    "charset": "utf8",
+    "checkJs": false,
+    "emitBOM": false,
+    "newLine": "lf",
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true,
     "removeComments": false,
     "preserveConstEnums": true,
     "sourceMap": false,
