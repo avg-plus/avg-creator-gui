@@ -46,7 +46,7 @@ const build = async () => {
   await builder.build({
     targets: Platform.current().createTarget(),
     config: {
-      productName: "AVGPlus Creator", //项目名 这也是生成的exe文件的前缀名
+      productName: "AVGPlusCreator", //项目名 这也是生成的exe文件的前缀名
       appId: "com.avgplus.creator", //包名
       buildVersion: PackageJson.version,
       directories: {
@@ -73,7 +73,6 @@ const build = async () => {
         icon: "pack-data/icons/icon_512x512@2x.png",
         target: [
           {
-
             target: "nsis",
             arch: ["x64"]
           },
