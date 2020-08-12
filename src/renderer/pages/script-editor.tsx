@@ -6,7 +6,7 @@ import MonacoEditor from 'react-monaco-editor';
 export const ScriptEditor = () => {
     return (
         <div>
-            123
+            editor
             <MonacoEditor
                 width="800"
                 height="600"
