@@ -10,7 +10,8 @@ import {
   Popover,
   Menu,
   MenuItem,
-  Switch
+  Switch,
+  Position
 } from "@blueprintjs/core";
 
 import Icon, { BugFilled } from "@ant-design/icons";
@@ -37,6 +38,7 @@ import { useLaunchGame, useKillGame } from "../../hooks/use-launch-game";
 import { SubcribeEvents } from "../../../common/subcribe-events";
 import { logger } from "../../../common/lib/logger";
 import { shell } from "electron";
+import { ProjectDetailContextMenu } from "../context-menus/projet-detail-menus";
 
 export interface IProjectDetailDialogProps {
   server: IAVGServer;
@@ -51,9 +53,8 @@ export default () => {
     const token = PubSub.subscribe(
       SubcribeEvents.GameProcessChanged,
       (event: SubcribeEvents, data: any) => {
-        logger.debug("Received :", event, data);
-
         const { status } = data;
+
         setIsGameLaunching(status === "normal" ? true : false);
       }
     );
@@ -250,7 +251,18 @@ export default () => {
 
           <div className={"footer"}>
             <Row align="middle" justify={"center"}>
-              <Col span={20}></Col>
+              <Col span={20} push={1}>
+                <Popover
+                  content={
+                    <ProjectDetailContextMenu
+                      project={state.openedProject}
+                    ></ProjectDetailContextMenu>
+                  }
+                  position={Position.RIGHT_TOP}
+                >
+                  <Button icon="settings" minimal={true}></Button>
+                </Popover>
+              </Col>
               <Col span={4}>
                 <Switch
                   style={{ paddingTop: "17%" }}

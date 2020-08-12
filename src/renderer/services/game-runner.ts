@@ -18,6 +18,8 @@ import { AddressInfo } from "net";
 import { shell } from "electron";
 import PubSub from "pubsub-js";
 import { SubcribeEvents } from "../../common/subcribe-events";
+import { AVGScriptHotReload } from "./fs-watch";
+import { DebugServer } from "../../main/debug-server/debug-server";
 
 type ServerType = "Engine" | "Assets";
 
@@ -135,7 +137,7 @@ export class GameRunner {
 
       this.desktopProcess = child_process.spawn(
         electronExecutable,
-        [`${engineBundleDir}/main.electron.js`, "--debug=127.0.0.1:56100"],
+        [`${engineBundleDir}/main.electron.js`, `--debug=127.0.0.1:56100`],
         {
           stdio: "inherit",
           windowsHide: false
@@ -160,6 +162,9 @@ export class GameRunner {
             status: "closed"
           });
         });
+
+        // 开始监听目录
+        AVGScriptHotReload.watch(project.dir);
 
         return true;
       }

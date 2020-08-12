@@ -91,7 +91,7 @@ export class DebugServer {
       ip = "127.0.0.1";
     }
 
-    return `http://${ip}:${addressInfo.port}`;
+    return `ws://${ip}:${addressInfo.port}`;
   }
 
   static async removeClient(PID: string) {
@@ -113,6 +113,12 @@ export class DebugServer {
     switch (cmd) {
       case DebugCommands.Register:
         this.removeClient(data.PID);
+        this.clients.forEach((v) => {
+          v.socket.close();
+        });
+
+        this.clients = [];
+
         this.clients.push({
           socket,
           PID: data.PID
@@ -124,5 +130,19 @@ export class DebugServer {
 
   private static async sendMessage(socket: WebSocket, data: any) {
     socket.send(JSON.stringify(data));
+
+    logger.debug("Send data to client: ", data);
+  }
+
+  static async sendDebugMessage(data: any) {
+    const client = this.clients[0];
+
+    console.log("client", client);
+
+    if (client) {
+      await this.sendMessage(client.socket, data);
+    }
   }
 }
+
+global["DebugServer"] = DebugServer;
