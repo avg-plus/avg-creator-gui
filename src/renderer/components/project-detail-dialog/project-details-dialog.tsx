@@ -37,7 +37,7 @@ import { useServe, useStopServe } from "../../hooks/use-serve";
 import { useLaunchGame, useKillGame } from "../../hooks/use-launch-game";
 import { SubcribeEvents } from "../../../common/subcribe-events";
 import { logger } from "../../../common/lib/logger";
-import { shell } from "electron";
+import { remote, shell } from "electron";
 import { ProjectDetailContextMenu } from "../context-menus/projet-detail-menus";
 
 export interface IProjectDetailDialogProps {
@@ -108,20 +108,12 @@ export default () => {
           outlined={true}
           fill={true}
           onClick={async () => {
-            try {
-              if (state.openedProject) {
-                await VSCode.run(state.openedProject.dir);
-              }
-            } catch (error) {
-              GUIToaster.show({
-                message: error,
-                intent: Intent.DANGER,
-                timeout: 4000
-              });
-            }
+            let win = new remote.BrowserWindow({ width: 400, height: 275 })
+            win.loadFile("./dist/static/editor.html")
+            win.show()
           }}
         >
-          <Icon color={"#51aaec"} component={VSCodeICON}></Icon> 用 VSCode 打开
+          使用编辑器打开
         </Button>
         <Popover
           position={"bottom"}
@@ -136,13 +128,31 @@ export default () => {
                 }}
                 text="打开目录"
               ></MenuItem>
+              <MenuItem
+                icon={<Icon color={"#51aaec"} component={VSCodeICON}></Icon>}
+                onClick={async () => {
+                  try {
+                    if (state.openedProject) {
+                      await VSCode.run(state.openedProject.dir);
+                    }
+                  } catch (error) {
+                    GUIToaster.show({
+                      message: error,
+                      intent: Intent.DANGER,
+                      timeout: 4000
+                    });
+                  }
+                }}
+                text="用 VSCode 打开"
+              >
+              </MenuItem>
             </Menu>
           }
           target={
             <AnchorButton outlined={true} rightIcon="caret-down"></AnchorButton>
           }
         />
-      </ButtonGroup>
+      </ButtonGroup >
     );
   };
 
@@ -181,8 +191,8 @@ export default () => {
               isGameLaunching ? (
                 <BPIcon icon={"play"} />
               ) : (
-                <BPIcon icon={"stop"} />
-              )
+                  <BPIcon icon={"stop"} />
+                )
             }
             intent={isGameLaunching ? Intent.SUCCESS : Intent.DANGER}
           >

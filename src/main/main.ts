@@ -46,7 +46,7 @@ app.on("ready", async () => {
     }
   });
 
-  mainWindow.once("ready-to-show", () => {});
+  mainWindow.once("ready-to-show", () => { });
 
   mainWindow.loadFile("./dist/static/index.html");
 });
