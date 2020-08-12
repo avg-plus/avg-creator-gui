@@ -1,7 +1,7 @@
 {
   "name": "avg.creator",
   "productName": "avg.creator",
-  "version": "1.0.4-beta.0",
+  "version": "1.0.3-beta.0",
   "description": "The game creator with GUI for AVGPlus",
   "main": "dist/src/main/main.js",
   "scripts": {
