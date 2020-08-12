@@ -5,10 +5,12 @@ import fs from "fs-extra";
 
 import ReactMarkdown from "react-markdown";
 import { Dialog } from "@blueprintjs/core";
-import "./changelog-dialog.less";
 import RootPath from "app-root-path";
 import { CreatorContext } from "../../hooks/context";
 import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
+
+import "./changelog-dialog.less";
+import Scrollbars from "react-custom-scrollbars";
 
 export default () => {
   const { state, dispatch } = useContext(CreatorContext);
@@ -29,15 +31,18 @@ export default () => {
     <Dialog
       title="更新日志"
       isOpen={state.isChangeLogDialogOpen}
-      usePortal={true}
+      // backdropClassName={"changelog-backdrop"}
+      usePortal={false}
       hasBackdrop={false}
       onClose={handleClose}
-      style={{ height: "90%", width: "80%" }}
+      className={"changelog-dialog"}
       canOutsideClickClose={false}
       canEscapeKeyClose={true}
     >
       <div className="changelog-container text-selectable">
-        <ReactMarkdown source={content} />
+        <Scrollbars style={{ height: "100%" }} autoHide autoHideTimeout={1000}>
+          <ReactMarkdown source={content} />
+        </Scrollbars>
       </div>
     </Dialog>
   );
