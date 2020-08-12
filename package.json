@@ -10,7 +10,7 @@
     "watch": "ts-node tools/parcel-build.ts --watch",
     "package": "run-s electron:build",
     "test:package": "electron-builder --dir",
-    "electron:start": "nodemon --watch dist/src/main --exec \"electron .\"",
+    "electron:start": "nodemon --delay 2 --on-change-only --watch dist/src/main --exec \"electron .\"",
     "electron:build": "ts-node tools/packager.ts",
     "main:watch": "ts-node tools/parcel-build.ts --watch --env NODE_ENV=development ",
     "parcel:build": "run-s main:build renderer:build"
@@ -128,6 +128,7 @@
     "parcel-bundler": "^1.12.4",
     "react-test-renderer": "^16.8.6",
     "spectron": "^7.0.0",
+    "ts-node": "^8.10.2",
     "tslint": "^6.1.2",
     "tslint-config-prettier": "^1.18.0",
     "tslint-react": "^4.0.0",
