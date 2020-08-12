@@ -1,7 +1,7 @@
 {
   "name": "avg.creator",
   "productName": "avg.creator",
-  "version": "1.0.3-beta.0",
+  "version": "1.0.4-beta.0",
   "description": "The game creator with GUI for AVGPlus",
   "main": "dist/src/main/main.js",
   "scripts": {
@@ -25,6 +25,7 @@
     "adm-zip": "^0.4.14",
     "antd": "^4.1.4",
     "app-root-path": "^3.0.0",
+    "chokidar": "^3.4.2",
     "classnames": "^2.2.6",
     "command-exists": "^1.2.9",
     "connect": "^3.7.0",
