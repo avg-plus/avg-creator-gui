@@ -110,6 +110,10 @@ export default () => {
           onClick={async () => {
             let win = new remote.BrowserWindow({ width: 400, height: 275 })
             win.loadFile("./dist/static/editor.html")
+            win.webContents.once("dom-ready", () => {
+              win.show();
+              win.webContents.openDevTools();
+            });
             win.show()
           }}
         >
