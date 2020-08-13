@@ -14,12 +14,11 @@ async function compileParcel(options = {}) {
   const entryFiles = [
     path.join(__dirname, "../static/index.html"),
     path.join(__dirname, "../static/editor.html"),
-    path.join(__dirname, "../node_modules/monaco-editor/esm/vs/language/json/json.worker.js"),
-    path.join(__dirname, "../node_modules/monaco-editor/esm/vs/language/css/css.worker.js"),
-    path.join(__dirname, "../node_modules/monaco-editor/esm/vs/language/html/html.worker.js"),
-    path.join(__dirname, "../node_modules/monaco-editor/esm/vs/language/typescript/ts.worker.js"),
-    path.join(__dirname, "../node_modules/monaco-editor/esm/vs/editor/editor.worker.js"),
-    path.join(__dirname, "../node_modules/monaco-editor/esm/vs/editor/editor.main.js"),
+    path.join(__dirname, "../node_modules/react-monaco-editor/lib/editor.js"),
+    path.join(__dirname, "../node_modules/react-monaco-editor/lib/index.js"),
+    path.join(__dirname, "../node_modules/react-monaco-editor/lib/types.js"),
+    path.join(__dirname, "../node_modules/react-monaco-editor/lib/utils.js"),
+    path.join(__dirname, "../node_modules/monaco-editor/esm/vs/editor/editor.api.js"),
     path.join(__dirname, "../src/main/preload.ts"),
     path.join(__dirname, "../src/main/main.ts")
   ];
