@@ -108,7 +108,14 @@ export default () => {
           outlined={true}
           fill={true}
           onClick={async () => {
-            let win = new remote.BrowserWindow({ width: 400, height: 275 })
+            let win = new remote.BrowserWindow({
+              width: 600,
+              height: 400,
+              webPreferences: {
+                nodeIntegration: true,
+                allowRunningInsecureContent: false
+              }
+            })
             win.loadFile("./dist/static/editor.html")
             win.webContents.once("dom-ready", () => {
               win.show();
