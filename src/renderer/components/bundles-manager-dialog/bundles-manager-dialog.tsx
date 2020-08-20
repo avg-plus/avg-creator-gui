@@ -26,6 +26,7 @@ import { LocalAppConfig } from "../../../common/local-app-config";
 import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
 import { GUIToaster } from "../../services/toaster";
 import { BundleDesktopPage } from "./bundle-desktop-page";
+import { delayExecution } from "../../../common/utils";
 
 enum BundleFilterType {
   Templates = "Templates",
@@ -58,7 +59,9 @@ export default () => {
   );
 
   useMount(async () => {
-    await fetchManifest();
+    delayExecution(() => {
+      fetchManifest();
+    }, 1000);
   });
 
   // 拉取资源列表

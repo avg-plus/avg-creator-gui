@@ -21,7 +21,6 @@ import {
 import Divider from "antd/lib/divider";
 import Select from "react-select";
 
-import hotkeys from "hotkeys-js";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import "./create-project-dialog.less";

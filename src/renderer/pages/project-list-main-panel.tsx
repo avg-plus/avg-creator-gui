@@ -33,6 +33,7 @@ import { TDAPP } from "../services/td-analytics";
 import { logger } from "../../common/lib/logger";
 import { useServe, useStopServe } from "../hooks/use-serve";
 import { useMount } from "react-use";
+import { delayExecution } from "../../common/utils";
 
 const NoProjectHint = styled.label`
   font-size: 16px;
@@ -49,16 +50,17 @@ export default () => {
   const [seletedItem, setSeletedItem] = useState<AVGProjectData | null>(null);
 
   useMount(() => {
-    AVGProjectManager.loadProjects().then((v) => {
-      logger.debug("loaded projects", v);
-
-      dispatch({
-        type: AVGCreatorActionType.SetProjectList,
-        payload: {
-          projects: v
-        }
+    delayExecution(() => {
+      AVGProjectManager.loadProjects().then((v) => {
+        logger.debug("loaded projects", v);
+        dispatch({
+          type: AVGCreatorActionType.SetProjectList,
+          payload: {
+            projects: v
+          }
+        });
       });
-    });
+    }, 1000);
   });
 
   const openSettingsPanel = (project: AVGProjectData) => {

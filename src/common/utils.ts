@@ -29,3 +29,9 @@ export function randomIn<T>(arr: T[]) {
   const max = Math.floor(arr.length - 1);
   return arr[Math.floor(Math.random() * (max - min + 1)) + min];
 }
+
+export function delayExecution(func: () => void, timeout: number) {
+  setTimeout(() => {
+    func();
+  }, timeout);
+}

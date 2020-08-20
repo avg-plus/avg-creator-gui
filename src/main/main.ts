@@ -4,7 +4,6 @@ import isDev from "electron-is-dev";
 
 process.env.NODE_ENV = isDev ? "development" : "production";
 
-import "./ipc";
 import path from "path";
 
 app.commandLine.appendSwitch("in-process-gpu");

@@ -21,6 +21,7 @@ import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
 import { useMount } from "react-use";
 import { AutoUpdater } from "../services/autoupdater";
 import UpdateAlertDialog from "../components/update-dialog/update-alert";
+import { delayExecution } from "../../common/utils";
 
 const ProjectListMainPanel = React.lazy(() =>
   import("./project-list-main-panel")
@@ -70,14 +71,16 @@ const AVGCreator = () => {
   }, 1);
 
   useMount(() => {
-    if (AutoUpdater.isAppUpdated()) {
-      dispatch({
-        type: AVGCreatorActionType.OpenChangeLogDialog,
-        payload: {
-          open: true
-        }
-      });
-    }
+    delayExecution(() => {
+      if (AutoUpdater.isAppUpdated()) {
+        dispatch({
+          type: AVGCreatorActionType.OpenChangeLogDialog,
+          payload: {
+            open: true
+          }
+        });
+      }
+    }, 500);
   });
 
   const [bundleManagerOpenned, setBundleManagerOpenned] = useState(false);
