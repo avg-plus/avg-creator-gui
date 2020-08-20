@@ -105,7 +105,7 @@
     "electron-builder": "^22.6.0",
     "electron-builder-squirrel-windows": "^22.8.0",
     "electron-prebuilt-compile": "8.2.0",
-    "eslint": "^3",
+    "eslint": "^4",
     "eslint-config-airbnb": "^15",
     "eslint-plugin-import": "^2",
     "eslint-plugin-jsx-a11y": "^5",
