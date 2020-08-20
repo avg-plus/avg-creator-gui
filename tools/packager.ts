@@ -13,7 +13,13 @@ program
   .description(
     `可选： major, premajor, minor, preminor, patch, prepatch, prerelease`
   )
-  .option("-i, --identifier [identifier]", "版本后缀", "beta");
+  .option("-i, --identifier [identifier]", "版本后缀", "beta")
+
+  .option(
+    "-D, --dev-package [isDevPackage]",
+    "是否用于测试的打包（不递增版本号）",
+    false
+  );
 
 if (!program.versionTag) {
   program.versionTag = "prepatch";
@@ -87,4 +93,7 @@ const build = async () => {
 };
 
 build();
-updateVersion();
+
+if (program.isDevPackage) {
+  updateVersion();
+}
