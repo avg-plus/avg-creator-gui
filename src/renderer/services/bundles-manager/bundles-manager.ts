@@ -16,7 +16,7 @@ import { logger } from "../../../common/lib/logger";
 import glob from "glob";
 import md5File from "md5-file";
 import AdmZip from "adm-zip";
-import { remote } from "electron";
+import { remote, shell } from "electron";
 import { EnginePlatform } from "../../../common/engine-platform";
 import { LocalAppConfig } from "../../../common/local-app-config";
 import { GUIToaster } from "../toaster";
@@ -265,10 +265,35 @@ export class BundlesManager {
     }
 
     // bug refer: https://stackoverflow.com/questions/43645745/electron-invalid-package-on-unzip
+    logger.debug("extracting electron: ", electronTemp, desktopShellConfig);
     process.noAsar = true;
     await extract(desktopShellConfig.filename, { dir: electronTemp });
     process.noAsar = false;
 
     return executablePath;
+  }
+
+  static async deleteDesktopShell() {
+    // 删除 electron 压缩包
+    const desktopShellConfig = LocalAppConfig.get("desktopShell");
+    if (desktopShellConfig && desktopShellConfig.filename) {
+      fs.removeSync(desktopShellConfig.filename);
+    }
+
+    // 删除临时目录
+    const electronTemp = path.join(
+      remote.app.getPath("temp"),
+      desktopShellConfig.SHA256
+    );
+
+    shell.moveItemToTrash(electronTemp, true);
+
+    // 清空配置
+    LocalAppConfig.clear("desktopShell");
+    return new Promise((resolve) => {
+      LocalAppConfig.save(() => {
+        resolve();
+      });
+    });
   }
 }
