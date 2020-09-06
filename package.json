@@ -55,6 +55,7 @@
     "styled-components": "^5.1.0",
     "underscore": "^1.10.2",
     "url-join": "^4.0.1",
+    "uuid": "^8.3.0",
     "v8-compile-cache": "^2.1.1",
     "winston": "^3.3.3",
     "ws": "^7.3.1"

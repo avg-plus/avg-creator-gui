@@ -38,10 +38,9 @@ export class AutoUpdater {
 
   // 是否应该显示更新日志
   static isAppUpdated() {
-    // 1. 检查配置里待定记录的版本不是当前版本号，则认为是更新版本后的第一次启动
+    // 1. 检查配置里待定记录的版本，如果不是当前版本号，则认为是更新版本后的第一次启动
     // 2. 启动后默认把记录的版本号更新为当前版本号
     const updateVersion = LocalAppConfig.get("updateVersion") as string;
-    // const pendingUpdateVersion = this.getLocalPendingUpdates()?.version;
     const currentVersion = remote.app.getVersion();
 
     if (!updateVersion) {

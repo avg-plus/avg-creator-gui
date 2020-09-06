@@ -14,7 +14,7 @@
     "preserveConstEnums": true,
     "sourceMap": false,
     "lib": ["dom", "dom.iterable", "esnext", "es6", "es2015.promise"],
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "noImplicitReturns": true,
     "suppressImplicitAnyIndexErrors": true,
     "strictNullChecks": true,

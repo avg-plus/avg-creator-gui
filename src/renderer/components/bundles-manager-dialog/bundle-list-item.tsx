@@ -18,7 +18,6 @@ import { GUIToaster } from "../../services/toaster";
 import { useForceUpdate } from "../../hooks/use-forceupdate";
 
 import "./bundle-list-item.less";
-import { DBProjects } from "../../../common/database/db-project";
 import { LocalAppConfig } from "../../../common/local-app-config";
 import classNames from "classnames";
 

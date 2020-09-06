@@ -51,18 +51,12 @@ export const BundleDesktopPage = () => {
     );
   };
 
-  const handleDelete = () => {
-    const desktopShellConfig = LocalAppConfig.get("desktopShell");
-    if (desktopShellConfig && desktopShellConfig.filename) {
-      fs.removeSync(desktopShellConfig.filename);
-    }
+  const handleDelete = async () => {
+    await BundlesManager.deleteDesktopShell();
 
-    LocalAppConfig.clear("desktopShell");
-    LocalAppConfig.save(() => {
-      setHasElectronMirror(false);
-      setDownloading(false);
-      setDownloadProgress(0);
-    });
+    setHasElectronMirror(false);
+    setDownloading(false);
+    setDownloadProgress(0);
   };
 
   return (

@@ -85,6 +85,9 @@ export class GameRunner {
 
       // 修改引擎配置文件
       const engineConfigFile = path.join(engineBundleDir, "engine.json");
+
+      logger.debug("engineConfigFile", engineConfigFile);
+
       const engineConfig = fs.readJSONSync(engineConfigFile);
 
       engineConfig.game_assets_root = project.dir;

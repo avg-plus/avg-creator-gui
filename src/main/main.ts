@@ -26,6 +26,7 @@ app.on("ready", async () => {
     titleBarStyle: "hiddenInset",
     webPreferences: {
       nodeIntegration: true,
+      nodeIntegrationInWorker: true,
       preload: path.join(__dirname, "preload.js"),
       allowRunningInsecureContent: false
     }

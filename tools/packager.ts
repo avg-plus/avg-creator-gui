@@ -94,6 +94,6 @@ const build = async () => {
 
 build();
 
-if (program.isDevPackage) {
+if (!program.isDevPackage) {
   updateVersion();
 }

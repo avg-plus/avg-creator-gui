@@ -1,18 +1,16 @@
 import path from "path";
 import fs from "fs-extra";
 import { remote } from "electron";
+import { v4 as uuidv4 } from "uuid";
 
 import extract from "extract-zip";
 
 import { isNullOrUndefined } from "util";
 import { DBProjects } from "../../common/database/db-project";
 import { LocalAppConfig } from "../../common/local-app-config";
-import { Env } from "../../common/env";
 import { TDAPP } from "../services/td-analytics";
-import { BundleItem } from "../components/bundles-manager-dialog/bundles-manager-dialog";
-import { BundleOption } from "../components/create-project-dialog/create-project-dialog";
-import { template } from "underscore";
 import { logger } from "../../common/lib/logger";
+import { BundleOption } from "../components/create-project-dialog/create-project-dialog";
 
 export class AVGProjectData {
   _id: string;
@@ -25,10 +23,54 @@ export class AVGProjectData {
   supportDesktop: boolean;
 }
 
+export class AVGProjectRecord {
+  dir: string;
+}
+
+export class AVGCreatorMeta {
+  version: string;
+}
+
+export class RecentlyProjectRecord {
+  dir: string;
+}
+
 export class AVGProjectManager {
   static isWorkspaceInit() {
     const workspaceDir = LocalAppConfig.get("workspace");
     return !isNullOrUndefined(workspaceDir);
+  }
+
+  static writeProjectFile(filename: string, project: AVGProjectData) {
+    fs.writeJSONSync(filename, project);
+  }
+
+  static writeMetaFile(filename: string, meta: AVGCreatorMeta) {
+    fs.writeJSONSync(filename, meta);
+  }
+
+  static async importProject(projectDir: string) {}
+
+  private static readProject(dir: string): AVGProjectData {
+    const projectEnvDir = path.join(dir, ".avg-creator");
+    const projectFile = path.join(projectEnvDir, "project");
+
+    return fs.readJSONSync(projectFile) as AVGProjectData;
+  }
+
+  static async generateProject(project: AVGProjectData) {
+    // 创建工程文件
+    const projectEnvDir = path.join(project.dir, ".avg-creator");
+    fs.ensureDirSync(projectEnvDir);
+
+    const projectFile = path.join(projectEnvDir, "project");
+    this.writeProjectFile(projectFile, project);
+
+    // 创建 creator 相关信息
+    const metaFile = path.join(projectEnvDir, "meta");
+    this.writeMetaFile(metaFile, {
+      version: remote.app.getVersion()
+    });
   }
 
   static async createProject(
@@ -38,12 +80,6 @@ export class AVGProjectManager {
     engineBundle: BundleOption,
     templateBundle: BundleOption
   ) {
-    // 名称是否已存在
-    const existedProject = await DBProjects.findOne({ name });
-    if (existedProject) {
-      throw "项目已存在";
-    }
-
     // 创建目录
     const workspace = LocalAppConfig.get("workspace");
     if (!workspace || !fs.existsSync(workspace)) {
@@ -79,6 +115,7 @@ export class AVGProjectManager {
     fs.copySync(path.join(temp, "bundle"), projectDir);
 
     const project = new AVGProjectData();
+    project._id = uuidv4();
     project.name = name;
     project.description = "";
     project.dir = projectDir;
@@ -87,16 +124,16 @@ export class AVGProjectManager {
     project.supportBrowser = isSupportBrowser;
     project.supportDesktop = isSupportDesktop;
 
+    // 生成相关工程文件
+    await this.generateProject(project);
+
     // 保存到数据库
     const doc = await DBProjects.insert({
-      ...project
+      dir: project.dir
     });
 
     TDAPP.onEvent("创建项目", "创建项目", project);
-
-    project._id = doc._id;
-
-    logger.debug("Created project", JSON.stringify(project));
+    logger.info("Created project", JSON.stringify(project));
 
     return project;
   }
@@ -120,6 +157,21 @@ export class AVGProjectManager {
   }
 
   static async loadProjects() {
-    return await DBProjects.find({}).sort({ createdAt: 1 });
+    const projects = await DBProjects.find<AVGProjectRecord>({}).sort({
+      createdAt: 1
+    });
+
+    const list: AVGProjectData[] = [];
+    projects.map((v) => {
+      if (v.dir) {
+        // 读取项目
+        const project = this.readProject(v.dir);
+        if (project) {
+          list.push(project);
+        }
+      }
+    });
+
+    return list;
   }
 }
