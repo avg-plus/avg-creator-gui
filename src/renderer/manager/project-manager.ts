@@ -129,6 +129,7 @@ export class AVGProjectManager {
 
     // 保存到数据库
     const doc = await DBProjects.insert({
+      _id: project._id,
       dir: project.dir
     });
 

@@ -151,6 +151,8 @@ export class BundlesManager {
 
     fs.removeSync(path.join(saveDirectory, path.basename(bundle.path)));
 
+    logger.info("delete local bundle: ", bundle);
+
     this.loadLocalBundles();
   }
 
@@ -199,12 +201,16 @@ export class BundlesManager {
 
     const filename = path.join(saveDirectory, path.basename(parsed.pathname));
 
+    logger.debug("starting download electron", downloadURL, saveDirectory);
+
     const response = await got(downloadURL, {
       cache: false,
       rejectUnauthorized: false
     }).on("downloadProgress", (progress) => {
       onUpdate && onUpdate({ bundle: mirror, progress, filename });
     });
+
+    logger.debug("download electron finished", filename);
 
     fs.writeFileSync(filename, response.rawBody);
   }
@@ -213,7 +219,7 @@ export class BundlesManager {
     // 查找引擎 package
     const bundle = BundlesManager.getLocalBundleByHash(engineHash);
     if (!bundle) {
-      throw new Error("读取 AVGPlus Core 失败，请确认对应的 Engine 数据存在。");
+      throw new Error("读取 AVGPlus Core 失败，请尝试重新下载 Engine 数据。");
     }
 
     const engineTemp = path.join(remote.app.getPath("temp"), engineHash);
