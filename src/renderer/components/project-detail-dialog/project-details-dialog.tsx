@@ -14,7 +14,8 @@ import {
   Position
 } from "@blueprintjs/core";
 
-import Icon, { BugFilled } from "@ant-design/icons";
+import Icon from "@ant-design/icons/lib/components/Icon";
+import BugFilled from "@ant-design/icons/BugFilled";
 
 import { CreatorContext } from "../../hooks/context";
 import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
@@ -209,7 +210,7 @@ export default () => {
               <Col span={12}>{renderWebURL()}</Col>
             </Row>
           </div>
-          {/* 
+          {/*
           <div className="options-container">
             <Checkbox checked={true} label="自动刷新" />
             <Checkbox checked={true} label="热加载" />
@@ -254,9 +255,7 @@ export default () => {
               <Col span={20} push={1}>
                 <Popover
                   content={
-                    <ProjectDetailContextMenu
-                      project={state.openedProject}
-                    ></ProjectDetailContextMenu>
+                    <ProjectDetailContextMenu></ProjectDetailContextMenu>
                   }
                   position={Position.RIGHT_TOP}
                 >
