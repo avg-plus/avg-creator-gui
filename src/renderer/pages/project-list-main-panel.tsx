@@ -7,8 +7,6 @@ import {
   Intent,
   Button,
   ContextMenu,
-  Navbar,
-  Alignment,
   Alert,
   Tag,
   Classes
