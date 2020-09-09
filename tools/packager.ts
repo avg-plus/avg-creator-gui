@@ -16,10 +16,11 @@ program
   .option("-i, --identifier [identifier]", "版本后缀", "beta")
 
   .option(
-    "-D, --dev-package [isDevPackage]",
-    "是否用于测试的打包（不递增版本号）",
-    false
+    "-D, --dev-package [devPackage]",
+    "是否用于测试的打包（不递增版本号）"
   );
+
+program.parse(process.argv);
 
 if (!program.versionTag) {
   program.versionTag = "prepatch";
@@ -60,7 +61,7 @@ const build = async () => {
         output: "build"
       },
       files: ["dist/**/*"],
-      asar: true,
+      asar: !program.devPackage,
       mac: {
         identity: null, // 不签名
         hardenedRuntime: true,
@@ -94,6 +95,6 @@ const build = async () => {
 
 build();
 
-if (!program.isDevPackage) {
+if (!program.devPackage) {
   updateVersion();
 }
