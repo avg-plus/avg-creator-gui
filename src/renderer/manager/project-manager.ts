@@ -11,6 +11,10 @@ import { LocalAppConfig } from "../../common/local-app-config";
 import { TDAPP } from "../services/td-analytics";
 import { logger } from "../../common/lib/logger";
 import { BundleOption } from "../components/create-project-dialog/create-project-dialog";
+import { GUIToaster } from "../services/toaster";
+import { Intent } from "@blueprintjs/core";
+import { assert } from "../../common/exception";
+import { BundlesManager } from "../services/bundles-manager/bundles-manager";
 
 export class AVGProjectData {
   _id: string;
@@ -49,13 +53,30 @@ export class AVGProjectManager {
     fs.writeJSONSync(filename, meta);
   }
 
-  static async importProject(projectDir: string) {}
+  static async importProject(projectDir: string) {
+    try {
+      const project = this.readProject(projectDir);
+      if (!project) {
+        return false;
+      }
 
-  private static readProject(dir: string): AVGProjectData {
-    const projectEnvDir = path.join(dir, ".avg-creator");
-    const projectFile = path.join(projectEnvDir, "project");
+      // const project = new AVGProjectData();
+      // project._id = uuidv4();
+      // project.name = name;
+      // project.description = "";
+      // project.dir = projectDir;
+      // project.templateHash = templateBundle.bundle.hash;
+      // project.engineHash = engineBundle.bundle.hash;
+      // project.supportBrowser = isSupportBrowser;
+      // project.supportDesktop = isSupportDesktop;
+    } catch (error) {
+      GUIToaster.show({
+        intent: Intent.DANGER,
+        message: "读取项目失败。"
+      });
+    }
 
-    return fs.readJSONSync(projectFile) as AVGProjectData;
+    return true;
   }
 
   static async generateProject(project: AVGProjectData) {
@@ -82,37 +103,19 @@ export class AVGProjectManager {
   ) {
     // 创建目录
     const workspace = LocalAppConfig.get("workspace");
-    if (!workspace || !fs.existsSync(workspace)) {
-      throw "工作目录不存在";
-    }
+    assert(workspace && fs.existsSync(workspace), "工作目录不存在");
 
     // 创建游戏目录
     const projectDir = path.join(workspace, name);
-    if (!fs.existsSync(projectDir)) {
-      fs.mkdirSync(projectDir);
-    } else {
-      throw "创建游戏目录错误：目录已存在";
-    }
+    assert(!fs.existsSync(projectDir), "创建游戏目录错误：目录已存在");
 
-    // 查找模板项目
-    const defaultTemplateBundleFile = templateBundle.bundle.filename;
+    fs.mkdirSync(projectDir);
 
-    if (!fs.existsSync(defaultTemplateBundleFile)) {
+    // 解压模板项目
+    const result = this.extractTemplate(templateBundle, projectDir);
+    assert(result, "加载模板项目失败", () => {
       remote.shell.moveItemToTrash(projectDir);
-      throw "创建项目失败：无法读取模板项目";
-    }
-
-    // 解压模板项目到临时目录
-    const temp = path.join(
-      remote.app.getPath("temp"),
-      templateBundle.bundle.hash
-    );
-
-    fs.removeSync(temp);
-    await extract(defaultTemplateBundleFile, { dir: temp });
-
-    // 拷贝到项目目录
-    fs.copySync(path.join(temp, "bundle"), projectDir);
+    });
 
     const project = new AVGProjectData();
     project._id = uuidv4();
@@ -124,14 +127,11 @@ export class AVGProjectManager {
     project.supportBrowser = isSupportBrowser;
     project.supportDesktop = isSupportDesktop;
 
+    // 保存到数据库
+    this.saveProjectRecord(project._id, project.dir);
+
     // 生成相关工程文件
     await this.generateProject(project);
-
-    // 保存到数据库
-    const doc = await DBProjects.insert({
-      _id: project._id,
-      dir: project.dir
-    });
 
     TDAPP.onEvent("创建项目", "创建项目", project);
     logger.info("Created project", JSON.stringify(project));
@@ -174,5 +174,48 @@ export class AVGProjectManager {
     });
 
     return list;
+  }
+
+  private static async extractTemplate(
+    templateBundle: BundleOption,
+    projectDir: string
+  ) {
+    // 查找模板项目
+    const templateBundleFile = templateBundle.bundle.filename;
+    if (!fs.existsSync(templateBundleFile)) {
+      return false;
+    }
+
+    // 解压模板项目到临时目录
+    const temp = path.join(
+      remote.app.getPath("temp"),
+      templateBundle.bundle.hash
+    );
+
+    await extract(templateBundleFile, { dir: temp });
+
+    // 拷贝到项目目录
+    fs.copySync(path.join(temp, "bundle"), projectDir);
+
+    return true;
+  }
+
+  private static readProject(dir: string): AVGProjectData | null {
+    const projectEnvDir = path.join(dir, ".avg-creator");
+    const projectFile = path.join(projectEnvDir, "project");
+
+    if (fs.existsSync(projectFile)) {
+      return fs.readJSONSync(projectFile) as AVGProjectData;
+    }
+
+    return null;
+  }
+
+  private static async saveProjectRecord(id: string, dir: string) {
+    // 保存到数据库
+    await DBProjects.insert({
+      _id: id,
+      dir
+    });
   }
 }

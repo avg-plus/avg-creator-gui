@@ -1,3 +1,6 @@
 export enum SubcribeEvents {
-  GameProcessChanged = "GameProcessChanged"
+  GameProcessChanged = "GameProcessChanged",
+
+  // Modal Dialog
+  GUIAlertDialogVisibility = "GUIAlertDialogVisibility"
 }

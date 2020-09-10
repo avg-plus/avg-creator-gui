@@ -13,7 +13,8 @@ import {
   Button,
   Icon,
   Popover,
-  Position
+  Position,
+  AnchorButton
 } from "@blueprintjs/core";
 import classNames from "classnames";
 import { Env } from "../../common/env";
@@ -22,37 +23,40 @@ import { useMount } from "react-use";
 import { AutoUpdater } from "../services/autoupdater";
 import UpdateAlertDialog from "../components/update-dialog/update-alert";
 import { delayExecution } from "../../common/utils";
+import Row from "antd/lib/row";
+import Col from "antd/lib/col";
+import { NewProjectContextMenu } from "../components/context-menus/new-project-menus";
 
-const ProjectListMainPanel = React.lazy(() =>
-  import("./project-list-main-panel")
+const ProjectListMainPanel = React.lazy(
+  () => import("./project-list-main-panel")
 );
 
-const ChangeLogDialog = React.lazy(() =>
-  import("../components/changelog-dialog/changelog-dialog")
+const ChangeLogDialog = React.lazy(
+  () => import("../components/changelog-dialog/changelog-dialog")
 );
 
-const CreateProjectDialog = React.lazy(() =>
-  import("../components/create-project-dialog/create-project-dialog")
+const CreateProjectDialog = React.lazy(
+  () => import("../components/create-project-dialog/create-project-dialog")
 );
 
-const BundleManagerDialog = React.lazy(() =>
-  import("../components/bundles-manager-dialog/bundles-manager-dialog")
+const BundleManagerDialog = React.lazy(
+  () => import("../components/bundles-manager-dialog/bundles-manager-dialog")
 );
 
-const ProjectDetailDialog = React.lazy(() =>
-  import("../components/project-detail-dialog/project-details-dialog")
+const ProjectDetailDialog = React.lazy(
+  () => import("../components/project-detail-dialog/project-details-dialog")
 );
 
-const InitWorkspaceDialog = React.lazy(() =>
-  import("../components/initial-workspace-dialog/init-workspace-dialog")
+const InitWorkspaceDialog = React.lazy(
+  () => import("../components/initial-workspace-dialog/init-workspace-dialog")
 );
 
-const MainContextMenu = React.lazy(() =>
-  import("../components/context-menus/main-menus")
+const MainContextMenu = React.lazy(
+  () => import("../components/context-menus/setting-menus")
 );
 
-const AboutDialog = React.lazy(() =>
-  import("../components/about-dialog/about-dialog")
+const AboutDialog = React.lazy(
+  () => import("../components/about-dialog/about-dialog")
 );
 
 // const UpdateAlertDialog = React.lazy(() =>
@@ -100,6 +104,10 @@ const AVGCreator = () => {
         />{" "}
       </Suspense>
     );
+  };
+
+  const renderNewProjetMenu = () => {
+    return <NewProjectContextMenu dispatch={dispatch} />;
   };
 
   return (
@@ -163,11 +171,34 @@ const AVGCreator = () => {
               </div>
             </div>
             <div className="avg-creator-footer">
-              <Popover content={renderSettingMenu()} position={Position.TOP}>
-                <ButtonGroup minimal={true} alignText={"right"}>
-                  <Button icon={<Icon icon="cog" />} color="red" />
-                </ButtonGroup>
-              </Popover>
+              <Row>
+                <Col flex={"20px"}>
+                  <Popover
+                    content={renderNewProjetMenu()}
+                    position={Position.TOP}
+                  >
+                    <ButtonGroup minimal={true} alignText={"left"}>
+                      <Button
+                        color="red"
+                        icon={"document"}
+                        rightIcon="caret-down"
+                      >
+                        新建...
+                      </Button>
+                    </ButtonGroup>
+                  </Popover>
+                </Col>
+                <Col flex={4}>
+                  <Popover
+                    content={renderSettingMenu()}
+                    position={Position.TOP}
+                  >
+                    <ButtonGroup minimal={true} alignText={"right"}>
+                      <Button icon={<Icon icon="cog" />} color="red" />
+                    </ButtonGroup>
+                  </Popover>
+                </Col>
+              </Row>
             </div>
           </div>
 

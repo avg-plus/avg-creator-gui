@@ -73,7 +73,7 @@ export default () => {
       const localBundles = await BundlesManager.loadLocalBundles();
       const manifest = await BundlesManager.fetchManifest();
 
-      const list = [];
+      const list: BundleItem[] = [];
       for (const bundle of manifest.bundles) {
         const bundleItem = bundle as BundleItem;
         bundleItem.status = BundleStatus.NotDownload;

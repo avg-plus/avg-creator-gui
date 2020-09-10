@@ -80,8 +80,6 @@ export default () => {
     // setGenerateTutorial(true);
     setIsCreateLoading(false);
     setProjectNameInputIntent(Intent.NONE);
-
-    hotkeys.unbind("enter");
   };
 
   const handleCreateDialogClose = () => {
@@ -210,7 +208,7 @@ export default () => {
       return [];
     }
 
-    let options = [];
+    let options: any[] = [];
     for (const bundle of bundles) {
       options.push({
         value: bundle.hash,
