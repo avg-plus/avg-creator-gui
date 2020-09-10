@@ -33,6 +33,7 @@ import { logger } from "../../common/lib/logger";
 import { useServe, useStopServe } from "../hooks/use-serve";
 import { useMount } from "react-use";
 import { delayExecution } from "../../common/utils";
+import { GUIAlertDialog } from "../modals/alert-dialog";
 
 const NoProjectHint = styled.label`
   font-size: 16px;
@@ -78,8 +79,22 @@ export default () => {
     return;
   };
 
-  const handleAlertDelete = () => {
-    setIsDeleteConfirmDialogOpen(true);
+  const handleAlertDelete = async (project: AVGProjectData) => {
+    const dialogResult = await GUIAlertDialog.show({
+      text: (
+        <>
+          是否要删除项目 <b>{project.name}</b> ？
+        </>
+      ),
+      icon: "trash",
+      intent: Intent.DANGER,
+      confirmButtonText: "移到回收站",
+      cancelButtonText: "取消"
+    });
+
+    if (dialogResult.isConfirm) {
+      handleConfirmDelete();
+    }
   };
 
   const handleExploreDir = (selectedProjectItem: AVGProjectData) => {
@@ -148,10 +163,6 @@ export default () => {
       });
   };
 
-  const handleCancelDelete = () => {
-    setIsDeleteConfirmDialogOpen(false);
-  };
-
   const handleCreateProject = async () => {
     dispatch({
       type: AVGCreatorActionType.OpenCreateProjectDialog,
@@ -190,23 +201,6 @@ export default () => {
 
   return (
     <>
-      <Alert
-        cancelButtonText="取消"
-        confirmButtonText="移到回收站"
-        icon="trash"
-        canOutsideClickCancel={false}
-        intent={Intent.DANGER}
-        isOpen={isDeleteConfirmDialogOpen}
-        onConfirm={handleConfirmDelete}
-        onCancel={handleCancelDelete}
-        canEscapeKeyCancel={true}
-        style={{ width: "86%" }}
-      >
-        <p>
-          是否删除项目 <b>{seletedItem?.name}</b> ？
-        </p>
-      </Alert>
-
       <div
         className={`list-container`}
         onContextMenu={(
@@ -278,7 +272,9 @@ export default () => {
                     onOpenProjectDetail={() => {
                       handleOpenProject(p);
                     }}
-                    onDelete={handleAlertDelete}
+                    onDelete={() => {
+                      handleAlertDelete(p);
+                    }}
                     onExploreDir={() => {
                       handleExploreDir(p);
                     }}
