@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
 import * as ReactDOM from "react-dom";
 
-import { Alert, Intent, IconName } from "@blueprintjs/core";
+import { Alert, Intent, IconName, Checkbox } from "@blueprintjs/core";
 import { ModalDialog, IModalDialogProps } from "./modal-dialog";
 import { SubcribeEvents } from "../../common/subcribe-events";
 import { useHotkeys } from "react-hotkeys-hook";
+import { logger } from "../../common/lib/logger";
 
 interface IAlertDialogResult {
   isCancel: boolean;
   isConfirm: boolean;
+  isChecked: boolean;
+}
+
+interface IAlertDialogData {
+  checked: boolean;
 }
 
 export interface IAlertDialogProps extends IModalDialogProps {
@@ -17,13 +23,20 @@ export interface IAlertDialogProps extends IModalDialogProps {
   confirmButtonText?: string;
   intent?: Intent;
   icon?: IconName;
+  checkbox?: {
+    label: string;
+    defaultChecked?: boolean;
+  };
   onClose?: () => void;
   onCancel?: () => void;
-  onConfirm?: () => void;
+  onConfirm?: (data?: IAlertDialogData) => void;
 }
 
 const RenderAlertDialog = (props: IAlertDialogProps) => {
   const [isShow, setIsShow] = useState(true);
+  const [isChecked, setIsChecked] = useState(
+    props.checkbox?.defaultChecked ?? false
+  );
   useEffect(() => {
     const token = PubSub.subscribe(
       SubcribeEvents.GUIAlertDialogVisibility,
@@ -37,16 +50,6 @@ const RenderAlertDialog = (props: IAlertDialogProps) => {
     };
   }, []);
 
-  // useHotkeys(
-  //   "enter",
-  //   () => {
-  //     props.onConfirm && props.onConfirm();
-  //     setIsShow(false);
-  //   },
-  //   { filter: () => true },
-  //   [isShow]
-  // );
-
   return (
     <Alert
       cancelButtonText={props.cancelButtonText}
@@ -56,7 +59,12 @@ const RenderAlertDialog = (props: IAlertDialogProps) => {
       canOutsideClickCancel={false}
       intent={props.intent ?? Intent.PRIMARY}
       onCancel={props.onCancel}
-      onConfirm={props.onConfirm}
+      onConfirm={() => {
+        props.onConfirm &&
+          props.onConfirm({
+            checked: isChecked
+          });
+      }}
       canEscapeKeyCancel={true}
       onClose={props.onClose}
       style={{
@@ -66,6 +74,19 @@ const RenderAlertDialog = (props: IAlertDialogProps) => {
       }}
     >
       {props.text}
+      {props.checkbox && props.checkbox.label && (
+        <div>
+          <br />
+          <Checkbox
+            defaultChecked={isChecked}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setIsChecked(e.target.checked);
+            }}
+          >
+            {props.checkbox.label}
+          </Checkbox>
+        </div>
+      )}
     </Alert>
   );
 };
@@ -73,9 +94,10 @@ const RenderAlertDialog = (props: IAlertDialogProps) => {
 class AlertDialog extends ModalDialog<IAlertDialogResult> {
   show(props: IAlertDialogProps): Promise<IAlertDialogResult> {
     return new Promise((resolve) => {
-      const data: IAlertDialogResult = {
+      const result: IAlertDialogResult = {
         isCancel: true,
-        isConfirm: false
+        isConfirm: false,
+        isChecked: false
       };
 
       const container = document.createElement("div");
@@ -85,15 +107,17 @@ class AlertDialog extends ModalDialog<IAlertDialogResult> {
         <RenderAlertDialog
           {...props}
           confirmButtonText={props.confirmButtonText ?? "确定"}
-          cancelButtonText={props.cancelButtonText ?? "取消"}
-          onConfirm={() => {
-            data.isConfirm = true;
-            data.isCancel = false;
-            props.onConfirm && props.onConfirm();
+          cancelButtonText={props.cancelButtonText ?? ""}
+          onConfirm={(data: IAlertDialogData) => {
+            result.isConfirm = true;
+            result.isCancel = false;
+            result.isChecked = data.checked;
+
+            props.onConfirm && props.onConfirm(data);
           }}
           onCancel={() => {
-            data.isConfirm = false;
-            data.isCancel = true;
+            result.isConfirm = false;
+            result.isCancel = true;
             props.onCancel && props.onCancel();
           }}
           onClose={() => {
@@ -102,7 +126,7 @@ class AlertDialog extends ModalDialog<IAlertDialogResult> {
               show: false
             });
 
-            resolve(data);
+            resolve(result);
           }}
         />,
         container

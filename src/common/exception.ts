@@ -5,7 +5,8 @@ export function assert(
 ) {
   if (!expected) {
     cb && cb();
-    throw new Error(message);
+    const error = new Error(message);
+    throw error;
   }
 }
 

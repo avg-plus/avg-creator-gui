@@ -16,6 +16,8 @@ export interface IAVGCreatorInitialState {
   isSettingPanelOpen: boolean;
   isShowPanelHeader: boolean;
   isCreateProjectDialogOpen: boolean;
+  isCreateProjectDialogMode: "create" | "import";
+  importDir: string;
   isAboutDialogOpen: boolean;
   isProjectDetailDialogOpen: boolean;
   isSetWorkspaceDialogOpen: boolean;
@@ -46,6 +48,8 @@ export const AVGCreatorInitialState: IAVGCreatorInitialState = {
   isSettingPanelOpen: true,
   isShowPanelHeader: false,
   isCreateProjectDialogOpen: false,
+  isCreateProjectDialogMode: "create",
+  importDir: "",
   isAboutDialogOpen: false,
   isProjectDetailDialogOpen: false,
   isSetWorkspaceDialogOpen: false,
@@ -78,7 +82,12 @@ export function AVGCreatorReducer(
   const payload = action.payload;
   switch (action.type) {
     case AVGCreatorActionType.OpenCreateProjectDialog:
-      return { ...state, isCreateProjectDialogOpen: payload.open };
+      return {
+        ...state,
+        isCreateProjectDialogOpen: payload.open,
+        isCreateProjectDialogMode: payload.mode ?? "create",
+        importDir: payload.importDir
+      };
     case AVGCreatorActionType.OpenProjectDetailDialog:
       return {
         ...state,

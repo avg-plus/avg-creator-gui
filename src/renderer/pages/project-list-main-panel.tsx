@@ -32,7 +32,6 @@ import { TDAPP } from "../services/td-analytics";
 import { logger } from "../../common/lib/logger";
 import { useServe, useStopServe } from "../hooks/use-serve";
 import { useMount } from "react-use";
-import { delayExecution } from "../../common/utils";
 import { GUIAlertDialog } from "../modals/alert-dialog";
 
 const NoProjectHint = styled.label`
@@ -83,17 +82,21 @@ export default () => {
     const dialogResult = await GUIAlertDialog.show({
       text: (
         <>
-          是否要删除项目 <b>{project.name}</b> ？
+          是否要移除项目 <b>{project.name}</b> ？
         </>
       ),
       icon: "trash",
+      checkbox: {
+        label: "同时移到回收站",
+        defaultChecked: false
+      },
       intent: Intent.DANGER,
-      confirmButtonText: "移到回收站",
+      confirmButtonText: "移除项目",
       cancelButtonText: "取消"
     });
 
     if (dialogResult.isConfirm) {
-      handleConfirmDelete();
+      handleConfirmDelete(dialogResult.isChecked);
     }
   };
 
@@ -127,18 +130,27 @@ export default () => {
     }
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = (moveToTrash: boolean) => {
     if (!seletedItem) {
       return;
     }
 
-    AVGProjectManager.deleteProject(seletedItem._id)
+    AVGProjectManager.deleteProject(seletedItem._id, moveToTrash)
       .then(() => {
-        GUIToaster.show({
-          message: "删除成功",
-          timeout: 2000,
-          intent: Intent.SUCCESS
-        });
+        if (moveToTrash) {
+          GUIToaster.show({
+            message: "删除成功，项目已移到回收站。",
+            icon: "trash",
+            timeout: 2000,
+            intent: Intent.SUCCESS
+          });
+        } else {
+          GUIToaster.show({
+            message: "项目成功移除。",
+            timeout: 2000,
+            intent: Intent.SUCCESS
+          });
+        }
 
         TDAPP.onEvent("删除项目", "删除项目", seletedItem);
       })
@@ -167,7 +179,8 @@ export default () => {
     dispatch({
       type: AVGCreatorActionType.OpenCreateProjectDialog,
       payload: {
-        open: true
+        open: true,
+        mode: "create"
       }
     });
   };

@@ -1,9 +1,7 @@
 import { Menu, Intent } from "@blueprintjs/core";
 import React, { useContext, useEffect, useState } from "react";
-import { CreatorContext } from "../../hooks/context";
-import { stat } from "fs";
-import { AVGProjectData } from "../../manager/project-manager";
 import { IAVGServer } from "../../redux/reducers/avg-creator-reducers";
+import { Env } from "../../../common/env";
 
 interface IProjectItemContextMenuProps {
   server: IAVGServer;
@@ -30,6 +28,7 @@ export const ProjectItemContextMenu = (props: IProjectItemContextMenuProps) => {
           intent={!props.server.isRunning ? Intent.NONE : Intent.DANGER}
           text={!props.server.isRunning ? "运行" : "停止"}
         /> */}
+
         <Menu.Item
           icon="applications"
           intent={Intent.NONE}
@@ -45,7 +44,7 @@ export const ProjectItemContextMenu = (props: IProjectItemContextMenuProps) => {
         <Menu.Item
           icon="trash"
           intent="danger"
-          text="删除项目"
+          text="移除项目"
           onClick={props.onDelete}
         />
         <Menu.Divider />
@@ -54,6 +53,14 @@ export const ProjectItemContextMenu = (props: IProjectItemContextMenuProps) => {
           onClick={props.onExploreDir}
           text="打开项目目录"
         />
+        {Env.isDevelopment() && (
+          <Menu.Item
+            icon="lab-test"
+            intent={Intent.NONE}
+            text={"【Debug】打开编辑器"}
+            onClick={props.onOpenProjectDetail}
+          />
+        )}
       </Menu>
     </>
   );

@@ -6,6 +6,8 @@ import React, {
   useCallback
 } from "react";
 
+import path from "path";
+
 import {
   Dialog,
   FormGroup,
@@ -29,7 +31,10 @@ import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
 import { IconNames } from "@blueprintjs/icons";
 import { CreatorContext } from "../../hooks/context";
 import { GUIToaster } from "../../services/toaster";
-import { AVGProjectManager } from "../../../renderer/manager/project-manager";
+import {
+  AVGProjectData,
+  AVGProjectManager
+} from "../../../renderer/manager/project-manager";
 import {
   BundlesManager,
   ILocalBundle,
@@ -38,6 +43,7 @@ import {
 import { LocalAppConfig } from "../../../common/local-app-config";
 import { useMount } from "react-use";
 import { logger } from "../../../common/lib/logger";
+import { GUIAlertDialog } from "../../modals/alert-dialog";
 
 export interface BundleOption {
   value: string;
@@ -48,8 +54,13 @@ export interface BundleOption {
 export default () => {
   const { state, dispatch } = useContext(CreatorContext);
 
-  const [projectName, setProjectName] = useState("");
-  // const [generateTutorial, setGenerateTutorial] = useState(true);
+  const isImportMode = state.isCreateProjectDialogMode === "import";
+  const importDir = state.importDir;
+
+  const [projectName, setProjectName] = useState(
+    isImportMode ? path.basename(importDir) : ""
+  );
+
   const [projectNameInputIntent, setProjectNameInputIntent] = useState<Intent>(
     Intent.PRIMARY
   );
@@ -64,9 +75,10 @@ export default () => {
     BundleOption
   >();
 
-  const [selectedTemplateBundle, setSelectedTemplateBundle] = useState<
-    BundleOption
-  >();
+  const [
+    selectedTemplateBundle,
+    setSelectedTemplateBundle
+  ] = useState<BundleOption | null>();
 
   const [isSupportDesktop, setIsSupportDesktop] = useState<boolean>(true);
   const [isSupportBrowser, setIsSupportBrowser] = useState<boolean>(true);
@@ -137,50 +149,69 @@ export default () => {
       return;
     }
 
-    if (!selectedTemplateBundle) {
-      GUIToaster.show({
-        message: `请选择创建的项目类型（模板）`,
-        timeout: 2000,
-        intent: Intent.WARNING
-      });
-      return;
-    }
-
     // 创建项目
     setIsCreateLoading(true);
 
-    AVGProjectManager.createProject(
-      projectName,
-      isSupportDesktop,
-      isSupportBrowser,
-      selectedEngineBundle,
-      selectedTemplateBundle
-    )
-      .then((project) => {
-        dispatch({
-          type: AVGCreatorActionType.AddProjectItem,
-          payload: {
-            project
-          }
+    if (isImportMode) {
+      // 导入项目
+      AVGProjectManager.migrateImportProject(
+        projectName,
+        importDir,
+        selectedEngineBundle.bundle.hash,
+        isSupportDesktop,
+        isSupportBrowser
+      ).finally(() => {
+        // 重新加载项目列表
+        AVGProjectManager.loadProjects().then((v) => {
+          logger.debug("loaded projects", v);
+          dispatch({
+            type: AVGCreatorActionType.SetProjectList,
+            payload: {
+              projects: v
+            }
+          });
         });
 
-        dispatch({
-          type: AVGCreatorActionType.OpenCreateProjectDialog,
-          payload: {
-            open: false
-          }
-        });
-      })
-      .catch((error) => {
-        GUIToaster.show({
-          message: error,
-          timeout: 4000,
-          intent: Intent.DANGER
-        });
-      })
-      .finally(() => {
-        clearState();
+        handleCreateDialogClose();
       });
+    } else {
+      if (!selectedTemplateBundle) {
+        GUIToaster.show({
+          message: `请选择创建的项目类型（模板）`,
+          timeout: 2000,
+          intent: Intent.WARNING
+        });
+        return;
+      }
+
+      AVGProjectManager.createProject(
+        projectName,
+        isSupportDesktop,
+        isSupportBrowser,
+        selectedEngineBundle,
+        selectedTemplateBundle
+      )
+        .then((project) => {
+          dispatch({
+            type: AVGCreatorActionType.AddProjectItem,
+            payload: {
+              project
+            }
+          });
+
+          handleCreateDialogClose();
+        })
+        .catch((error: Error) => {
+          GUIToaster.show({
+            message: error.message,
+            timeout: 4000,
+            intent: Intent.DANGER
+          });
+        })
+        .finally(() => {
+          clearState();
+        });
+    }
   };
 
   const handleProjectNameInputChanged = (
@@ -285,7 +316,7 @@ export default () => {
       isOpen={state.isCreateProjectDialogOpen}
       position={"bottom"}
       size={"80%"}
-      title="创建游戏"
+      title={isImportMode ? "导入项目" : "创建游戏"}
       // icon="info-sign"
       canOutsideClickClose={false}
       onClose={handleCreateDialogClose}
@@ -345,20 +376,22 @@ export default () => {
           />
         </FormGroup>
 
-        <FormGroup inline={false} label={"模板项目"} labelFor="text-input">
-          <Select
-            options={renderOptions(BundleType.Template)}
-            styles={optionStyles}
-            value={
-              selectedTemplateBundle ?? renderOptions(BundleType.Template)[0]
-            }
-            formatOptionLabel={formatOptionLabel}
-            onChange={(value) => {
-              setSelectedTemplateBundle(value as any);
-            }}
-            isSearchable={false}
-          />
-        </FormGroup>
+        {!isImportMode && (
+          <FormGroup inline={false} label={"模板项目"} labelFor="text-input">
+            <Select
+              options={renderOptions(BundleType.Template)}
+              styles={optionStyles}
+              value={
+                selectedTemplateBundle ?? renderOptions(BundleType.Template)[0]
+              }
+              formatOptionLabel={formatOptionLabel}
+              onChange={(value) => {
+                setSelectedTemplateBundle(value as any);
+              }}
+              isSearchable={false}
+            />
+          </FormGroup>
+        )}
       </div>
 
       <div className={Classes.DIALOG_FOOTER}>
@@ -370,7 +403,7 @@ export default () => {
             loading={isCreateLoading}
             onClick={handleConfirmCreateProject}
           >
-            创建游戏
+            {isImportMode ? "导入项目" : "创建游戏"}
           </Button>
         </div>
       </div>

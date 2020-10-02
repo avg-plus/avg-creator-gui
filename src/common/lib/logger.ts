@@ -10,7 +10,6 @@ const {
   timestamp,
   label,
   ms,
-  splat,
   prettyPrint,
   colorize,
   printf

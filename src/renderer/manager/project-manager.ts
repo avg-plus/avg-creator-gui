@@ -41,8 +41,8 @@ export class RecentlyProjectRecord {
 
 export class AVGProjectManager {
   static isWorkspaceInit() {
-    const workspaceDir = LocalAppConfig.get("workspace");
-    return !isNullOrUndefined(workspaceDir);
+    const workspaceDir = LocalAppConfig.get("workspace") as string;
+    return workspaceDir !== null && workspaceDir !== undefined;
   }
 
   static writeProjectFile(filename: string, project: AVGProjectData) {
@@ -53,22 +53,38 @@ export class AVGProjectManager {
     fs.writeJSONSync(filename, meta);
   }
 
-  static async importProject(projectDir: string) {
-    try {
-      const project = this.readProject(projectDir);
-      if (!project) {
-        return false;
-      }
+  static async importProject(dir: string) {
+    // 查找路径是否已存在
+    const existed = await DBProjects.findOne({ dir });
+    assert(!existed, "项目已存在，无需重复导入。");
 
-      // const project = new AVGProjectData();
-      // project._id = uuidv4();
-      // project.name = name;
-      // project.description = "";
-      // project.dir = projectDir;
-      // project.templateHash = templateBundle.bundle.hash;
-      // project.engineHash = engineBundle.bundle.hash;
-      // project.supportBrowser = isSupportBrowser;
-      // project.supportDesktop = isSupportDesktop;
+    const readProject = AVGProjectManager.readProject(dir);
+    assert(dir, "导入项目，无法读取项目信息。");
+
+    if (readProject) {
+      await AVGProjectManager.saveProjectRecord(readProject?._id, dir);
+    }
+  }
+
+  static async migrateImportProject(
+    name: string,
+    dir: string,
+    engineHash: string,
+    isSupportDesktop: boolean,
+    isSupportBrowser: boolean
+  ) {
+    try {
+      const importData = new AVGProjectData();
+      importData._id = uuidv4();
+      importData.name = name;
+      importData.supportDesktop = isSupportDesktop;
+      importData.supportBrowser = isSupportBrowser;
+      importData.dir = dir;
+      importData.engineHash = engineHash;
+
+      // 生成项目文件
+      this.generateProject(importData);
+      this.saveProjectRecord(importData._id, dir);
     } catch (error) {
       GUIToaster.show({
         intent: Intent.DANGER,
@@ -79,7 +95,7 @@ export class AVGProjectManager {
     return true;
   }
 
-  static async generateProject(project: AVGProjectData) {
+  private static async generateProject(project: AVGProjectData) {
     // 创建工程文件
     const projectEnvDir = path.join(project.dir, ".avg-creator");
     fs.ensureDirSync(projectEnvDir);
@@ -109,6 +125,8 @@ export class AVGProjectManager {
     const projectDir = path.join(workspace, name);
     assert(!fs.existsSync(projectDir), "创建游戏目录错误：目录已存在");
 
+    logger.debug("creating project dir ... ");
+
     fs.mkdirSync(projectDir);
 
     // 解压模板项目
@@ -122,13 +140,13 @@ export class AVGProjectManager {
     project.name = name;
     project.description = "";
     project.dir = projectDir;
-    project.templateHash = templateBundle.bundle.hash;
+    // project.templateHash = templateBundle.bundle.hash; // 不写模板信息，没有意义
     project.engineHash = engineBundle.bundle.hash;
     project.supportBrowser = isSupportBrowser;
     project.supportDesktop = isSupportDesktop;
 
     // 保存到数据库
-    this.saveProjectRecord(project._id, project.dir);
+    await this.saveProjectRecord(project._id, project.dir);
 
     // 生成相关工程文件
     await this.generateProject(project);
@@ -139,7 +157,7 @@ export class AVGProjectManager {
     return project;
   }
 
-  static async deleteProject(id: string) {
+  static async deleteProject(id: string, moveToTrash: boolean = false) {
     const existedProject = await DBProjects.findOne<AVGProjectData>({
       _id: id
     });
@@ -149,8 +167,11 @@ export class AVGProjectManager {
 
       // 删除项目
       await DBProjects.remove({ _id: id }, {});
-      if (!remote.shell.moveItemToTrash(fullpath, true)) {
-        throw "删除游戏目录失败，目录可能已不存在";
+      if (moveToTrash) {
+        assert(
+          remote.shell.moveItemToTrash(fullpath, true),
+          "删除游戏目录失败，目录可能已不存在"
+        );
       }
     }
 
@@ -172,6 +193,8 @@ export class AVGProjectManager {
         }
       }
     });
+
+    logger.info("load projects: ", list);
 
     return list;
   }
@@ -200,7 +223,7 @@ export class AVGProjectManager {
     return true;
   }
 
-  private static readProject(dir: string): AVGProjectData | null {
+  static readProject(dir: string): AVGProjectData | null {
     const projectEnvDir = path.join(dir, ".avg-creator");
     const projectFile = path.join(projectEnvDir, "project");
 
@@ -211,7 +234,7 @@ export class AVGProjectManager {
     return null;
   }
 
-  private static async saveProjectRecord(id: string, dir: string) {
+  public static async saveProjectRecord(id: string, dir: string) {
     // 保存到数据库
     await DBProjects.insert({
       _id: id,

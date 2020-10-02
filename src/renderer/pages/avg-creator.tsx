@@ -25,7 +25,6 @@ import UpdateAlertDialog from "../components/update-dialog/update-alert";
 import { delayExecution } from "../../common/utils";
 import Row from "antd/lib/row";
 import Col from "antd/lib/col";
-import { NewProjectContextMenu } from "../components/context-menus/new-project-menus";
 
 const ProjectListMainPanel = React.lazy(
   () => import("./project-list-main-panel")
@@ -106,10 +105,6 @@ const AVGCreator = () => {
     );
   };
 
-  const renderNewProjetMenu = () => {
-    return <NewProjectContextMenu dispatch={dispatch} />;
-  };
-
   return (
     <CreatorContext.Provider value={{ state, dispatch }}>
       <div className="bp3-dialog-container avg-window-container">
@@ -172,7 +167,7 @@ const AVGCreator = () => {
             </div>
             <div className="avg-creator-footer">
               <Row>
-                <Col flex={"20px"}>
+                {/* <Col flex={"20px"}>
                   <Popover
                     content={renderNewProjetMenu()}
                     position={Position.TOP}
@@ -187,7 +182,7 @@ const AVGCreator = () => {
                       </Button>
                     </ButtonGroup>
                   </Popover>
-                </Col>
+                </Col> */}
                 <Col flex={4}>
                   <Popover
                     content={renderSettingMenu()}
