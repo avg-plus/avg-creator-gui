@@ -1,38 +1,34 @@
 /** @format */
 
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
+import { useMount } from "react-use";
+
+import { shell } from "electron";
 
 import Empty from "antd/lib/empty";
-import {
-  Intent,
-  Button,
-  ContextMenu,
-  Alert,
-  Tag,
-  Classes
-} from "@blueprintjs/core";
+import { Intent, Button, ContextMenu } from "@blueprintjs/core";
 import { Scrollbars } from "react-custom-scrollbars";
 
 import { ProjectListItem } from "./project-list-item";
 // import { ProjectSettingPanel } from "./project-setting-panel";
-import { AVGProjectManager, AVGProjectData } from "../manager/project-manager";
-import { CreatorContext } from "../hooks/context";
-import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
+import {
+  AVGProjectManager,
+  AVGProjectData
+} from "../../manager/project-manager";
+import { CreatorContext } from "../../hooks/context";
+import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
 import styled from "styled-components";
 
-import { ProjectItemContextMenu } from "../components/context-menus/project-item-menus";
-import { ProjectListContextMenu } from "../components/context-menus/project-list-menus";
-import { GUIToaster } from "../services/toaster";
-import { shell } from "electron";
-import { VSCode } from "../services/vscode";
-import { GameRunner } from "../services/game-runner";
+import { ProjectItemContextMenu } from "../../components/context-menus/project-item-menus";
+import { ProjectListContextMenu } from "../../components/context-menus/project-list-menus";
+import { GUIToaster } from "../../services/toaster";
+import { VSCode } from "../../services/vscode";
 
 import "./project-list-main-panel.less";
-import { TDAPP } from "../services/td-analytics";
-import { logger } from "../../common/lib/logger";
-import { useServe, useStopServe } from "../hooks/use-serve";
-import { useMount } from "react-use";
-import { GUIAlertDialog } from "../modals/alert-dialog";
+import { TDAPP } from "../../services/td-analytics";
+import { logger } from "../../../common/lib/logger";
+import { useServe, useStopServe } from "../../hooks/use-serve";
+import { GUIAlertDialog } from "../../modals/alert-dialog";
 
 const NoProjectHint = styled.label`
   font-size: 16px;
@@ -42,9 +38,7 @@ const NoProjectHint = styled.label`
 
 export default () => {
   const { state, dispatch } = useContext(CreatorContext);
-  const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(
-    false
-  );
+  const [, setIsDeleteConfirmDialogOpen] = useState(false);
 
   const [seletedItem, setSeletedItem] = useState<AVGProjectData | null>(null);
 
@@ -59,14 +53,6 @@ export default () => {
       });
     });
   });
-
-  const openSettingsPanel = (project: AVGProjectData) => {
-    // openPanel({
-    //   component: ProjectSettingPanel,
-    //   props: { project },
-    //   title: "设置"
-    // });
-  };
 
   const handleInitWorkspace = async () => {
     dispatch({
@@ -202,14 +188,6 @@ export default () => {
         project: project
       }
     });
-  };
-
-  const isServingProject = (project: AVGProjectData | null) => {
-    if (!project) {
-      return false;
-    }
-
-    return project._id === state.currentServer.serveProject?._id;
   };
 
   return (

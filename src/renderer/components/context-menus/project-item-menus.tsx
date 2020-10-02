@@ -2,6 +2,7 @@ import { Menu, Intent } from "@blueprintjs/core";
 import React, { useContext, useEffect, useState } from "react";
 import { IAVGServer } from "../../redux/reducers/avg-creator-reducers";
 import { Env } from "../../../common/env";
+import { WindowManager } from "../../manager/window-manager";
 
 interface IProjectItemContextMenuProps {
   server: IAVGServer;
@@ -58,7 +59,9 @@ export const ProjectItemContextMenu = (props: IProjectItemContextMenuProps) => {
             icon="lab-test"
             intent={Intent.NONE}
             text={"【Debug】打开编辑器"}
-            onClick={props.onOpenProjectDetail}
+            onClick={() => {
+              WindowManager.launchEditorWindow();
+            }}
           />
         )}
       </Menu>

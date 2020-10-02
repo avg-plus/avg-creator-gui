@@ -1,13 +1,13 @@
 /** @format */
 
-import "./avg-creator.less";
+import "./avg-portal.less";
 
-import { CreatorContext } from "../hooks/context";
+import { CreatorContext } from "../../hooks/context";
 import React, { useReducer, useState, Suspense } from "react";
 import {
   AVGCreatorReducer,
   AVGCreatorInitialState
-} from "../redux/reducers/avg-creator-reducers";
+} from "../../redux/reducers/avg-creator-reducers";
 import {
   ButtonGroup,
   Button,
@@ -17,12 +17,12 @@ import {
   AnchorButton
 } from "@blueprintjs/core";
 import classNames from "classnames";
-import { Env } from "../../common/env";
-import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
+import { Env } from "../../../common/env";
+import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
 import { useMount } from "react-use";
-import { AutoUpdater } from "../services/autoupdater";
-import UpdateAlertDialog from "../components/update-dialog/update-alert";
-import { delayExecution } from "../../common/utils";
+import { AutoUpdater } from "../../services/autoupdater";
+import UpdateAlertDialog from "../../components/update-dialog/update-alert";
+import { delayExecution } from "../../../common/utils";
 import Row from "antd/lib/row";
 import Col from "antd/lib/col";
 
@@ -31,38 +31,39 @@ const ProjectListMainPanel = React.lazy(
 );
 
 const ChangeLogDialog = React.lazy(
-  () => import("../components/changelog-dialog/changelog-dialog")
+  () => import("../../components/changelog-dialog/changelog-dialog")
 );
 
 const CreateProjectDialog = React.lazy(
-  () => import("../components/create-project-dialog/create-project-dialog")
+  () => import("../../components/create-project-dialog/create-project-dialog")
 );
 
 const BundleManagerDialog = React.lazy(
-  () => import("../components/bundles-manager-dialog/bundles-manager-dialog")
+  () => import("../../components/bundles-manager-dialog/bundles-manager-dialog")
 );
 
 const ProjectDetailDialog = React.lazy(
-  () => import("../components/project-detail-dialog/project-details-dialog")
+  () => import("../../components/project-detail-dialog/project-details-dialog")
 );
 
 const InitWorkspaceDialog = React.lazy(
-  () => import("../components/initial-workspace-dialog/init-workspace-dialog")
+  () =>
+    import("../../components/initial-workspace-dialog/init-workspace-dialog")
 );
 
 const MainContextMenu = React.lazy(
-  () => import("../components/context-menus/setting-menus")
+  () => import("../../components/context-menus/setting-menus")
 );
 
 const AboutDialog = React.lazy(
-  () => import("../components/about-dialog/about-dialog")
+  () => import("../../components/about-dialog/about-dialog")
 );
 
 // const UpdateAlertDialog = React.lazy(() =>
 //   import("../components/update-dialog/update-alert")
 // );
 
-const AVGCreator = () => {
+const AVGPortal = () => {
   const [state, dispatch] = useReducer(
     AVGCreatorReducer,
     AVGCreatorInitialState
@@ -213,4 +214,4 @@ const AVGCreator = () => {
   );
 };
 
-export default AVGCreator;
+export default AVGPortal;
