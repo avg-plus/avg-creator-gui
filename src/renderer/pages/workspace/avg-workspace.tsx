@@ -10,11 +10,13 @@ import { WorkspaceLayout } from "../../services/workspace-layout";
 import { delayExecution } from "../../../common/utils";
 
 import "./avg-workspace.less";
+import { StoryManager } from "../../services/storyboard/story-manager";
 
 export const AVGWorkspace = () => {
   useMount(() => {
     delayExecution(() => {
       WorkspaceLayout.initLayout();
+      StoryManager.init();
     }, 0);
   });
 

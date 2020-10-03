@@ -122,14 +122,6 @@ export class WorkspaceLayout {
 
     layout.init();
 
-    const splitter = $(".lm_splitter");
-
-    layout._$calculateItemAreas();
-
-    splitter.on("mousemove", () => {
-      console.log("draging");
-    });
-
     return layout;
   }
 }
