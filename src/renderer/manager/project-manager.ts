@@ -95,7 +95,7 @@ export class AVGProjectManager {
     return true;
   }
 
-  private static async generateProject(project: AVGProjectData) {
+  static async generateProject(project: AVGProjectData) {
     // 创建工程文件
     const projectEnvDir = path.join(project.dir, ".avg-creator");
     fs.ensureDirSync(projectEnvDir);

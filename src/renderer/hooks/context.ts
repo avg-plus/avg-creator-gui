@@ -3,7 +3,10 @@ import {
   IAVGCreatorInitialState,
   AVGCreatorInitialState
 } from "../redux/reducers/avg-creator-reducers";
-import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
+import {
+  AVGCreatorAction,
+  AVGCreatorActionType
+} from "../redux/actions/avg-creator-actions";
 
 type DispatchData = {
   type: AVGCreatorActionType;
@@ -12,7 +15,7 @@ type DispatchData = {
 
 export const CreatorContext = React.createContext<{
   state: IAVGCreatorInitialState;
-  dispatch: (s?: DispatchData) => void;
+  dispatch: React.Dispatch<AVGCreatorAction>; // (s?: DispatchData) => void;
 }>({
   state: AVGCreatorInitialState,
   dispatch: () => {}

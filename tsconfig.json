@@ -33,7 +33,7 @@
     "baseUrl": "../src"
   },
   "include": ["src/**/*", "typings/nconf/nconf.d.ts"],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "dist", "build"],
   "formatCodeOptions": {
     "indentSize": 2,
     "tabSize": 2
