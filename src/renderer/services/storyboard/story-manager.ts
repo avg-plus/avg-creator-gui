@@ -7,6 +7,7 @@ import { DialogueItem } from "../../components/story-items/dialogue/dialogue-ite
 import { Story } from "./story";
 import { randomIn } from "../../../common/utils";
 import { ISaveData } from "../../../common/story-item-type";
+import { logger } from "../../../common/lib/logger";
 
 export class StoryManager {
   static testStory: Story = new Story();
@@ -64,7 +65,7 @@ export class StoryManager {
         });
 
         const code = Codegen.generate(saveData);
-        console.log("On item content changed: ", code);
+        logger.debug("On item content changed: ", code);
       }
     );
   }
@@ -72,7 +73,7 @@ export class StoryManager {
   static loadStory() {
     // test
     //for test
-    for (let i = 0; i < 5; ++i) {
+    for (let i = 0; i < 100; ++i) {
       const v = new DialogueItem(this.testStory);
       v.setText(
         randomIn([
@@ -83,8 +84,6 @@ export class StoryManager {
       );
       this.testStory.addItem(v);
     }
-
-    console.log("init ", this.testStory.getItems());
 
     setTimeout(() => {
       PubSub.publishSync(GlobalEvents.StoryItemListShouldRender);

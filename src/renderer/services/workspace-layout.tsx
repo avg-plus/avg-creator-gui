@@ -9,13 +9,15 @@ ElementQueries.listen();
 
 import GoldenLayout from "golden-layout";
 
-import { StoryboardView } from "../pages/workspace/views/storyboard";
+import { StoryboardView } from "../pages/workspace/views/storyboard-view";
 import { PropertyView } from "../pages/workspace/views/property-view";
+import { ResourceTreeView } from "../pages/workspace/views/resource-tree-view/resource-tree-view";
 
 export class WorkspaceLayout {
   static views = {
     storyboardView: <StoryboardView></StoryboardView>,
-    propertyView: <PropertyView></PropertyView>
+    propertyView: <PropertyView></PropertyView>,
+    resourceTreeView: <ResourceTreeView></ResourceTreeView>
   };
 
   static launchWindow() {
@@ -23,7 +25,6 @@ export class WorkspaceLayout {
       width: 1280,
       height: 760,
       show: false,
-      backgroundColor: "0",
       center: true,
       hasShadow: true,
       resizable: true,
@@ -61,13 +62,17 @@ export class WorkspaceLayout {
           closePopoutsOnUnload: true,
           showCloseIcon: true
         },
+        dimensions: {
+          headerHeight: 20,
+          borderWidth: 3
+        },
         content: [
           {
             type: "row",
             content: [
               {
                 type: "react-component",
-                component: "propertyView",
+                component: "resourceTreeView",
                 isClosable: false,
                 title: "资源管理器",
                 width: 20

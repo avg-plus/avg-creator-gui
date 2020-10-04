@@ -11,7 +11,7 @@ new Titlebar({
   maximizable: true,
   minimizable: true,
   closeable: true,
-  backgroundColor: Color.fromHex("#000000")
+  backgroundColor: Color.fromHex("#c62d24")
 });
 
 ReactDOM.render(

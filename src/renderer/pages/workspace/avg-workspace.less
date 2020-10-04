@@ -5,8 +5,12 @@
 
 @import (less) "../../styles/golden-layout-themes/avg-light.less";
 
+@import (inline) "../../../../node_modules/react-sortable-tree/style.css";
+
 #workspace-container {
-  background-color: black;
+  .lm_content {
+    overflow-y: auto;
+  }
 }
 
 input:focus,

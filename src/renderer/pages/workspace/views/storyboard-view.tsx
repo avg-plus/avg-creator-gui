@@ -12,13 +12,14 @@ import {
   ResponderProvided
 } from "react-beautiful-dnd";
 
-import "./storyboard.less";
+import "./storyboard-view.less";
 import { useEffect, useState } from "react";
 import { StoryManager } from "../../../services/storyboard/story-manager";
 import { GlobalEvents } from "../../../../common/global-events";
 import { StoryItem } from "../../../components/story-items/story-item";
 import Row from "antd/lib/row";
 import Col from "antd/lib/col";
+import Scrollbars from "react-custom-scrollbars";
 
 // fake data generator
 const getItems = (count: number) =>
@@ -30,7 +31,7 @@ const getItems = (count: number) =>
 const grid = 4;
 
 const getListStyle = (isDraggingOver: boolean) => ({
-  background: isDraggingOver ? "lightblue" : "lightgrey",
+  // background: isDraggingOver ? "lightblue" : "lightgrey",
   padding: grid
 });
 
@@ -45,6 +46,7 @@ const getItemStyle = (
 
   // change background colour if dragging
   background: isDragging ? "lightgreen" : "white",
+  // background: "white",
 
   // styles we need to apply on draggables
   ...draggableStyle
@@ -52,8 +54,6 @@ const getItemStyle = (
 
 const story = StoryManager.loadStory();
 const storyItems = story.getItems();
-
-console.log(storyItems);
 
 export const StoryboardView = () => {
   const [items, setItems] = useState(storyItems);
@@ -85,7 +85,6 @@ export const StoryboardView = () => {
   };
 
   const onDragEnd = (result: DropResult, provided: ResponderProvided) => {
-    // dropped outside the list
     if (!result.destination) {
       return;
     }
@@ -105,37 +104,47 @@ export const StoryboardView = () => {
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable">
           {(provided, snapshot) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              style={getListStyle(snapshot.isDraggingOver)}
+            <Scrollbars
+              style={{ height: "100%" }}
+              universal={true}
+              autoHideTimeout={1000}
             >
-              {items.map((item, index) => (
-                <Draggable key={item.id} draggableId={item.id} index={index}>
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      style={getItemStyle(
-                        snapshot.isDragging,
-                        provided.draggableProps.style
-                      )}
-                    >
-                      <Row>
-                        <Col span={22}>{item.render()}</Col>
-                        <Col span={2}>
-                          <div
-                            className={"drag-handle"}
-                            {...provided.dragHandleProps}
-                          ></div>
-                        </Col>
-                      </Row>
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                style={getListStyle(snapshot.isDraggingOver)}
+              >
+                {items.map((item, index) => (
+                  <Draggable key={item.id} draggableId={item.id} index={index}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        style={getItemStyle(
+                          snapshot.isDragging,
+                          provided.draggableProps.style
+                        )}
+                      >
+                        <Row>
+                          <Col span={23}>
+                            <div className={"story-item-wrapper"}>
+                              {item.render()}
+                            </div>
+                          </Col>
+                          <Col span={1}>
+                            <div
+                              className={"drag-handle"}
+                              {...provided.dragHandleProps}
+                            ></div>
+                          </Col>
+                        </Row>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            </Scrollbars>
           )}
         </Droppable>
       </DragDropContext>
