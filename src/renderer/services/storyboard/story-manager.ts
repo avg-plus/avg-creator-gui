@@ -10,6 +10,7 @@ import { ISaveData } from "../../../common/story-item-type";
 import { logger } from "../../../common/lib/logger";
 
 export class StoryManager {
+  static selectedNodeId: string;
   static testStory: Story = new Story();
   static init() {
     PubSub.subscribe(

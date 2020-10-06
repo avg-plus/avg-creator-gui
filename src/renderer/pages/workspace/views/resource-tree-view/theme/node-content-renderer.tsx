@@ -1,9 +1,10 @@
-import React, { Component } from "react";
+import React from "react";
 import classNames from "classnames";
-import "./node-content-renderer.less";
-import { isDescendant, NodeData, NodeRendererProps } from "react-sortable-tree";
+import { isDescendant, NodeRendererProps } from "react-sortable-tree";
 import ExpandIcon from "../../../../../images/icons/expand.svg";
 import Icon from "@ant-design/icons/lib/components/Icon";
+
+import "./node-content-renderer.less";
 
 const ResourceTreeThemeNodeContentRenderer = (props: NodeRendererProps) => {
   const {
@@ -37,6 +38,9 @@ const ResourceTreeThemeNodeContentRenderer = (props: NodeRendererProps) => {
   } = props;
 
   let { buttons } = props;
+  const onClickEvent = otherProps["onMouseDown"];
+  const onContextMenuEvent = otherProps["onContextMenu"];
+  const renderNodeIcon = otherProps["renderNodeIcon"] as () => JSX.Element;
 
   const nodeTitle = title || node.title;
   const nodeSubtitle = subtitle || node.subtitle;
@@ -71,40 +75,51 @@ const ResourceTreeThemeNodeContentRenderer = (props: NodeRendererProps) => {
       )} */}
     </div>
   );
-
   if (!toggleChildrenVisibility) {
     return <></>;
   }
 
+  const handleExpand = (ignoreExpand = false) => {
+    // 在右键菜单动作时，不处理展开/收缩动作
+    // 仅调用 toggleChildrenVisibility 触发试图更新
+    if (ignoreExpand) {
+      node.expanded = !node.expanded;
+    }
+
+    toggleChildrenVisibility({
+      node,
+      path,
+      treeIndex
+    });
+  };
+
   return (
     <div
-      className="content-container"
-      onClick={() =>
-        toggleChildrenVisibility({
-          node,
-          path,
-          treeIndex
-        })
-      }
+      // {...otherProps}
+      className={classNames("content-container", className)}
+      style={{ width: "100%" }}
+      onContextMenu={(e) => {
+        onContextMenuEvent(e);
+        handleExpand(true);
+      }}
+      onMouseDown={(e) => {
+        onClickEvent(e);
+        handleExpand();
+      }}
     >
-      {node.children &&
-        (node.children.length > 0 || typeof node.children === "function") && (
-          <span>
-            <Icon
-              className={classNames(
-                "expand-icon",
-                { expand: node.expanded },
-                { normal: !node.expanded }
-              )}
-              color={"#51aaec"}
-              component={ExpandIcon}
-            ></Icon>
+      <span>
+        <Icon
+          className={classNames(
+            "expand-icon",
+            { expand: node.expanded },
+            { normal: !node.expanded },
+            { hidden: !node.children || node.children.length === 0 }
+          )}
+          component={ExpandIcon}
+        ></Icon>
+      </span>
 
-            {/* {node.expanded && !isDragging && (
-              <div style={{ width: scaffoldBlockPxWidth }} />
-            )} */}
-          </span>
-        )}
+      {renderNodeIcon && <div className="node-icon">{renderNodeIcon()}</div>}
 
       {canDrag
         ? connectDragSource(nodeContent, { dropEffect: "move" })
@@ -152,25 +167,5 @@ const ResourceTreeThemeNodeContentRenderer = (props: NodeRendererProps) => {
     // </span>
   );
 };
-
-// ResourceTreeThemeNodeContentRenderer.defaultProps = {
-//   buttons: [],
-//   canDrag: false,
-//   canDrop: false,
-//   className: "",
-//   draggedNode: null,
-//   icons: [],
-//   isSearchFocus: false,
-//   isSearchMatch: false,
-//   parentNode: null,
-//   style: {},
-//   subtitle: null,
-//   swapDepth: null,
-//   swapFrom: null,
-//   swapLength: null,
-//   title: null,
-//   toggleChildrenVisibility: null,
-//   rowDirection: "ltr"
-// };
 
 export default ResourceTreeThemeNodeContentRenderer;

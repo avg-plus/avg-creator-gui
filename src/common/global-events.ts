@@ -1,5 +1,3 @@
-interface IEventStoryItemShouldDelete {}
-
 export enum GlobalEvents {
   // 列表变更时触发
   StoryItemListShouldRender = "StoryItemListShouldRender",

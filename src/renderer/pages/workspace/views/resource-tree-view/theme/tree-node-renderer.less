@@ -1,11 +1,21 @@
 .item-container {
-  padding: 4px;
-
   display: flex;
   align-items: center;
+  width: 100%;
 
   &:hover {
     background-color: aliceblue;
-    // transition: all 0.4s ease;
+  }
+
+  &.selected {
+    .node-title {
+      color: white;
+    }
+
+    background-color: #6495ed;
+
+    &.unfocus {
+      background-color: red;
+    }
   }
 }

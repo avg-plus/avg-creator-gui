@@ -109,9 +109,14 @@ export class WorkspaceLayout {
     );
 
     if (workspaceContainer) {
-      new ResizeSensor(workspaceContainer.get(0), () => {
-        layout.updateSize(window.innerWidth, window.innerHeight);
-      });
+      const update = () => {
+        requestAnimationFrame(() => {
+          layout.updateSize(window.innerWidth, window.innerHeight);
+          update();
+        });
+      };
+
+      update();
     }
 
     Object.keys(this.views).forEach((v) => {

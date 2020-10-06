@@ -54,7 +54,7 @@ export const ProjectItemContextMenu = (props: IProjectItemContextMenuProps) => {
           onClick={props.onExploreDir}
           text="打开项目目录"
         />
-        {Env.isDevelopment() && (
+        {/* {Env.isDevelopment() && (
           <Menu.Item
             icon="lab-test"
             intent={Intent.NONE}
@@ -63,7 +63,7 @@ export const ProjectItemContextMenu = (props: IProjectItemContextMenuProps) => {
               WorkspaceLayout.launchWindow();
             }}
           />
-        )}
+        )} */}
       </Menu>
     </>
   );

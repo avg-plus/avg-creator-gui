@@ -1,6 +1,7 @@
 export enum ResourceTreeNodeTypes {
-  InternalFolder = "InternalFolder",
+  ResourceRootFolder = "ResourceRootFolder",
   StoryRootFolder = "StoryRootFolder",
-  StoryNode = "StoryNode",
-  ScriptNode = "ScriptNode"
+  ScriptRootFolder = "ScriptRootFolder",
+  ScriptNode = "ScriptNode",
+  StoryNode = "StoryNode"
 }

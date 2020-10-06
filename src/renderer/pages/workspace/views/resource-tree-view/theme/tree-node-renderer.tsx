@@ -1,7 +1,12 @@
 import React, { Component, Children, cloneElement } from "react";
-import { NodeRendererProps, TreeRendererProps } from "react-sortable-tree";
+import classNames from "classnames";
+
+import { TreeRendererProps } from "react-sortable-tree";
+
+import { logger } from "../../../../../../common/lib/logger";
 
 import "./tree-node-renderer.less";
+import { NodeSelecteStatus } from "../select-status";
 
 const ResourceTreeThemeTreeNodeRenderer = (props: TreeRendererProps) => {
   const {
@@ -27,33 +32,26 @@ const ResourceTreeThemeTreeNodeRenderer = (props: TreeRendererProps) => {
 
   const scaffoldBlockCount = lowerSiblingCounts.length - 1;
 
-  // return <div>{props.node.title} - tree node renderer</div>;
   return connectDropTarget(
     <div
       {...otherProps}
-      // onMouseOver={this.bound.handleMouseOver}
-      // onMouseLeave={this.bound.handleMouseLeave}
-      className="item-container"
-      onFocus={() => {}}
-      // className={
-      //   styles.node +
-      //   (this.state.highlight ? ` ${styles.highlight}` : "") +
-      //   (dropType ? ` ${styles[dropType]}` : "")
-      // }
+      className={classNames("item-container", {
+        selected: node.selected !== NodeSelecteStatus.NotSelected,
+        unfocus: node.selected === NodeSelecteStatus.SelectedWithoutFocus
+      })}
+      style={{
+        paddingLeft: scaffoldBlockPxWidth * scaffoldBlockCount
+      }}
     >
-      <div
-        // className={styles.nodeContent}
-        style={{ paddingLeft: scaffoldBlockPxWidth * scaffoldBlockCount }}
-      >
-        {Children.map(children, (child) =>
-          cloneElement(child, {
-            isOver,
-            canDrop,
-            draggedNode
-          })
-        )}
-      </div>
+      {Children.map(children, (child) =>
+        cloneElement(child, {
+          isOver,
+          canDrop,
+          draggedNode
+        })
+      )}
     </div>
+    // </div>
   );
 };
 

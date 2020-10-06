@@ -1,85 +1,47 @@
 import React, { useState } from "react";
+import classNames from "classnames";
 import SortableTree, {
+  ExtendedNodeData,
   NodeData,
-  NodeRendererProps,
+  walk,
   TreeItem
 } from "react-sortable-tree";
-import fileExplorerTheme from "react-sortable-tree-theme-file-explorer";
-import theme from "./theme";
+import Scrollbars from "react-custom-scrollbars";
+
+import Row from "antd/lib/row";
+import Col from "antd/lib/col";
+
+import PubSub from "pubsub-js";
 
 import "./resource-tree-view.less";
 import { logger } from "../../../../../common/lib/logger";
 import { ResourceTreeNodeTypes } from "../../../../../common/resource-tree-node-types";
+import { Alignment, Button, ContextMenu, Navbar } from "@blueprintjs/core";
+import { ResourceTreeContextMenu } from "../../../../components/context-menus/resource-tree-menus";
 
-const NodeContentRenderer = (props: NodeRendererProps) => {
-  let depth = 0;
-  const renderNode = (node: TreeItem) => {
-    depth++;
-    return (
-      <div style={{ height: "auto", paddingLeft: depth * 4 }}>
-        <div>{node.title}</div>
-        {node.children &&
-          (node.children as TreeItem[]).map((v) => {
-            return renderNode(v);
-          })}
-      </div>
-    );
-  };
+// Icons
+import Icon from "@ant-design/icons/lib/components/Icon";
+import FolderIcon from "../../../../images/icons/resource-tree/folder.svg";
+import StoryIcon from "../../../../images/icons/resource-tree/write.svg";
+import ScriptFolderIcon from "../../../../images/icons/resource-tree/script.svg";
+import AddNodeIcon from "../../../../images/icons/resource-tree/add-node.svg";
 
-  return renderNode(props.node);
-};
+import theme from "./theme";
+import { DefaultTreeNodes } from "../../../../../common/default-tree-nodes";
+import { NodeSelecteStatus } from "./select-status";
 
 export const ResourceTreeView = () => {
-  const [treeData, setTreeData] = useState([
-    {
-      title: "资源",
-      nodeType: ResourceTreeNodeTypes.InternalFolder,
-      children: [
-        {
-          title: "立绘",
-          nodeType: ResourceTreeNodeTypes.InternalFolder
-        },
-        {
-          title: "场景",
-          nodeType: ResourceTreeNodeTypes.InternalFolder
-        },
-        {
-          title: "其它图形",
-          nodeType: ResourceTreeNodeTypes.InternalFolder
-        },
-        {
-          title: "多媒体",
-          nodeType: ResourceTreeNodeTypes.InternalFolder
-        },
-        {
-          title: "立绘",
-          nodeType: ResourceTreeNodeTypes.InternalFolder
-        }
-      ]
-    },
-    {
-      title: "剧本",
-      nodeType: ResourceTreeNodeTypes.StoryRootFolder,
-      children: [
-        {
-          title: "第一章",
-          nodeType: ResourceTreeNodeTypes.StoryNode
-        }
-      ]
-    }
-  ]);
+  const [treeData, setTreeData] = useState<TreeItem[]>(DefaultTreeNodes);
 
-  const onChange = (treeData) => {
+  const onChange = (treeData: React.SetStateAction<TreeItem[]>) => {
     setTreeData(treeData);
   };
 
   const renderRowHeight = (info: NodeData): number => {
-    logger.debug("rendering node height: ", info.node.nodeType);
-
     const nodeType = info.node.nodeType as ResourceTreeNodeTypes;
 
     const heightInfos = new Map<ResourceTreeNodeTypes, number>([
-      [ResourceTreeNodeTypes.InternalFolder, 32],
+      [ResourceTreeNodeTypes.ResourceRootFolder, 32],
       [ResourceTreeNodeTypes.StoryRootFolder, 32],
       [ResourceTreeNodeTypes.StoryNode, 24],
       [ResourceTreeNodeTypes.ScriptNode, 24]
@@ -88,15 +50,118 @@ export const ResourceTreeView = () => {
     return heightInfos.get(nodeType) ?? 0;
   };
 
+  const handleSelectNode = (data: ExtendedNodeData | null, focus = true) => {
+    walk({
+      treeData,
+      getNodeKey: ({ treeIndex }) => treeIndex,
+      callback: ({ node }) => {
+        node.selected = NodeSelecteStatus.NotSelected;
+        console.log(node.title);
+      },
+      ignoreCollapsed: false
+    });
+    console.log("handleSelectNode", data);
+
+    if (data) {
+      data.node.selected = focus
+        ? NodeSelecteStatus.Selected
+        : NodeSelecteStatus.SelectedWithoutFocus;
+    } else {
+      setTreeData([...treeData]);
+    }
+  };
+
+  const showTreeContextMenu = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    node?: TreeItem
+  ) => {
+    ContextMenu.show(<ResourceTreeContextMenu node={node} />, {
+      left: event.clientX,
+      top: event.clientY
+    });
+  };
+
+  const handleGenerateNodeProps = (data: ExtendedNodeData) => {
+    return {
+      renderNodeIcon: () => {
+        // スクリプト/シナリオ
+
+        const nodeType = data.node.nodeType as ResourceTreeNodeTypes;
+        switch (nodeType) {
+          case ResourceTreeNodeTypes.StoryRootFolder:
+            return <Icon component={StoryIcon}></Icon>;
+          case ResourceTreeNodeTypes.ScriptRootFolder:
+            return <Icon component={ScriptFolderIcon}></Icon>;
+        }
+
+        return <></>;
+      },
+      onContextMenu: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        handleSelectNode(data);
+        showTreeContextMenu(e, data.node);
+      },
+      onMouseDown: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        handleSelectNode(data);
+      }
+    };
+  };
+
+  const canDrag = (data: ExtendedNodeData) => {
+    const nodeType = data.node.nodeType;
+
+    return [
+      ResourceTreeNodeTypes.StoryNode,
+      ResourceTreeNodeTypes.ScriptNode
+    ].includes(nodeType);
+  };
+
   return (
-    <div className={"tree-wrapper"}>
-      <SortableTree
-        maxDepth={5}
-        rowHeight={renderRowHeight}
-        treeData={treeData}
-        onChange={onChange}
-        theme={theme}
-      ></SortableTree>
+    <div
+      className={"tree-wrapper"}
+      onMouseDown={(e) => {
+        handleSelectNode(null, false);
+        e.stopPropagation();
+      }}
+      onContextMenu={(e) => {
+        showTreeContextMenu(e);
+        e.stopPropagation();
+        e.preventDefault();
+      }}
+    >
+      <div className={"toolbar"}>
+        <Row>
+          <Col>这是项目名称</Col>
+          <Col>
+            <Button minimal={true} icon={AddNodeIcon}></Button>
+          </Col>
+        </Row>
+      </div>
+
+      <Scrollbars
+        className={"scroll-area"}
+        style={{ height: "100%" }}
+        universal={true}
+        autoHideTimeout={1000}
+      >
+        <SortableTree
+          className={"tree"}
+          maxDepth={5}
+          rowHeight={renderRowHeight}
+          treeData={treeData}
+          onChange={onChange}
+          canDrag={canDrag}
+          generateNodeProps={handleGenerateNodeProps}
+          theme={theme}
+          shouldCopyOnOutsideDrop={true}
+          isVirtualized={false}
+        ></SortableTree>
+      </Scrollbars>
     </div>
   );
 };

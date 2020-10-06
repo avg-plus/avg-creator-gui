@@ -29,6 +29,7 @@ import { TDAPP } from "../../services/td-analytics";
 import { logger } from "../../../common/lib/logger";
 import { useServe, useStopServe } from "../../hooks/use-serve";
 import { GUIAlertDialog } from "../../modals/alert-dialog";
+import { WorkspaceLayout } from "../../services/workspace-layout";
 
 const NoProjectHint = styled.label`
   font-size: 16px;
@@ -181,13 +182,16 @@ export default () => {
   };
 
   const handleOpenProject = (project: AVGProjectData) => {
-    dispatch({
-      type: AVGCreatorActionType.OpenProjectDetailDialog,
-      payload: {
-        open: true,
-        project: project
-      }
-    });
+    // dispatch({
+    //   type: AVGCreatorActionType.OpenProjectDetailDialog,
+    //   payload: {
+    //     open: true,
+    //     project: project
+    //   }
+    // });
+
+    // v2: Open workspace
+    WorkspaceLayout.launchWindow();
   };
 
   return (
