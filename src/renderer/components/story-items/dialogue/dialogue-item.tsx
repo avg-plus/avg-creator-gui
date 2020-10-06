@@ -64,26 +64,26 @@ export class DialogueItem extends StoryItem {
 
         break;
       }
-      case "ArrowUp": {
-        e.preventDefault();
+      // case "ArrowUp": {
+      //   e.preventDefault();
 
-        PubSub.publishSync(GlobalEvents.StoryItemNavigateTo, {
-          item: this,
-          story: super.getStory(),
-          direction: "up"
-        });
-        break;
-      }
-      case "ArrowDown": {
-        e.preventDefault();
+      //   PubSub.publishSync(GlobalEvents.StoryItemNavigateTo, {
+      //     item: this,
+      //     story: super.getStory(),
+      //     direction: "up"
+      //   });
+      //   break;
+      // }
+      // case "ArrowDown": {
+      //   e.preventDefault();
 
-        PubSub.publishSync(GlobalEvents.StoryItemNavigateTo, {
-          item: this,
-          story: super.getStory(),
-          direction: "down"
-        });
-        break;
-      }
+      //   PubSub.publishSync(GlobalEvents.StoryItemNavigateTo, {
+      //     item: this,
+      //     story: super.getStory(),
+      //     direction: "down"
+      //   });
+      //   break;
+      // }
     }
   }
 

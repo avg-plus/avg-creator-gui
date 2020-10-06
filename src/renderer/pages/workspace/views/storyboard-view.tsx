@@ -28,7 +28,7 @@ const getItems = (count: number) =>
     content: `item ${k}`
   }));
 
-const grid = 4;
+const grid = 1;
 
 const getListStyle = (isDraggingOver: boolean) => ({
   // background: isDraggingOver ? "lightblue" : "lightgrey",
@@ -41,7 +41,7 @@ const getItemStyle = (
 ) => ({
   // some basic styles to make the items look a bit nicer
   // userSelect: "none",
-  padding: grid * 2,
+  padding: grid * 1,
   margin: `0 0 ${grid}px 0`,
 
   // change background colour if dragging
@@ -53,7 +53,7 @@ const getItemStyle = (
 });
 
 const story = StoryManager.loadStory();
-const storyItems = story.getItems();
+const storyItems = story.getAllItems();
 
 export const StoryboardView = () => {
   const [items, setItems] = useState(storyItems);
@@ -62,7 +62,7 @@ export const StoryboardView = () => {
     const token = PubSub.subscribe(
       GlobalEvents.StoryItemListShouldRender,
       (event: GlobalEvents, data: any) => {
-        setItems(story.getItems());
+        setItems(story.getAllItems());
       }
     );
 
@@ -124,12 +124,11 @@ export const StoryboardView = () => {
                           snapshot.isDragging,
                           provided.draggableProps.style
                         )}
+                        className={"story-item-wrapper"}
                       >
                         <Row>
                           <Col span={23}>
-                            <div className={"story-item-wrapper"}>
-                              {item.render()}
-                            </div>
+                            <div>{item.render()}</div>
                           </Col>
                           <Col span={1}>
                             <div

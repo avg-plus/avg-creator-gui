@@ -56,11 +56,9 @@ export const ResourceTreeView = () => {
       getNodeKey: ({ treeIndex }) => treeIndex,
       callback: ({ node }) => {
         node.selected = NodeSelecteStatus.NotSelected;
-        console.log(node.title);
       },
       ignoreCollapsed: false
     });
-    console.log("handleSelectNode", data);
 
     if (data) {
       data.node.selected = focus
@@ -85,7 +83,6 @@ export const ResourceTreeView = () => {
     return {
       renderNodeIcon: () => {
         // スクリプト/シナリオ
-
         const nodeType = data.node.nodeType as ResourceTreeNodeTypes;
         switch (nodeType) {
           case ResourceTreeNodeTypes.StoryRootFolder:
@@ -122,46 +119,51 @@ export const ResourceTreeView = () => {
   };
 
   return (
-    <div
-      className={"tree-wrapper"}
-      onMouseDown={(e) => {
-        handleSelectNode(null, false);
-        e.stopPropagation();
-      }}
-      onContextMenu={(e) => {
-        showTreeContextMenu(e);
-        e.stopPropagation();
-        e.preventDefault();
-      }}
-    >
+    <>
       <div className={"toolbar"}>
-        <Row>
-          <Col>这是项目名称</Col>
+        <Row justify="end">
+          <Col></Col>
           <Col>
-            <Button minimal={true} icon={AddNodeIcon}></Button>
+            <div className="flat-button">
+              <Icon component={AddNodeIcon}></Icon>
+            </div>
+            {/* <Button minimal={true}>
+            </Button> */}
           </Col>
         </Row>
       </div>
-
-      <Scrollbars
-        className={"scroll-area"}
-        style={{ height: "100%" }}
-        universal={true}
-        autoHideTimeout={1000}
+      <div
+        className={"tree-wrapper"}
+        onMouseDown={(e) => {
+          handleSelectNode(null, false);
+          e.stopPropagation();
+        }}
+        onContextMenu={(e) => {
+          showTreeContextMenu(e);
+          e.stopPropagation();
+          e.preventDefault();
+        }}
       >
-        <SortableTree
-          className={"tree"}
-          maxDepth={5}
-          rowHeight={renderRowHeight}
-          treeData={treeData}
-          onChange={onChange}
-          canDrag={canDrag}
-          generateNodeProps={handleGenerateNodeProps}
-          theme={theme}
-          shouldCopyOnOutsideDrop={true}
-          isVirtualized={false}
-        ></SortableTree>
-      </Scrollbars>
-    </div>
+        <Scrollbars
+          className={"scroll-area"}
+          style={{ height: "100%" }}
+          universal={true}
+          autoHideTimeout={1000}
+        >
+          <SortableTree
+            className={"tree"}
+            maxDepth={5}
+            rowHeight={renderRowHeight}
+            treeData={treeData}
+            onChange={onChange}
+            canDrag={canDrag}
+            generateNodeProps={handleGenerateNodeProps}
+            theme={theme}
+            shouldCopyOnOutsideDrop={true}
+            isVirtualized={false}
+          ></SortableTree>
+        </Scrollbars>
+      </div>
+    </>
   );
 };

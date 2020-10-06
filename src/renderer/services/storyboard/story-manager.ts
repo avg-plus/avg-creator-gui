@@ -8,10 +8,10 @@ import { Story } from "./story";
 import { randomIn } from "../../../common/utils";
 import { ISaveData } from "../../../common/story-item-type";
 import { logger } from "../../../common/lib/logger";
+import { StoryItem } from "../../components/story-items/story-item";
 
 export class StoryManager {
-  static selectedNodeId: string;
-  static testStory: Story = new Story();
+  static currentStory: Story = new Story();
   static init() {
     PubSub.subscribe(
       GlobalEvents.StoryItemShouldDelete,
@@ -61,7 +61,7 @@ export class StoryManager {
     PubSub.subscribe(
       GlobalEvents.StoryItemContentChanged,
       (message: string, saveData: ISaveData) => {
-        const codes = this.testStory.getItems().map((v) => {
+        const codes = this.currentStory.getAllItems().map((v) => {
           return Codegen.generate(v.onSave());
         });
 
@@ -75,7 +75,7 @@ export class StoryManager {
     // test
     //for test
     for (let i = 0; i < 100; ++i) {
-      const v = new DialogueItem(this.testStory);
+      const v = new DialogueItem(this.currentStory);
       v.setText(
         randomIn([
           "秋深し 隣はなにも しない人",
@@ -83,13 +83,15 @@ export class StoryManager {
           "是我，是我先，明明都是我先来的……接吻也好，拥抱也好，还是喜欢上那家伙也好"
         ])
       );
-      this.testStory.addItem(v);
+      this.currentStory.addItem(v);
     }
 
     setTimeout(() => {
       PubSub.publishSync(GlobalEvents.StoryItemListShouldRender);
     }, 1000);
 
-    return this.testStory;
+    return this.currentStory;
   }
+
+  static selectItem(item: StoryItem) {}
 }

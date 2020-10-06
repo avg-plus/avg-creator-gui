@@ -11,6 +11,7 @@ export abstract class StoryItem implements IStoryItem {
   private _story: Story;
   protected _ref!: HTMLDivElement;
   private _itemType: StoryItemType = StoryItemType.None;
+  public selected = false;
 
   constructor(story: Story, type: StoryItemType) {
     this._story = story;

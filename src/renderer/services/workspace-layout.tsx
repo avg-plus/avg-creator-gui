@@ -39,7 +39,6 @@ export class WorkspaceLayout {
 
     editorWindow.loadFile("./dist/static/workspace.index.html");
     editorWindow.webContents.openDevTools();
-    editorWindow.maximize();
     editorWindow.on("ready-to-show", () => {
       editorWindow.show();
     });
@@ -64,17 +63,19 @@ export class WorkspaceLayout {
         },
         dimensions: {
           headerHeight: 20,
-          borderWidth: 3
+          borderWidth: 3,
+          minItemWidth: 100
         },
         content: [
           {
             type: "row",
+
             content: [
               {
                 type: "react-component",
                 component: "resourceTreeView",
                 isClosable: false,
-                title: "资源管理器",
+                title: "故事管理",
                 width: 20
               },
               {

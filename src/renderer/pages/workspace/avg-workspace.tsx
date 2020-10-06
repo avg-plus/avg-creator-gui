@@ -11,6 +11,9 @@ import { delayExecution } from "../../../common/utils";
 
 import "./avg-workspace.less";
 import { StoryManager } from "../../services/storyboard/story-manager";
+import { FocusStyleManager } from "@blueprintjs/core";
+
+FocusStyleManager.onlyShowFocusOnTabs();
 
 export const AVGWorkspace = () => {
   useMount(() => {

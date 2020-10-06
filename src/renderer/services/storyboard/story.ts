@@ -30,12 +30,18 @@ export class Story {
     this.storyItems = items;
   }
 
-  getItems() {
+  getAllItems() {
     return this.storyItems;
   }
 
-  getItem(index: number) {
-    return this.storyItems[index];
+  getItem(indexOrItem: number | StoryItem) {
+    if (typeof indexOrItem === "number") {
+      return this.storyItems[indexOrItem];
+    }
+
+    return this.storyItems.find((v) => {
+      return v.id === indexOrItem.id;
+    });
   }
 
   getItemIndex(item: StoryItem) {
