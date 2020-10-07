@@ -12,10 +12,12 @@ import GoldenLayout from "golden-layout";
 import { StoryboardView } from "../pages/workspace/views/storyboard-view";
 import { PropertyView } from "../pages/workspace/views/property-view";
 import { ResourceTreeView } from "../pages/workspace/views/resource-tree-view/resource-tree-view";
+import { StoryboardView_EditorJS } from "../pages/workspace/views/storyboard-view.editorjs";
 
 export class WorkspaceLayout {
   static views = {
-    storyboardView: <StoryboardView></StoryboardView>,
+    // storyboardView: <StoryboardView></StoryboardView>,
+    storyboardView: <StoryboardView_EditorJS></StoryboardView_EditorJS>,
     propertyView: <PropertyView></PropertyView>,
     resourceTreeView: <ResourceTreeView></ResourceTreeView>
   };
