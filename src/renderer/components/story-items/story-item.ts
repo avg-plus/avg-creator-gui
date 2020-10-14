@@ -1,9 +1,16 @@
 import { v4 as uuidv4 } from "uuid";
+import { GlobalEvents } from "../../../common/global-events";
 import { StoryItemType } from "../../../common/story-item-type";
 import { Story } from "../../services/storyboard/story";
 
 interface IStoryItem {
+  render(): JSX.Element;
+  onRefInit(ref: React.RefObject<HTMLDivElement>): void;
+  onChanged(e: React.ChangeEvent<HTMLInputElement>): void;
+  onKeyDown(e: React.KeyboardEvent<HTMLInputElement>): void;
+  onKeyUp(e: React.KeyboardEvent<HTMLInputElement>): void;
   onFocus(): void;
+  onSave(): any;
 }
 
 export abstract class StoryItem implements IStoryItem {
@@ -23,6 +30,41 @@ export abstract class StoryItem implements IStoryItem {
 
   abstract render(): JSX.Element;
   abstract onSave(): any;
+  abstract onRefInit(ref: React.RefObject<HTMLDivElement>): void;
+  abstract onChanged(e: React.ChangeEvent<HTMLInputElement>): void;
+
+  onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    // Control + ↑ ： 移动到上一个 Item
+    if (e.shiftKey && e.key === "ArrowUp") {
+      PubSub.publishSync(GlobalEvents.StoryItemNavigateTo, {
+        item: this,
+        story: this.getStory(),
+        direction: "up"
+      });
+    }
+    // Control + ↓ ： 移动到上一个 Item
+    else if (e.shiftKey && e.key === "ArrowDown") {
+      PubSub.publishSync(GlobalEvents.StoryItemNavigateTo, {
+        item: this,
+        story: this.getStory(),
+        direction: "down"
+      });
+    }
+    // Enter: 创建下一个对话
+    else if (e.key === "Enter") {
+      console.log("onKeyPress enter DialogueShouldCreate");
+
+      e.preventDefault();
+
+      // 在下面插入新的对话
+      PubSub.publishSync(GlobalEvents.DialogueShouldCreate, {
+        item: this,
+        story: this.getStory()
+      });
+    }
+  }
+
+  abstract onKeyUp(e: React.KeyboardEvent<HTMLInputElement>): void;
 
   getStory() {
     return this._story;

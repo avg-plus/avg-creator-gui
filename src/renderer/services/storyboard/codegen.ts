@@ -18,6 +18,8 @@ export class Codegen {
     if (genrator) {
       return genrator(saveData.data);
     }
+
+    return "";
   }
 
   private static genDialogue<T extends IDialogeSaveData>(data: T) {

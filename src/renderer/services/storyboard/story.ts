@@ -1,13 +1,28 @@
 import produce from "immer";
 import _ from "underscore";
-import { randomIn } from "../../../common/utils";
+import { logger } from "../../../common/lib/logger";
 import { DialogueItem } from "../../components/story-items/dialogue/dialogue-item";
 import { StoryItem } from "../../components/story-items/story-item";
 
 export class Story {
   storyItems: StoryItem[] = [];
+  selectedItem?: StoryItem;
 
   constructor() {}
+
+  setSelected(itemOrItemID: StoryItem | string) {
+    if (typeof itemOrItemID === "string") {
+      this.selectedItem = this.getItemById(itemOrItemID);
+    } else {
+      this.selectedItem = itemOrItemID;
+    }
+
+    console.log("selected item: ", this.selectedItem);
+  }
+
+  getSelectedItem() {
+    return this.selectedItem;
+  }
 
   addItem(...item: StoryItem[]) {
     // 使用 immer 让返回的数组地址发生变更，便于 React 检测到变化
@@ -41,6 +56,12 @@ export class Story {
 
     return this.storyItems.find((v) => {
       return v.id === indexOrItem.id;
+    });
+  }
+
+  getItemById(id: string) {
+    return this.storyItems.find((v) => {
+      return v.id === id;
     });
   }
 

@@ -1,12 +1,89 @@
+@avatar_position: 15;
+
 .dialogue-item {
   width: 100%;
+  margin-right: 20px;
+  position: relative;
 
-  &.text {
-    font-size: 1.1rem;
-    font-weight: 300;
-    font-family: Apple System, "Microsoft YaHei", "SF Pro SC", "SF Pro Display",
-      "Helvetica Neue", "Arial", "PingFang SC", "Hiragino Sans GB", "STHeiti",
-      "Microsoft JhengHei", "Source Han Sans SC", "Noto Sans CJK SC",
-      "Source Han Sans CN", sans-serif;
+  padding-top: 15px;
+  padding-bottom: 15px;
+
+  // 首次对话
+  &.head-dialogue-mode {
+    padding-top: 15px;
+    padding-bottom: 34px;
+  }
+
+  .context-line {
+    position: absolute;
+    border-left: 2px dashed #4c4c4c;
+    height: 100%;
+    left: @avatar_position * 2.5;
+    top: 0;
+
+    // 开始对话节点
+    &.head-dialogue-mode {
+      height: 0%;
+      bottom: 0;
+      top: unset;
+    }
+
+    // 如果是结束对话节点，则连接线只有一半
+    &.end-dialogue-mode {
+      height: calc(100% / 2);
+    }
+  }
+
+  .indicator-point {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #4e4e4e;
+    top: 50%;
+    transform: translate(33px, -50%);
+
+    &.end-dialogue {
+      background: #d0021b;
+      width: 16px;
+      height: 16px;
+      transform: translate(31px, -50%);
+    }
+  }
+
+  .character-avatar {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    left: @avatar_position;
+    -webkit-user-select: none;
+  }
+
+  .edit-content {
+    position: relative;
+    left: 65;
+    padding-right: 120px;
+    text-align: justify;
+
+    &.text {
+      font-size: 1rem;
+      font-weight: 300;
+      font-family: Apple System, "Microsoft YaHei", "SF Pro SC",
+        "SF Pro Display", "Helvetica Neue", "Arial", "PingFang SC",
+        "Hiragino Sans GB", "STHeiti", "Microsoft JhengHei",
+        "Source Han Sans SC", "Noto Sans CJK SC", "Source Han Sans CN",
+        sans-serif;
+    }
+  }
+
+  .terminal-dialogue-border {
+    position: absolute;
+    width: 100%;
+    // left: -50%;
+    height: 4px;
+    bottom: 0;
+    background-color: #b9b9b9;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
   }
 }

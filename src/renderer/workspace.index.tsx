@@ -3,6 +3,8 @@ import * as ReactDOM from "react-dom";
 
 import "./workspace.index.less";
 
+import "../common/lib/logger";
+
 import { AVGWorkspace } from "./pages/workspace/avg-workspace";
 import { Color, Titlebar } from "custom-electron-titlebar";
 

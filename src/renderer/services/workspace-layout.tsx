@@ -12,12 +12,14 @@ import GoldenLayout from "golden-layout";
 import { StoryboardView } from "../pages/workspace/views/storyboard-view";
 import { PropertyView } from "../pages/workspace/views/property-view";
 import { ResourceTreeView } from "../pages/workspace/views/resource-tree-view/resource-tree-view";
+import { _DevelopmentDebugView } from "../pages/workspace/views/_debug-view";
 
 export class WorkspaceLayout {
   static views = {
     storyboardView: <StoryboardView></StoryboardView>,
     propertyView: <PropertyView></PropertyView>,
-    resourceTreeView: <ResourceTreeView></ResourceTreeView>
+    resourceTreeView: <ResourceTreeView></ResourceTreeView>,
+    _debugView: <_DevelopmentDebugView></_DevelopmentDebugView>
   };
 
   static launchWindow() {
@@ -76,6 +78,13 @@ export class WorkspaceLayout {
                 component: "resourceTreeView",
                 isClosable: false,
                 title: "故事管理",
+                width: 20
+              },
+              {
+                type: "react-component",
+                component: "_debugView",
+                isClosable: false,
+                title: "* 调试面板",
                 width: 20
               },
               {

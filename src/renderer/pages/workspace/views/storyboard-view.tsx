@@ -20,6 +20,7 @@ import { StoryItem } from "../../../components/story-items/story-item";
 import Row from "antd/lib/row";
 import Col from "antd/lib/col";
 import Scrollbars from "react-custom-scrollbars";
+import { APISelectorPanel } from "../../../components/api-selector/api-selector-panel";
 
 // fake data generator
 const getItems = (count: number) =>
@@ -45,7 +46,7 @@ const getItemStyle = (
   margin: `0 0 ${grid}px 0`,
 
   // change background colour if dragging
-  background: isDragging ? "lightgreen" : "white",
+  // background: isDragging ? "lightgreen" : "white",
   // background: "white",
 
   // styles we need to apply on draggables
@@ -57,11 +58,19 @@ const storyItems = story.getAllItems();
 
 export const StoryboardView = () => {
   const [items, setItems] = useState(storyItems);
+  const [currentSelected, setCurrentSelected] = useState(
+    story.selectedItem?.id
+  );
+
+  useEffect(() => {
+    setItems(storyItems);
+  }, [storyItems]);
 
   useEffect(() => {
     const token = PubSub.subscribe(
       GlobalEvents.StoryItemListShouldRender,
       (event: GlobalEvents, data: any) => {
+        // const newItems = produce(items, (draftState) => {});
         setItems(story.getAllItems());
       }
     );
@@ -95,14 +104,18 @@ export const StoryboardView = () => {
       result.destination.index
     );
 
-    setItems(newItems);
     story.setItems(...newItems);
+
+    setItems(story.getAllItems());
   };
 
   return (
     <>
+      {/* <div className="api-selector-panel-container">
+        <APISelectorPanel></APISelectorPanel>
+      </div> */}
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="droppable">
+        <Droppable droppableId="droppable" mode="standard">
           {(provided, snapshot) => (
             <Scrollbars
               style={{ height: "100%" }}
@@ -110,6 +123,7 @@ export const StoryboardView = () => {
               autoHideTimeout={1000}
             >
               <div
+                id="editor"
                 {...provided.droppableProps}
                 ref={provided.innerRef}
                 style={getListStyle(snapshot.isDraggingOver)}
@@ -124,19 +138,21 @@ export const StoryboardView = () => {
                           snapshot.isDragging,
                           provided.draggableProps.style
                         )}
-                        className={"story-item-wrapper"}
+                        className={classname(
+                          "story-item-wrapper",
+                          { selected: item.id === currentSelected },
+                          { dragging: snapshot.isDragging }
+                        )}
+                        onMouseDown={() => {
+                          story.setSelected(item);
+                          setCurrentSelected(item.id);
+                        }}
                       >
-                        <Row>
-                          <Col span={23}>
-                            <div>{item.render()}</div>
-                          </Col>
-                          <Col span={1}>
-                            <div
-                              className={"drag-handle"}
-                              {...provided.dragHandleProps}
-                            ></div>
-                          </Col>
-                        </Row>
+                        <div className="item-render">{item.render()}</div>
+                        <div
+                          className={"drag-handle"}
+                          {...provided.dragHandleProps}
+                        ></div>
                       </div>
                     )}
                   </Draggable>

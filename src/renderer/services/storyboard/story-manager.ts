@@ -72,23 +72,36 @@ export class StoryManager {
   }
 
   static loadStory() {
-    // test
-    //for test
+    // =====================================================================
+    // for test
+    // =====================================================================
     for (let i = 0; i < 100; ++i) {
       const v = new DialogueItem(this.currentStory);
       v.setText(
         randomIn([
-          "秋深し 隣はなにも しない人",
+          "记得那天晚上你给我打电话，让我过来找你，声音听起来像是喝了很多酒的样子。",
           "为什么会变成这样呢……第一次有了喜欢的人。有了能做一辈子朋友的人。两件快乐事情重合在一起。而这两份快乐，又给我带来更多的快乐。得到的，本该是像梦境一般幸福的时间……但是，为什么，会变成这样呢……",
-          "是我，是我先，明明都是我先来的……接吻也好，拥抱也好，还是喜欢上那家伙也好"
+          "是我，是我先，明明都是我先来的……接吻也好，拥抱也好，还是喜欢上那家伙也好",
+          "那时还是挺担心的，还以为你出了什么事，结果发现没有后就想着跟你做个小恶作剧。",
+          "那是我们第一次见面，你当时对《奥赛罗》的见解挺让人印象深刻的。",
+          "那就没办法了……就稍稍给你一个提示吧。",
+          "——我对你有个愿望……这么说可能有些奇怪，所以应该说是，我对你有所期望吧。",
+          "不过话说回来，怎么突然问起我这个了？是想找约会的时间吗？",
+          "除了1号的志愿者服务、4号的颁奖，还有毕业前一天的演讲外，其他时间我都有空的。"
         ])
       );
       this.currentStory.addItem(v);
     }
 
-    setTimeout(() => {
-      PubSub.publishSync(GlobalEvents.StoryItemListShouldRender);
-    }, 1000);
+    PubSub.publishSync(GlobalEvents.StoryItemListShouldRender);
+
+    const item = this.currentStory.getItem(0) as DialogueItem;
+    item.isHeadDialogue = true;
+
+    [5, 10, 15].forEach((v) => {
+      (this.currentStory.getItem(v) as DialogueItem).isEndDialogue = true;
+    });
+    // =====================================================================
 
     return this.currentStory;
   }

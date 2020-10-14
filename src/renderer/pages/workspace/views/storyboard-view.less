@@ -1,22 +1,47 @@
 #editor {
-  // padding: 20px;
-  border-left: 1px solid grey;
+  margin-top: 20px;
   width: 100%;
   height: 100%;
-  background-color: white;
 }
 
-.drag-handle {
-  width: 24px;
-  height: 24px;
-  background: url("../../../images/icons/sort.png") no-repeat top left;
+.api-selector-panel-container {
+  position: absolute;
+  width: 100%;
+  max-width: 600px;
+  height: 100%;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99999;
 }
 
 .story-item-wrapper {
-  margin-left: 50px;
+  padding-left: 150px;
+  background-color: white;
+
+  &.dragging {
+    background-color: bisque;
+  }
+
+  .item-render {
+    min-width: 100%;
+  }
+
+  .drag-handle {
+    position: absolute;
+    right: 2%;
+    transform: translateY(-200%);
+    width: 24px;
+    height: 24px;
+    background: url("../../../images/icons/sort.png") no-repeat top left;
+  }
 
   &:hover {
-    // background-color: aquamarine;
-    border: 1px solid aquamarine;
+    // background-color: aliceblue;
+    // transition: all 0.1s ease;
+  }
+
+  &.selected {
+    background-color: aliceblue;
   }
 }
