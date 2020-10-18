@@ -75,7 +75,7 @@ export class StoryManager {
     // =====================================================================
     // for test
     // =====================================================================
-    for (let i = 0; i < 100; ++i) {
+    for (let i = 0; i < 18; ++i) {
       const v = new DialogueItem(this.currentStory);
       v.setText(
         randomIn([

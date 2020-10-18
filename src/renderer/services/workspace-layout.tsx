@@ -13,6 +13,7 @@ import { StoryboardView } from "../pages/workspace/views/storyboard-view";
 import { PropertyView } from "../pages/workspace/views/property-view";
 import { ResourceTreeView } from "../pages/workspace/views/resource-tree-view/resource-tree-view";
 import { _DevelopmentDebugView } from "../pages/workspace/views/_debug-view";
+import _ from "underscore";
 
 export class WorkspaceLayout {
   static views = {
@@ -126,7 +127,8 @@ export class WorkspaceLayout {
         });
       };
 
-      update();
+      const debounceUpdate = _.debounce(update, 500);
+      debounceUpdate();
     }
 
     Object.keys(this.views).forEach((v) => {

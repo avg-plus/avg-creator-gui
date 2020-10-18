@@ -1,6 +1,10 @@
 import * as React from "react";
-import { useMount } from "react-use";
-import classname from "classnames";
+import {
+  List,
+  AutoSizer,
+  CellMeasurer,
+  CellMeasurerCache
+} from "react-virtualized";
 
 import {
   DragDropContext,
@@ -9,18 +13,25 @@ import {
   DraggingStyle,
   NotDraggingStyle,
   DropResult,
-  ResponderProvided
+  ResponderProvided,
+  DraggableProvided,
+  DraggableRubric,
+  DraggableStateSnapshot,
+  DroppableProvided
 } from "react-beautiful-dnd";
 
-import "./storyboard-view.less";
 import { useEffect, useState } from "react";
 import { StoryManager } from "../../../services/storyboard/story-manager";
 import { GlobalEvents } from "../../../../common/global-events";
 import { StoryItem } from "../../../components/story-items/story-item";
-import Row from "antd/lib/row";
-import Col from "antd/lib/col";
 import Scrollbars from "react-custom-scrollbars";
 import { APISelectorPanel } from "../../../components/api-selector/api-selector-panel";
+import StoryItemComponent, {
+  IStoryItemComponentProps
+} from "./story-item-component";
+
+import "./storyboard-view.less";
+import ReactDOM from "react-dom";
 
 // fake data generator
 const getItems = (count: number) =>
@@ -34,23 +45,6 @@ const grid = 1;
 const getListStyle = (isDraggingOver: boolean) => ({
   // background: isDraggingOver ? "lightblue" : "lightgrey",
   padding: grid
-});
-
-const getItemStyle = (
-  isDragging: boolean,
-  draggableStyle?: DraggingStyle | NotDraggingStyle
-) => ({
-  // some basic styles to make the items look a bit nicer
-  // userSelect: "none",
-  padding: grid * 1,
-  margin: `0 0 ${grid}px 0`,
-
-  // change background colour if dragging
-  // background: isDragging ? "lightgreen" : "white",
-  // background: "white",
-
-  // styles we need to apply on draggables
-  ...draggableStyle
 });
 
 const story = StoryManager.loadStory();
@@ -109,57 +103,78 @@ export const StoryboardView = () => {
     setItems(story.getAllItems());
   };
 
+  type RowProps = {
+    index: number;
+    style: Object;
+  };
+  const getRowRenderer = (items: StoryItem[]) => ({
+    index,
+    style
+  }: RowProps) => {
+    const item: StoryItem = items[index];
+
+    return (
+      <Draggable key={`${item.id}`} draggableId={item.id} index={index}>
+        {(provided, snapshot) => (
+          <StoryItemComponent
+            item={item}
+            provided={provided}
+            snapshot={snapshot}
+            style={{ margin: 0, ...style }}
+            index={index}
+          ></StoryItemComponent>
+        )}
+      </Draggable>
+    );
+  };
+
   return (
     <>
       {/* <div className="api-selector-panel-container">
         <APISelectorPanel></APISelectorPanel>
       </div> */}
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="droppable" mode="standard">
-          {(provided, snapshot) => (
-            <Scrollbars
-              style={{ height: "100%" }}
-              universal={true}
-              autoHideTimeout={1000}
-            >
-              <div
-                id="editor"
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-                style={getListStyle(snapshot.isDraggingOver)}
-              >
-                {items.map((item, index) => (
-                  <Draggable key={item.id} draggableId={item.id} index={index}>
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        style={getItemStyle(
-                          snapshot.isDragging,
-                          provided.draggableProps.style
-                        )}
-                        className={classname(
-                          "story-item-wrapper",
-                          { selected: item.id === currentSelected },
-                          { dragging: snapshot.isDragging }
-                        )}
-                        onMouseDown={() => {
-                          story.setSelected(item);
-                          setCurrentSelected(item.id);
-                        }}
-                      >
-                        <div className="item-render">{item.render()}</div>
-                        <div
-                          className={"drag-handle"}
-                          {...provided.dragHandleProps}
-                        ></div>
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-            </Scrollbars>
+        <Droppable
+          droppableId="droppable"
+          mode="virtual"
+          renderClone={(
+            provided: DraggableProvided,
+            snapshot: DraggableStateSnapshot,
+            rubric: DraggableRubric
+          ) => (
+            <StoryItemComponent
+              item={items[rubric.source.index]}
+              provided={provided}
+              snapshot={snapshot}
+            ></StoryItemComponent>
+          )}
+        >
+          {(droppableProvided: DroppableProvided) => (
+            <AutoSizer>
+              {({ height, width }) => (
+                <List
+                  // id="editor"
+                  height={height}
+                  rowCount={items.length}
+                  rowHeight={100}
+                  width={width}
+                  ref={(ref) => {
+                    // react-virtualized has no way to get the list's ref that I can so
+                    // So we use the `ReactDOM.findDOMNode(ref)` escape hatch to get the ref
+                    if (ref) {
+                      // eslint-disable-next-line react/no-find-dom-node
+                      const whatHasMyLifeComeTo = ReactDOM.findDOMNode(ref);
+                      if (whatHasMyLifeComeTo instanceof HTMLElement) {
+                        droppableProvided.innerRef(whatHasMyLifeComeTo);
+                      }
+                    }
+                  }}
+                  rowRenderer={getRowRenderer(items)}
+                />
+              )}
+            </AutoSizer>
+
+            // </Scrollbars>
           )}
         </Droppable>
       </DragDropContext>
