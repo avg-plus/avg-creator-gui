@@ -19,6 +19,7 @@ export abstract class StoryItem implements IStoryItem {
   protected _ref!: HTMLDivElement;
   private _itemType: StoryItemType = StoryItemType.None;
   public selected = false;
+  renderHeight: number = 100;
 
   constructor(story: Story, type: StoryItemType) {
     this._story = story;

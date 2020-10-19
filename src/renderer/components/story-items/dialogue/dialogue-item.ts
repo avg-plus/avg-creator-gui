@@ -49,6 +49,11 @@ export class DialogueItem extends StoryItem {
   onChanged(e: React.ChangeEvent<HTMLInputElement>) {
     this._text = e.target.innerText ?? "";
 
+    // 重新计算高度
+
+    this.renderHeight = this._ref.clientHeight || 40;
+    console.log(this.renderHeight);
+
     PubSub.publish(GlobalEvents.StoryItemContentChanged, this.onSave());
   }
 

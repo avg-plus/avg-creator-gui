@@ -3,181 +3,138 @@ import {
   List,
   AutoSizer,
   CellMeasurer,
-  CellMeasurerCache
+  CellMeasurerCache,
+  ListRowProps
 } from "react-virtualized";
 
 import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DraggingStyle,
-  NotDraggingStyle,
-  DropResult,
-  ResponderProvided,
-  DraggableProvided,
-  DraggableRubric,
-  DraggableStateSnapshot,
-  DroppableProvided
-} from "react-beautiful-dnd";
+  SortableContainer,
+  SortableElement,
+  SortableHandle
+} from "react-sortable-hoc";
 
-import { useEffect, useState } from "react";
+import arrayMove from "array-move";
+
+import { useRef, useState } from "react";
 import { StoryManager } from "../../../services/storyboard/story-manager";
-import { GlobalEvents } from "../../../../common/global-events";
 import { StoryItem } from "../../../components/story-items/story-item";
-import Scrollbars from "react-custom-scrollbars";
-import { APISelectorPanel } from "../../../components/api-selector/api-selector-panel";
 import StoryItemComponent, {
   IStoryItemComponentProps
 } from "./story-item-component";
 
 import "./storyboard-view.less";
-import ReactDOM from "react-dom";
-
-// fake data generator
-const getItems = (count: number) =>
-  Array.from({ length: count }, (v, k) => k).map((k) => ({
-    id: `item-${k}`,
-    content: `item ${k}`
-  }));
-
-const grid = 1;
-
-const getListStyle = (isDraggingOver: boolean) => ({
-  // background: isDraggingOver ? "lightblue" : "lightgrey",
-  padding: grid
-});
+import { useMount } from "react-use";
 
 const story = StoryManager.loadStory();
 const storyItems = story.getAllItems();
 
-export const StoryboardView = () => {
-  const [items, setItems] = useState(storyItems);
-  const [currentSelected, setCurrentSelected] = useState(
-    story.selectedItem?.id
-  );
+interface IVirtualListProps {
+  items: StoryItem[];
+  getRef: (ref: List) => void;
+}
 
-  useEffect(() => {
-    setItems(storyItems);
-  }, [storyItems]);
+const DragHandle = SortableHandle(() => <div className={"drag-handle"}></div>);
+const SortableStoryItemComponent = SortableElement(
+  (value: IStoryItemComponentProps) => (
+    <li>
+      <StoryItemComponent {...value}></StoryItemComponent>
+      <DragHandle />
+    </li>
+  )
+);
 
-  useEffect(() => {
-    const token = PubSub.subscribe(
-      GlobalEvents.StoryItemListShouldRender,
-      (event: GlobalEvents, data: any) => {
-        // const newItems = produce(items, (draftState) => {});
-        setItems(story.getAllItems());
-      }
-    );
+const VirtualList = (props: IVirtualListProps) => {
+  const ref = useRef() as React.RefObject<List>;
+  const cache = new CellMeasurerCache({
+    fixedWidth: true,
+    defaultHeight: 80
+  });
 
-    return () => {
-      PubSub.unsubscribe(token);
-    };
-  }, []);
-
-  // a little function to help us with reordering the result
-  const reorder = (
-    list: Iterable<StoryItem> | ArrayLike<StoryItem>,
-    startIndex: number,
-    endIndex: number
-  ) => {
-    const result: StoryItem[] = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-
-    return result;
-  };
-
-  const onDragEnd = (result: DropResult, provided: ResponderProvided) => {
-    if (!result.destination) {
-      return;
+  useMount(() => {
+    if (ref.current) {
+      props.getRef(ref.current);
     }
 
-    const newItems = reorder(
-      items,
-      result.source.index,
-      result.destination.index
-    );
+    setInterval(() => {
+      ref.current?.recomputeRowHeights();
+    }, 2000);
+  });
 
-    story.setItems(...newItems);
-
-    setItems(story.getAllItems());
-  };
-
-  type RowProps = {
-    index: number;
-    style: Object;
-  };
-  const getRowRenderer = (items: StoryItem[]) => ({
-    index,
-    style
-  }: RowProps) => {
-    const item: StoryItem = items[index];
+  const renderRow = ({ index, style, parent, key }: ListRowProps) => {
+    const item: StoryItem = props.items[index];
 
     return (
-      <Draggable key={`${item.id}`} draggableId={item.id} index={index}>
-        {(provided, snapshot) => (
-          <StoryItemComponent
-            item={item}
-            provided={provided}
-            snapshot={snapshot}
-            style={{ margin: 0, ...style }}
-            index={index}
-          ></StoryItemComponent>
-        )}
-      </Draggable>
+      <CellMeasurer
+        cache={cache}
+        key={key}
+        parent={parent}
+        columnIndex={0}
+        rowIndex={index}
+        style={style}
+      >
+        <SortableStoryItemComponent
+          key={key}
+          item={item}
+          style={{ margin: 0, ...style }}
+          index={index}
+        ></SortableStoryItemComponent>
+      </CellMeasurer>
     );
+  };
+
+  const getRowHeight = ({ index }) => {
+    return props.items[index].renderHeight || 40;
   };
 
   return (
-    <>
-      {/* <div className="api-selector-panel-container">
-        <APISelectorPanel></APISelectorPanel>
-      </div> */}
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable
-          droppableId="droppable"
-          mode="virtual"
-          renderClone={(
-            provided: DraggableProvided,
-            snapshot: DraggableStateSnapshot,
-            rubric: DraggableRubric
-          ) => (
-            <StoryItemComponent
-              item={items[rubric.source.index]}
-              provided={provided}
-              snapshot={snapshot}
-            ></StoryItemComponent>
-          )}
-        >
-          {(droppableProvided: DroppableProvided) => (
-            <AutoSizer>
-              {({ height, width }) => (
-                <List
-                  // id="editor"
-                  height={height}
-                  rowCount={items.length}
-                  rowHeight={100}
-                  width={width}
-                  ref={(ref) => {
-                    // react-virtualized has no way to get the list's ref that I can so
-                    // So we use the `ReactDOM.findDOMNode(ref)` escape hatch to get the ref
-                    if (ref) {
-                      // eslint-disable-next-line react/no-find-dom-node
-                      const whatHasMyLifeComeTo = ReactDOM.findDOMNode(ref);
-                      if (whatHasMyLifeComeTo instanceof HTMLElement) {
-                        droppableProvided.innerRef(whatHasMyLifeComeTo);
-                      }
-                    }
-                  }}
-                  rowRenderer={getRowRenderer(items)}
-                />
-              )}
-            </AutoSizer>
+    <AutoSizer>
+      {({ height, width }) => (
+        <List
+          ref={ref}
+          deferredMeasurementCache={cache}
+          // rowHeight={getRowHeight}
+          rowHeight={cache.rowHeight}
+          rowRenderer={renderRow}
+          rowCount={props.items.length}
+          width={width}
+          height={height}
+        />
+      )}
+    </AutoSizer>
+  );
+};
 
-            // </Scrollbars>
-          )}
-        </Droppable>
-      </DragDropContext>
-    </>
+const SortableVirtualList = SortableContainer(VirtualList);
+
+export const StoryboardView = () => {
+  const [items, setItems] = useState(storyItems);
+  const [listRef, setListRef] = useState<List>();
+
+  const onSortEnd = ({ oldIndex, newIndex }) => {
+    if (oldIndex === newIndex) {
+      return;
+    }
+
+    setItems(arrayMove(items, oldIndex, newIndex));
+
+    // We need to inform React Virtualized that the items have changed heights
+    // This can either be done by imperatively calling the recomputeRowHeights and
+    // forceUpdate instance methods on the `List` ref, or by passing an additional prop
+    // to List that changes whenever the order changes to force it to re-render
+    if (listRef) {
+      listRef.recomputeRowHeights();
+      listRef.forceUpdate();
+
+      console.log("recomputeRowHeights");
+    }
+  };
+
+  return (
+    <SortableVirtualList
+      items={items}
+      useDragHandle={true}
+      getRef={setListRef}
+      onSortEnd={onSortEnd}
+    ></SortableVirtualList>
   );
 };
