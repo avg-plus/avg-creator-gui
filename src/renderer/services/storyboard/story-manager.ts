@@ -75,7 +75,7 @@ export class StoryManager {
     // =====================================================================
     // for test
     // =====================================================================
-    for (let i = 0; i < 1000; ++i) {
+    for (let i = 0; i < 100; ++i) {
       const v = new DialogueItem(this.currentStory);
       v.setText(
         // i.toString()

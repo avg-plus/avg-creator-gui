@@ -1,24 +1,23 @@
-import Col from "antd/lib/grid/col";
-import Row from "antd/lib/grid/row";
 import classnames from "classnames";
 import React, { useRef, useState } from "react";
 import { useMount } from "react-use";
 import { DialogueItem } from "./dialogue-item";
 
-import "./dialogue-item.less";
+import "./dialogue-item.component.less";
 
 import fakeAvatarImage from "../../../images/fake-data/avatar.png";
+import { IComponentProps } from "../component-props";
 
-interface IDialogueTextComponentProps {
-  data: DialogueItem;
-}
+interface IDialogueTextComponentProps extends IComponentProps<DialogueItem> {}
 
 const DialogueItemComponent = (props: IDialogueTextComponentProps) => {
   const [text, setText] = useState(props.data.getText());
   const ref = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLDivElement>(null);
 
   useMount(() => {
     props.data.onRefInit(ref);
+    props.data.onInputRefInit(inputRef);
   });
 
   const onPaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
@@ -36,6 +35,7 @@ const DialogueItemComponent = (props: IDialogueTextComponentProps) => {
 
   return (
     <div
+      ref={ref}
       className={classnames("dialogue-item", {
         "head-dialogue-mode": props.data.isHeadDialogue
       })}
@@ -58,14 +58,18 @@ const DialogueItemComponent = (props: IDialogueTextComponentProps) => {
           })}
         ></div>
       )}
-      <div
-        ref={ref}
-        className={classnames("edit-content", "text")}
-        {...eventProps}
-        contentEditable={true}
-        onPaste={onPaste}
-        dangerouslySetInnerHTML={{ __html: text }}
-      ></div>
+
+      <div className={"content"}>
+        {props.data.isHeadDialogue && <div className={"name"}>林沐风</div>}
+        <div
+          ref={inputRef}
+          className={classnames("edit-content", "text")}
+          {...eventProps}
+          contentEditable={true}
+          onPaste={onPaste}
+          dangerouslySetInnerHTML={{ __html: text }}
+        ></div>
+      </div>
 
       {props.data.isEndDialogue && (
         <div className="terminal-dialogue-border"></div>

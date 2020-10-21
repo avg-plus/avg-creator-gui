@@ -35,3 +35,13 @@ export function delayExecution(func: () => void, timeout: number) {
     func();
   }, timeout);
 }
+
+export function autoSubScribe<E extends string>(
+  event: E,
+  cb: (event: E, data: any) => void
+) {
+  const token = PubSub.subscribe(event, cb);
+  return () => {
+    PubSub.unsubscribe(token);
+  };
+}

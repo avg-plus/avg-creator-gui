@@ -24,6 +24,10 @@ import StoryItemComponent, {
 
 import "./storyboard-view.less";
 import { useMount } from "react-use";
+import Scrollbars from "react-custom-scrollbars";
+import { autoSubScribe } from "../../../../common/utils";
+import { GlobalEvents } from "../../../../common/global-events";
+import _ from "underscore";
 
 const story = StoryManager.loadStory();
 const storyItems = story.getAllItems();
@@ -33,57 +37,65 @@ interface IVirtualListProps {
   getRef: (ref: List) => void;
 }
 
-const DragHandle = SortableHandle(() => <div className={"drag-handle"}></div>);
+const DragHandle = SortableHandle(() => (
+  <div className={"drag-handle"}>:: ---</div>
+));
 const SortableStoryItemComponent = SortableElement(
   (value: IStoryItemComponentProps) => (
-    <li>
+    <div className={"story-item-wrapper"}>
       <StoryItemComponent {...value}></StoryItemComponent>
       <DragHandle />
-    </li>
+    </div>
   )
 );
 
 const VirtualList = (props: IVirtualListProps) => {
   const ref = useRef() as React.RefObject<List>;
-  const cache = new CellMeasurerCache({
-    fixedWidth: true,
-    defaultHeight: 80
-  });
+  const [totalHeight, setTotalHeight] = useState<number>(0);
 
   useMount(() => {
     if (ref.current) {
       props.getRef(ref.current);
     }
-
-    setInterval(() => {
-      ref.current?.recomputeRowHeights();
-    }, 2000);
   });
+
+  React.useEffect(() => {
+    return autoSubScribe(
+      GlobalEvents.RecomputeStoryNodeHeights,
+      (event, data) => {
+        const item = data?.item as StoryItem;
+        const index = props.items.indexOf(item);
+        if (index >= 0) {
+          ref.current?.recomputeRowHeights(index);
+          console.log("recomputeRowHeights = ", index);
+        }
+      }
+    );
+  });
+
+  const calcHeights = () => {
+    // 计算总高度
+    let heights = 0;
+    props.items.forEach((v) => {
+      heights += v.renderHeight();
+    });
+  };
 
   const renderRow = ({ index, style, parent, key }: ListRowProps) => {
     const item: StoryItem = props.items[index];
 
     return (
-      <CellMeasurer
-        cache={cache}
+      <SortableStoryItemComponent
         key={key}
-        parent={parent}
-        columnIndex={0}
-        rowIndex={index}
-        style={style}
-      >
-        <SortableStoryItemComponent
-          key={key}
-          item={item}
-          style={{ margin: 0, ...style }}
-          index={index}
-        ></SortableStoryItemComponent>
-      </CellMeasurer>
+        item={item}
+        style={{ margin: 0, ...style }}
+        index={index}
+      ></SortableStoryItemComponent>
     );
   };
 
   const getRowHeight = ({ index }) => {
-    return props.items[index].renderHeight || 40;
+    return props.items[index].renderHeight() || 40;
   };
 
   return (
@@ -91,11 +103,19 @@ const VirtualList = (props: IVirtualListProps) => {
       {({ height, width }) => (
         <List
           ref={ref}
-          deferredMeasurementCache={cache}
-          // rowHeight={getRowHeight}
-          rowHeight={cache.rowHeight}
+          overscanRowCount={10}
+          rowHeight={getRowHeight}
           rowRenderer={renderRow}
           rowCount={props.items.length}
+          onRowsRendered={(info) => {
+            for (
+              let i = info.overscanStartIndex;
+              i <= info.overscanStopIndex;
+              ++i
+            ) {
+              ref.current?.recomputeRowHeights(i);
+            }
+          }}
           width={width}
           height={height}
         />
@@ -124,17 +144,18 @@ export const StoryboardView = () => {
     if (listRef) {
       listRef.recomputeRowHeights();
       listRef.forceUpdate();
-
-      console.log("recomputeRowHeights");
     }
   };
 
   return (
-    <SortableVirtualList
-      items={items}
-      useDragHandle={true}
-      getRef={setListRef}
-      onSortEnd={onSortEnd}
-    ></SortableVirtualList>
+    <div id={"editor"}>
+      <SortableVirtualList
+        useWindowAsScrollContainer={true}
+        items={items}
+        useDragHandle={true}
+        getRef={setListRef}
+        onSortEnd={onSortEnd}
+      ></SortableVirtualList>
+    </div>
   );
 };

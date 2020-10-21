@@ -40,6 +40,7 @@ import { SubcribeEvents } from "../../../common/subcribe-events";
 import { logger } from "../../../common/lib/logger";
 import { shell } from "electron";
 import { ProjectDetailContextMenu } from "../context-menus/projet-detail-menus";
+import { autoSubScribe } from "../../../common/utils";
 
 export interface IProjectDetailDialogProps {
   server: IAVGServer;
@@ -51,18 +52,13 @@ export default () => {
   const [isGameStatusLoading, setIsGameStatusLoading] = useState(false);
 
   useEffect(() => {
-    const token = PubSub.subscribe(
+    return autoSubScribe(
       SubcribeEvents.GameProcessChanged,
       (event: SubcribeEvents, data: any) => {
         const { status } = data;
-
         setIsGameLaunching(status === "normal" ? true : false);
       }
     );
-
-    return () => {
-      PubSub.unsubscribe(token);
-    };
   }, []);
 
   const renderWebURL = () => {

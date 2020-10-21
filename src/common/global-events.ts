@@ -12,5 +12,8 @@ export enum GlobalEvents {
   DialogueShouldCreate = "DialogueShouldCreate",
 
   // 上下移动时触发
-  StoryItemNavigateTo = "StoryItemNavigateTo"
+  StoryItemNavigateTo = "StoryItemNavigateTo",
+
+  // 触发故事节点列表计算高度
+  RecomputeStoryNodeHeights = "RecomputeStoryNodeHeights"
 }

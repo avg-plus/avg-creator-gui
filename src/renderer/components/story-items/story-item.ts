@@ -19,7 +19,7 @@ export abstract class StoryItem implements IStoryItem {
   protected _ref!: HTMLDivElement;
   private _itemType: StoryItemType = StoryItemType.None;
   public selected = false;
-  renderHeight: number = 100;
+  protected _renderHeight: number = 0;
 
   constructor(story: Story, type: StoryItemType) {
     this._story = story;
@@ -27,12 +27,14 @@ export abstract class StoryItem implements IStoryItem {
     this.id = uuidv4();
   }
 
+  abstract renderHeight(): number;
+
   onFocus() {}
 
   abstract render(): JSX.Element;
-  abstract onSave(): any;
-  abstract onRefInit(ref: React.RefObject<HTMLDivElement>): void;
-  abstract onChanged(e: React.ChangeEvent<HTMLInputElement>): void;
+  onSave(): any {}
+  onRefInit(ref: React.RefObject<HTMLDivElement>): void {}
+  onChanged(e: React.ChangeEvent<HTMLInputElement>): void {}
 
   onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     // Control + ↑ ： 移动到上一个 Item
@@ -65,7 +67,7 @@ export abstract class StoryItem implements IStoryItem {
     }
   }
 
-  abstract onKeyUp(e: React.KeyboardEvent<HTMLInputElement>): void;
+  onKeyUp(e: React.KeyboardEvent<HTMLInputElement>): void {}
 
   getStory() {
     return this._story;
@@ -85,23 +87,5 @@ export abstract class StoryItem implements IStoryItem {
         ...data
       }
     };
-  }
-
-  moveCaretToEnd() {
-    const target = this._ref;
-
-    const range = document.createRange();
-    const sel = window.getSelection();
-    if (sel) {
-      range.selectNodeContents(target);
-      range.collapse(false);
-      sel.removeAllRanges();
-      sel.addRange(range);
-      target.focus();
-      range.detach(); // optimization
-
-      // set scroll to the end if multiline
-      target.scrollTop = target.scrollHeight;
-    }
   }
 }
