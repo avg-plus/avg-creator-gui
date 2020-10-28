@@ -1,7 +1,7 @@
 import {
   IDialogeSaveData,
   ISaveData,
-  ISaveDataContent,
+  IWaitSaveData,
   StoryItemType
 } from "../../../common/story-item-type";
 
@@ -9,7 +9,8 @@ export class Codegen {
   static generators = new Map<StoryItemType, (data: any) => string>();
 
   static init() {
-    this.generators.set(StoryItemType.Dialogue, this.genDialogue);
+    this.generators.set(StoryItemType.ShowDialogue, this.genTextShow);
+    this.generators.set(StoryItemType.Wait, this.genWait);
   }
 
   static generate(saveData: ISaveData) {
@@ -22,7 +23,11 @@ export class Codegen {
     return "";
   }
 
-  private static genDialogue<T extends IDialogeSaveData>(data: T) {
+  private static genTextShow<T extends IDialogeSaveData>(data: T) {
     return `text.show("${data.text}");`;
+  }
+
+  private static genWait<T extends IWaitSaveData>(data: T) {
+    return `flow.wait(${data.time});`;
   }
 }

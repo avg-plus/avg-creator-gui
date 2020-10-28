@@ -1,11 +1,11 @@
 import { StoryItemType } from "../../../../common/story-item-type";
 import { Story } from "../../../services/storyboard/story";
 import { StoryItem } from "../story-item";
-import { render } from "./template-item.component";
+import { render } from "./scene-item.component";
 
-export class TemplateItem extends StoryItem {
+export class SceneItem extends StoryItem {
   constructor(story: Story) {
-    super(story, StoryItemType.None);
+    super(story, StoryItemType.Scene);
   }
 
   render() {
@@ -13,7 +13,7 @@ export class TemplateItem extends StoryItem {
   }
 
   renderHeight(): number {
-    return 100;
+    return 40;
   }
 
   onSave() {

@@ -15,9 +15,18 @@ export class DialogueItem extends StoryItem {
   private _inputRef: HTMLDivElement;
   private _isHeadDialogue = false;
   private _isEndDialogue = false;
+  private _withCharacter = false;
 
   constructor(story: Story) {
-    super(story, StoryItemType.Dialogue);
+    super(story, StoryItemType.ShowDialogue);
+  }
+
+  set isWithCharacter(value: boolean) {
+    this._withCharacter = value;
+  }
+
+  get isWithCharacter() {
+    return this._withCharacter;
   }
 
   set isHeadDialogue(value: boolean) {
@@ -66,12 +75,12 @@ export class DialogueItem extends StoryItem {
     return this.calcHeight();
   }
 
-  calcHeight() {
+  private calcHeight() {
     // 补偿高度
-    let compensationHeight = 20;
+    let compensationHeight = 30;
     let minHeight = 0;
 
-    if (this.isHeadDialogue) {
+    if (this.isWithCharacter) {
       compensationHeight = 40;
       minHeight = 80;
     }
@@ -90,18 +99,18 @@ export class DialogueItem extends StoryItem {
   onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     super.onKeyDown(e);
 
-    // if (e.key === "Backspace" || e.key === "Delete") {
-    //   if (this.getText().length === 0) {
-    //     // 当文本为空时，删除当前对话
-    //     PubSub.publishSync(GlobalEvents.StoryItemShouldDelete, {
-    //       item: this,
-    //       story: super.getStory()
-    //     });
+    if (e.key === "Backspace" || e.key === "Delete") {
+      if (this.getText().length === 0) {
+        // 当文本为空时，删除当前对话
+        PubSub.publishSync(GlobalEvents.StoryItemShouldDelete, {
+          item: this,
+          story: super.getStory()
+        });
 
-    //     // 阻止当前的删除和退格操作，防止在设置焦点后把上一项的最后一个字符删掉
-    //     e.preventDefault();
-    //   }
-    // }
+        // 阻止当前的删除和退格操作，防止在设置焦点后把上一项的最后一个字符删掉
+        e.preventDefault();
+      }
+    }
   }
 
   onKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {}

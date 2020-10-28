@@ -1,6 +1,7 @@
 export enum StoryItemType {
   None,
-  Dialogue,
+  ShowDialogue,
+  Scene,
   Wait
 }
 
@@ -13,4 +14,8 @@ export interface ISaveData {
 
 export interface IDialogeSaveData extends ISaveDataContent {
   text: string;
+}
+
+export interface IWaitSaveData extends ISaveDataContent {
+  time: number;
 }

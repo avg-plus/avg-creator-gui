@@ -22,7 +22,11 @@ const StoryItemComponent = (props: IStoryItemComponentProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
   return (
-    <div ref={ref} className={classnames("story-item-wrapper")} style={style}>
+    <div
+      ref={ref}
+      className={classnames("story-item-wrapper")}
+      style={{ ...style, paddingLeft: `${10 * item.depth}px` }}
+    >
       <div
         className={classnames("item-render", {
           //   selected: item.id === currentSelected

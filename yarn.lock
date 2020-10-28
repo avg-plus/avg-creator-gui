@@ -10096,6 +10096,11 @@ lodash.clone@^4.5.0:
   resolved "https://registry.npm.taobao.org/lodash.clone/download/lodash.clone-4.5.0.tgz#195870450f5a13192478df4bc3d23d2dea1907b6"
   integrity sha1-GVhwRQ9aExkkeN9Lw9I9LeoZB7Y=
 
+lodash.debounce@^4.0.8:
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
+  integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
+
 lodash.defaults@^4.2.0:
   version "4.2.0"
   resolved "https://registry.npm.taobao.org/lodash.defaults/download/lodash.defaults-4.2.0.tgz#d09178716ffea4dde9e5fb7b37f6f0802274580c"
@@ -10105,6 +10110,11 @@ lodash.difference@^4.5.0:
   version "4.5.0"
   resolved "https://registry.npm.taobao.org/lodash.difference/download/lodash.difference-4.5.0.tgz#9ccb4e505d486b91651345772885a2df27fd017c"
   integrity sha1-nMtOUF1Ia5FlE0V3KIWi3yf9AXw=
+
+lodash.findindex@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/lodash.findindex/-/lodash.findindex-4.6.0.tgz#a3245dee61fb9b6e0624b535125624bb69c11106"
+  integrity sha1-oyRd7mH7m24GJLU1ElYku2nBEQY=
 
 lodash.flatten@^4.4.0:
   version "4.4.0"
@@ -10125,6 +10135,11 @@ lodash.memoize@^4.1.2:
   version "4.1.2"
   resolved "https://registry.npm.taobao.org/lodash.memoize/download/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
   integrity sha1-vMbEmkKihA7Zl/Mj6tpezRguC/4=
+
+lodash.omit@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.omit/-/lodash.omit-4.5.0.tgz#6eb19ae5a1ee1dd9df0b969e66ce0b7fa30b5e60"
+  integrity sha1-brGa5aHuHdnfC5aeZs4Lf6MLXmA=
 
 lodash.sortby@^4.7.0:
   version "4.7.0"
@@ -10292,6 +10307,11 @@ matcher@^2.1.0:
   integrity sha1-ZOEEHBW5k+I7eG+TMgp0dL+DPCg=
   dependencies:
     escape-string-regexp "^2.0.0"
+
+material-icons@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/material-icons/-/material-icons-0.1.0.tgz#af3d9117767bd7cefd1f29493fdd7ab4a931cbc8"
+  integrity sha1-rz2RF3Z71879HylJP916tKkxy8g=
 
 math-expression-evaluator@^1.2.14:
   version "1.2.22"
@@ -13062,6 +13082,21 @@ react-use@^15.0.1:
     ts-easing "^0.2.0"
     tslib "^2.0.0"
 
+react-virtualized-tree@^3.4.1:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/react-virtualized-tree/-/react-virtualized-tree-3.4.1.tgz#422952f51e2c1e4eae5ab926f33ed476f26efa94"
+  integrity sha512-MolDiG9XgmflPPX9uPzf7iSWLqOHDlCZEiyA4FVYjv2pHfu6zV6/SIEFVyHdurWD80IjUuZ3Er12gq2bQQak2Q==
+  dependencies:
+    classnames "^2.2.5"
+    lodash "^4.17.4"
+    lodash.debounce "^4.0.8"
+    lodash.findindex "^4.6.0"
+    lodash.isequal "^4.5.0"
+    lodash.omit "^4.5.0"
+    material-icons "^0.1.0"
+    react-lifecycles-compat "^3.0.4"
+    reselect "^3.0.1"
+
 react-virtualized@^9.13.0, react-virtualized@^9.21.2:
   version "9.22.2"
   resolved "https://registry.yarnpkg.com/react-virtualized/-/react-virtualized-9.22.2.tgz#217a870bad91e5438f46f01a009e1d8ce1060a5a"
@@ -13526,6 +13561,11 @@ requirefresh@^2.0.0:
   integrity sha1-+wk4e1f17TNf9KS+6j2MC/I2cwY=
   dependencies:
     editions "^2.2.0"
+
+reselect@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/reselect/-/reselect-3.0.1.tgz#efdaa98ea7451324d092b2b2163a6a1d7a9a2147"
+  integrity sha1-79qpjqdFEyTQkrKyFjpqHXqaIUc=
 
 resize-observer-polyfill@^1.5.0, resize-observer-polyfill@^1.5.1:
   version "1.5.1"

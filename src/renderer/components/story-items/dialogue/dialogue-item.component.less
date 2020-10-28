@@ -6,13 +6,17 @@
   margin-right: 10px;
   position: relative;
 
-  padding-top: 15px;
+  // padding-top: 15px;
   padding-bottom: 15px;
 
   // 首次对话
-  &.head-dialogue-mode {
+  &.head-dialogue-node {
     padding-top: 15px;
     padding-bottom: 34px;
+  }
+
+  &.avatar-node {
+    margin-top: 10px;
   }
 
   .context-line {
@@ -22,16 +26,24 @@
     left: @avatar_position * 2.5;
     top: 0;
 
-    // 开始对话节点
-    &.head-dialogue-mode {
+    // 是否带立绘
+    &.avatar-node {
       height: 0%;
       bottom: 0;
       top: unset;
     }
 
-    // 如果是结束对话节点，则连接线只有一半
-    &.end-dialogue-mode {
+    // 开始对话节点
+    &.head-dialogue-node {
       height: calc(100% / 2);
+      top: unset;
+      bottom: 0 !important;
+    }
+
+    // 如果是结束对话节点，则连接线只有一半
+    &.end-dialogue-node {
+      height: calc(100% / 2);
+      bottom: unset;
     }
   }
 
@@ -62,18 +74,30 @@
 
   .content {
     position: absolute;
+    display: flex;
+    align-items: center;
     left: 65;
     height: 100%;
+    width: 90%; // 留出点空隙给右边
 
     .name {
+      position: absolute;
+      top: 0;
       color: #c85050;
       font-size: 12px;
+      padding-bottom: 10px;
     }
 
     .edit-content {
+      position: absolute;
+      width: 100%;
       padding-right: 90px;
       text-align: justify;
       word-break: break-all;
+
+      &.avatar-node {
+        top: 20px;
+      }
 
       &.text {
         font-size: 1rem;
@@ -91,7 +115,7 @@
     position: absolute;
     width: 100%;
     height: 4px;
-    bottom: 10px;
+    bottom: 0px;
     margin-top: 10px;
     background-color: #b9b9b9;
     border-bottom-left-radius: 5px;

@@ -15,7 +15,7 @@ import {
 
 import arrayMove from "array-move";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StoryManager } from "../../../services/storyboard/story-manager";
 import { StoryItem } from "../../../components/story-items/story-item";
 import StoryItemComponent, {
@@ -30,7 +30,6 @@ import { GlobalEvents } from "../../../../common/global-events";
 import _ from "underscore";
 
 const story = StoryManager.loadStory();
-const storyItems = story.getAllItems();
 
 interface IVirtualListProps {
   items: StoryItem[];
@@ -43,8 +42,9 @@ const DragHandle = SortableHandle(() => (
 const SortableStoryItemComponent = SortableElement(
   (value: IStoryItemComponentProps) => (
     <div className={"story-item-wrapper"}>
-      <StoryItemComponent {...value}></StoryItemComponent>
-      <DragHandle />
+      <StoryItemComponent {...value}>
+        <DragHandle />
+      </StoryItemComponent>
     </div>
   )
 );
@@ -59,7 +59,7 @@ const VirtualList = (props: IVirtualListProps) => {
     }
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     return autoSubScribe(
       GlobalEvents.RecomputeStoryNodeHeights,
       (event, data) => {
@@ -67,19 +67,10 @@ const VirtualList = (props: IVirtualListProps) => {
         const index = props.items.indexOf(item);
         if (index >= 0) {
           ref.current?.recomputeRowHeights(index);
-          console.log("recomputeRowHeights = ", index);
         }
       }
     );
   });
-
-  const calcHeights = () => {
-    // 计算总高度
-    let heights = 0;
-    props.items.forEach((v) => {
-      heights += v.renderHeight();
-    });
-  };
 
   const renderRow = ({ index, style, parent, key }: ListRowProps) => {
     const item: StoryItem = props.items[index];
@@ -103,7 +94,7 @@ const VirtualList = (props: IVirtualListProps) => {
       {({ height, width }) => (
         <List
           ref={ref}
-          overscanRowCount={10}
+          overscanRowCount={20}
           rowHeight={getRowHeight}
           rowRenderer={renderRow}
           rowCount={props.items.length}
@@ -127,8 +118,23 @@ const VirtualList = (props: IVirtualListProps) => {
 const SortableVirtualList = SortableContainer(VirtualList);
 
 export const StoryboardView = () => {
-  const [items, setItems] = useState(storyItems);
+  const [items, setItems] = useState(story.getAllItems());
   const [listRef, setListRef] = useState<List>();
+
+  useEffect(() => {
+    return autoSubScribe(
+      GlobalEvents.StoryItemListShouldRender,
+      (event, data) => {
+        setItems(story.getAllItems());
+        console.log("on changed StoryItemListShouldRender", items);
+
+        if (listRef) {
+          listRef.recomputeRowHeights();
+          listRef.forceUpdate();
+        }
+      }
+    );
+  });
 
   const onSortEnd = ({ oldIndex, newIndex }) => {
     if (oldIndex === newIndex) {

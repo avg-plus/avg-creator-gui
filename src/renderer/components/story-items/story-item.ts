@@ -27,12 +27,17 @@ export abstract class StoryItem implements IStoryItem {
     this.id = uuidv4();
   }
 
-  abstract renderHeight(): number;
-
-  onFocus() {}
+  public depth = 0;
 
   abstract render(): JSX.Element;
-  onSave(): any {}
+  abstract renderHeight(): number;
+  abstract onSave(): any;
+
+  get itemType() {
+    return this._itemType;
+  }
+
+  onFocus() {}
   onRefInit(ref: React.RefObject<HTMLDivElement>): void {}
   onChanged(e: React.ChangeEvent<HTMLInputElement>): void {}
 
@@ -71,6 +76,33 @@ export abstract class StoryItem implements IStoryItem {
 
   getStory() {
     return this._story;
+  }
+
+  getPrevItem() {
+    const index = this._story.getItemIndex(this);
+    const prevIndex = index - 1;
+
+    if (prevIndex >= 0) {
+      const prevItem = this._story.getItem(prevIndex);
+      if (prevItem) {
+        return prevItem;
+      }
+    }
+
+    return null;
+  }
+
+  getNextItem() {
+    const index = this._story.getItemIndex(this);
+    const nextIndex = index + 1;
+    if (nextIndex >= 0) {
+      const nexItem = this._story.getItem(nextIndex);
+      if (nexItem) {
+        return nexItem;
+      }
+    }
+
+    return null;
   }
 
   focus() {

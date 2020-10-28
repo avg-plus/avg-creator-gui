@@ -96,22 +96,22 @@ export class WorkspaceLayout {
                     component: "storyboardView",
                     title: "剧本创作",
                     isClosable: false
-                  },
-                  {
-                    type: "react-component",
-                    component: "propertyView",
-                    title: "属性",
-                    isClosable: false,
-                    height: 30
                   }
+                  // {
+                  //   type: "react-component",
+                  //   component: "propertyView",
+                  //   title: "属性",
+                  //   isClosable: false,
+                  //   height: 30
+                  // }
                 ]
-              },
-              {
-                type: "react-component",
-                component: "propertyView",
-                title: "实时预览",
-                isClosable: false
               }
+              // {
+              //   type: "react-component",
+              //   component: "propertyView",
+              //   title: "实时预览",
+              //   isClosable: false
+              // }
             ]
           }
         ]

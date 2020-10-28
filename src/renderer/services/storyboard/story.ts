@@ -74,7 +74,7 @@ export class Story {
       return v.id === id;
     });
 
-    if (index >= -1 && this.storyItems.length > 0) {
+    if (index > -1 && this.storyItems.length > 0) {
       this.storyItems = _(this.storyItems).without(this.storyItems[index]);
     }
 
@@ -85,12 +85,12 @@ export class Story {
 
     const lastItem = this.getItem(lastIndex);
     if (lastItem) {
-      lastItem.moveCaretToEnd();
+      lastItem.focus();
     }
 
     // 如果已经为空，则创建一个默认的对话
-    if (this.storyItems.length === 0) {
-      this.addItem(new DialogueItem(this));
-    }
+    // if (this.storyItems.length === 0) {
+    //   this.addItem(new DialogueItem(this));
+    // }
   }
 }

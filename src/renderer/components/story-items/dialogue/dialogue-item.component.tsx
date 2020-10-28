@@ -7,6 +7,7 @@ import "./dialogue-item.component.less";
 
 import fakeAvatarImage from "../../../images/fake-data/avatar.png";
 import { IComponentProps } from "../component-props";
+import { StoryItemType } from "../../../../common/story-item-type";
 
 interface IDialogueTextComponentProps extends IComponentProps<DialogueItem> {}
 
@@ -33,37 +34,61 @@ const DialogueItemComponent = (props: IDialogueTextComponentProps) => {
     onKeyDown: props.data.onKeyDown.bind(props.data)
   };
 
+  const renderContextLine = () => {
+    const prevItem = props.data.getPrevItem();
+    const nextItem = props.data.getNextItem();
+
+    // if (
+    //   (prevItem && prevItem.itemType === StoryItemType.ShowDialogue) ||
+    //   (nextItem && nextItem.itemType === StoryItemType.ShowDialogue)
+    // ) {
+    return (
+      <>
+        <div
+          className={classnames("context-line", {
+            "avatar-node": props.data.isWithCharacter,
+            "head-dialogue-node":
+              props.data.isHeadDialogue &&
+              nextItem &&
+              nextItem.itemType === StoryItemType.ShowDialogue,
+            "end-dialogue-node": props.data.isEndDialogue
+          })}
+        ></div>
+
+        {!props.data.isWithCharacter && (
+          <div
+            className={classnames("indicator-point", {
+              "end-dialogue": props.data.isEndDialogue
+            })}
+          ></div>
+        )}
+      </>
+    );
+    // }
+
+    return <></>;
+  };
+
   return (
     <div
       ref={ref}
       className={classnames("dialogue-item", {
-        "head-dialogue-mode": props.data.isHeadDialogue
+        "avatar-node": props.data.isWithCharacter
       })}
     >
-      {props.data.isHeadDialogue && (
+      {props.data.isWithCharacter && (
         <img className={"character-avatar"} src={fakeAvatarImage}></img>
       )}
 
-      <div
-        className={classnames("context-line", {
-          "head-dialogue-mode": props.data.isHeadDialogue,
-          "end-dialogue-mode": props.data.isEndDialogue
-        })}
-      ></div>
-
-      {!props.data.isHeadDialogue && (
-        <div
-          className={classnames("indicator-point", {
-            "end-dialogue": props.data.isEndDialogue
-          })}
-        ></div>
-      )}
+      {renderContextLine()}
 
       <div className={"content"}>
-        {props.data.isHeadDialogue && <div className={"name"}>林沐风</div>}
+        {props.data.isWithCharacter && <div className={"name"}>林沐风</div>}
         <div
           ref={inputRef}
-          className={classnames("edit-content", "text")}
+          className={classnames("edit-content", "text", {
+            "avatar-node": props.data.isWithCharacter
+          })}
           {...eventProps}
           contentEditable={true}
           onPaste={onPaste}

@@ -5,10 +5,12 @@ import { GlobalEvents } from "../../../common/global-events";
 import { DialogueItem } from "../../components/story-items/dialogue/dialogue-item";
 
 import { Story } from "./story";
-import { randomIn } from "../../../common/utils";
-import { ISaveData } from "../../../common/story-item-type";
+import { getRandomIntInclusive, randomIn } from "../../../common/utils";
+import { ISaveData, StoryItemType } from "../../../common/story-item-type";
 import { logger } from "../../../common/lib/logger";
 import { StoryItem } from "../../components/story-items/story-item";
+import { WaitItem } from "../../components/story-items/wait/wait-item";
+import { SceneItem } from "../../components/story-items/scene/scene-item";
 
 export class StoryManager {
   static currentStory: Story = new Story();
@@ -17,6 +19,8 @@ export class StoryManager {
       GlobalEvents.StoryItemShouldDelete,
       (message: string, data: { item: DialogueItem; story: Story }) => {
         data.story.remove(data.item.id);
+
+        console.log("items after delete : ", data.story.getAllItems());
 
         // 通知变化更新
         PubSub.publishSync(GlobalEvents.StoryItemListShouldRender);
@@ -75,33 +79,81 @@ export class StoryManager {
     // =====================================================================
     // for test
     // =====================================================================
-    for (let i = 0; i < 100; ++i) {
-      const v = new DialogueItem(this.currentStory);
-      v.setText(
-        // i.toString()
-        randomIn([
-          "记得那天晚上你给我打电话，让我过来找你，声音听起来像是喝了很多酒的样子。",
-          "为什么会变成这样呢……第一次有了喜欢的人。有了能做一辈子朋友的人。两件快乐事情重合在一起。而这两份快乐，又给我带来更多的快乐。得到的，本该是像梦境一般幸福的时间……但是，为什么，会变成这样呢……",
-          "是我，是我先，明明都是我先来的……接吻也好，拥抱也好，还是喜欢上那家伙也好",
-          "那时还是挺担心的，还以为你出了什么事，结果发现没有后就想着跟你做个小恶作剧。",
-          "那是我们第一次见面，你当时对《奥赛罗》的见解挺让人印象深刻的。",
-          "那就没办法了……就稍稍给你一个提示吧。",
-          "——我对你有个愿望……这么说可能有些奇怪，所以应该说是，我对你有所期望吧。",
-          "不过话说回来，怎么突然问起我这个了？是想找约会的时间吗？",
-          "除了1号的志愿者服务、4号的颁奖，还有毕业前一天的演讲外，其他时间我都有空的。"
-        ])
-      );
-      this.currentStory.addItem(v);
-    }
+
+    const fillRandomData = (v: StoryItem) => {
+      switch (v.itemType) {
+        case StoryItemType.ShowDialogue: {
+          const item = v as DialogueItem;
+          item.setText(
+            randomIn([
+              "记得那天晚上你给我打电话，让我过来找你，声音听起来像是喝了很多酒的样子。",
+              "为什么会变成这样呢……第一次有了喜欢的人。有了能做一辈子朋友的人。两件快乐事情重合在一起。而这两份快乐，又给我带来更多的快乐。得到的，本该是像梦境一般幸福的时间……但是，为什么，会变成这样呢……",
+              "是我，是我先，明明都是我先来的……接吻也好，拥抱也好，还是喜欢上那家伙也好",
+              "那时还是挺担心的，还以为你出了什么事，结果发现没有后就想着跟你做个小恶作剧。",
+              "那是我们第一次见面，你当时对《奥赛罗》的见解挺让人印象深刻的。",
+              "那就没办法了……就稍稍给你一个提示吧。",
+              "——我对你有个愿望……这么说可能有些奇怪，所以应该说是，我对你有所期望吧。",
+              "不过话说回来，怎么突然问起我这个了？是想找约会的时间吗？",
+              "除了1号的志愿者服务、4号的颁奖，还有毕业前一天的演讲外，其他时间我都有空的。"
+            ])
+          );
+          break;
+        }
+        case StoryItemType.Wait: {
+          const item = v as WaitItem;
+          item.time = getRandomIntInclusive(200, 3000);
+        }
+        case StoryItemType.Scene: {
+          const item = v as SceneItem;
+        }
+      }
+    };
+
+    // for (let i = 0; i < 100; ++i) {
+    //   const v = randomIn([
+    //     new DialogueItem(this.currentStory),
+    //     new SceneItem(this.currentStory),
+    //     new WaitItem(this.currentStory)
+    //   ]);
+    //   if (i !== 0) {
+    //     // v.depth = randomIn([0, 1, 2]);
+    //   }
+
+    //   renderData(v);
+
+    // this.currentStory.addItem(v);
+
+    // }
+
+    const d1 = new DialogueItem(this.currentStory);
+    // d1.isHeadDialogue = true;
+    d1.isWithCharacter = true;
+    const d2 = new DialogueItem(this.currentStory);
+    const d3 = new DialogueItem(this.currentStory);
+    const d4 = new DialogueItem(this.currentStory);
+    const d5 = new DialogueItem(this.currentStory);
+    d5.isEndDialogue = true;
+
+    this.currentStory.addItem(d1, d2, d3, d4, d5);
+    this.currentStory.getAllItems().forEach((v) => {
+      fillRandomData(v);
+    });
 
     PubSub.publishSync(GlobalEvents.StoryItemListShouldRender);
 
-    const item = this.currentStory.getItem(0) as DialogueItem;
-    item.isHeadDialogue = true;
+    setInterval(() => {
+      this.currentStory.getAllItems().forEach((v) => {
+        // this.currentStory.remove(v.id);
+        // PubSub.publishSync(GlobalEvents.StoryItemListShouldRender);
+      });
+    }, 3000);
 
-    [5, 10, 15].forEach((v) => {
-      (this.currentStory.getItem(v) as DialogueItem).isEndDialogue = true;
-    });
+    // const item = this.currentStory.getItem(0) as DialogueItem;
+    // item.isHeadDialogue = true;
+
+    // [5, 10, 15].forEach((v) => {
+    //   (this.currentStory.getItem(v) as DialogueItem).isEndDialogue = true;
+    // });
     // =====================================================================
 
     return this.currentStory;

@@ -53,3 +53,7 @@ export const DefaultTreeNodes = [
     ]
   }
 ];
+
+// for (let i = 0; i < 10000; ++i) {
+//   DefaultTreeNodes.push(DefaultTreeNodes[0]);
+// }

@@ -1,7 +1,7 @@
 #editor {
-  margin-top: 20px;
   width: 100%;
   height: 100%;
+  background-color: white;
 }
 
 .api-selector-panel-container {
@@ -16,21 +16,24 @@
 }
 
 .story-item-wrapper {
-  padding-top: 4px;
   padding-left: 10px;
-  background-color: white;
 
-  &.dragging {
-    background-color: bisque;
+  &:hover {
+    background-color: aliceblue;
+    transition: all 0.1s ease;
+  }
+
+  &.selected {
+    background-color: aliceblue;
   }
 
   .item-render {
     min-width: 100%;
     height: 100%;
 
-    &.selected {
-      background-color: aliceblue;
-    }
+    // 上下保留点间隔，防止连接线粘在一起
+    padding-top: 2px;
+    padding-bottom: 2px;
   }
 
   .drag-handle {
@@ -40,10 +43,5 @@
     width: 24px;
     height: 24px;
     background: url("../../../images/icons/sort.png") no-repeat top left;
-  }
-
-  &:hover {
-    // background-color: aliceblue;
-    // transition: all 0.1s ease;
   }
 }
