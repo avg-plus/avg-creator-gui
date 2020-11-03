@@ -1,6 +1,7 @@
 import produce from "immer";
 import _ from "underscore";
 import { logger } from "../../../common/lib/logger";
+import { StoryItemType } from "../../../common/story-item-type";
 import { DialogueItem } from "../../components/story-items/dialogue/dialogue-item";
 import { StoryItem } from "../../components/story-items/story-item";
 
@@ -86,6 +87,9 @@ export class Story {
     const lastItem = this.getItem(lastIndex);
     if (lastItem) {
       lastItem.focus();
+      if (lastItem.itemType === StoryItemType.ShowDialogue) {
+        (lastItem as DialogueItem).moveCaretToEnd();
+      }
     }
 
     // 如果已经为空，则创建一个默认的对话

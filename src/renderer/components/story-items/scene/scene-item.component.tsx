@@ -5,6 +5,8 @@ import { SceneItem } from "./scene-item";
 
 import "./scene-item.component.less";
 
+import testBG from "../../../images/fake-data/居酒屋-2560x1440.png";
+
 interface ISceneComponentProps extends IComponentProps<SceneItem> {}
 const SceneItemComponent = (props: ISceneComponentProps) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -13,7 +15,7 @@ const SceneItemComponent = (props: ISceneComponentProps) => {
     props.data.onRefInit(ref);
   });
 
-  return <>这是一个场景 房间</>;
+  return <> 这是一个场景{/* <img src={testBG} /> */}</>;
 };
 
 export const render = (data: SceneItem) => {

@@ -1,22 +1,30 @@
 import { Button } from "@blueprintjs/core";
-import React from "react";
-import { Codegen } from "../../../services/storyboard/codegen";
-import { StoryManager } from "../../../services/storyboard/story-manager";
+import React, { useEffect, useState } from "react";
+import { GlobalEvents } from "../../../../common/global-events";
+import { autoSubScribe } from "../../../../common/utils";
+import { WorkspaceDebugUI } from "../../../services/workspace-debug-ui";
 
 export const _DevelopmentDebugView = () => {
-  const onGenerateCode = () => {
-    const code = StoryManager.currentStory.getAllItems().map((v) => {
-      return Codegen.generate(v.onSave());
-    });
+  const [components, setComponents] = useState(WorkspaceDebugUI.components);
 
-    console.log(code.join("\n"));
-  };
+  useEffect(() => {
+    return autoSubScribe(
+      GlobalEvents.DebugComponentsShouldRender,
+      (event, data) => {
+        setComponents(WorkspaceDebugUI.components);
+      }
+    );
+  });
 
   return (
-    <>
-      <div>
-        <Button onClick={onGenerateCode}>生成代码</Button>
-      </div>
-    </>
+    <div>
+      {components.map((v) => {
+        return (
+          <Button key={v.text} onClick={v.callback}>
+            {v.text}
+          </Button>
+        );
+      })}
+    </div>
   );
 };

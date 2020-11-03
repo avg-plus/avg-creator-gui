@@ -11,6 +11,7 @@ import { logger } from "../../../common/lib/logger";
 import { StoryItem } from "../../components/story-items/story-item";
 import { WaitItem } from "../../components/story-items/wait/wait-item";
 import { SceneItem } from "../../components/story-items/scene/scene-item";
+import { WorkspaceDebugUI } from "../workspace-debug-ui";
 
 export class StoryManager {
   static currentStory: Story = new Story();
@@ -109,44 +110,37 @@ export class StoryManager {
       }
     };
 
-    // for (let i = 0; i < 100; ++i) {
-    //   const v = randomIn([
-    //     new DialogueItem(this.currentStory),
-    //     new SceneItem(this.currentStory),
-    //     new WaitItem(this.currentStory)
-    //   ]);
-    //   if (i !== 0) {
-    //     // v.depth = randomIn([0, 1, 2]);
-    //   }
+    const randomAddItems = (count = 100) => {
+      for (let i = 0; i < count; ++i) {
+        const v = randomIn([
+          new DialogueItem(this.currentStory),
+          new SceneItem(this.currentStory),
+          new WaitItem(this.currentStory)
+        ]);
 
-    //   renderData(v);
+        fillRandomData(v);
+        this.currentStory.addItem(v);
+      }
+    };
 
-    // this.currentStory.addItem(v);
+    randomAddItems();
 
-    // }
+    // const d1 = new DialogueItem(this.currentStory);
+    // // d1.isHeadDialogue = true;
+    // d1.isWithCharacter = true;
+    // const d2 = new DialogueItem(this.currentStory);
+    // const d3 = new DialogueItem(this.currentStory);
+    // const d4 = new DialogueItem(this.currentStory);
+    // const d5 = new DialogueItem(this.currentStory);
+    // d5.isEndDialogue = true;
 
-    const d1 = new DialogueItem(this.currentStory);
-    // d1.isHeadDialogue = true;
-    d1.isWithCharacter = true;
-    const d2 = new DialogueItem(this.currentStory);
-    const d3 = new DialogueItem(this.currentStory);
-    const d4 = new DialogueItem(this.currentStory);
-    const d5 = new DialogueItem(this.currentStory);
-    d5.isEndDialogue = true;
-
-    this.currentStory.addItem(d1, d2, d3, d4, d5);
-    this.currentStory.getAllItems().forEach((v) => {
-      fillRandomData(v);
-    });
+    // this.currentStory.addItem(d1, d2, d3, d4, d5);
+    // // this.currentStory.addItem(d1, d2, d3);
+    // this.currentStory.getAllItems().forEach((v) => {
+    //   fillRandomData(v);
+    // });
 
     PubSub.publishSync(GlobalEvents.StoryItemListShouldRender);
-
-    setInterval(() => {
-      this.currentStory.getAllItems().forEach((v) => {
-        // this.currentStory.remove(v.id);
-        // PubSub.publishSync(GlobalEvents.StoryItemListShouldRender);
-      });
-    }, 3000);
 
     // const item = this.currentStory.getItem(0) as DialogueItem;
     // item.isHeadDialogue = true;
@@ -155,6 +149,33 @@ export class StoryManager {
     //   (this.currentStory.getItem(v) as DialogueItem).isEndDialogue = true;
     // });
     // =====================================================================
+
+    WorkspaceDebugUI.registerButton("生成代码", () => {
+      const code = StoryManager.currentStory.getAllItems().map((v) => {
+        return Codegen.generate(v.onSave());
+      });
+
+      console.log(code.join("\n"));
+    });
+
+    WorkspaceDebugUI.registerButton("随机添加一些API", () => {
+      randomAddItems(10);
+      PubSub.publishSync(GlobalEvents.StoryItemListShouldRender);
+    });
+
+    WorkspaceDebugUI.registerButton("删除 index-1", () => {
+      const item = this.currentStory.getItem(1);
+      if (item) {
+        this.currentStory.remove(item.id);
+      }
+
+      PubSub.publishSync(GlobalEvents.StoryItemListShouldRender);
+    });
+
+    WorkspaceDebugUI.registerButton("清空剧情", () => {
+      this.currentStory.clear();
+      PubSub.publishSync(GlobalEvents.StoryItemListShouldRender);
+    });
 
     return this.currentStory;
   }

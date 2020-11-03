@@ -1,5 +1,8 @@
 export enum GlobalEvents {
-  // 列表变更时触发
+  // 调试组件更新
+  DebugComponentsShouldRender = "DebugComponentsShouldRender",
+
+  // 故事列表变更时触发
   StoryItemListShouldRender = "StoryItemListShouldRender",
 
   // 内容变更时触发

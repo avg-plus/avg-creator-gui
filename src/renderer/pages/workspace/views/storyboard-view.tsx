@@ -41,17 +41,14 @@ const DragHandle = SortableHandle(() => (
 ));
 const SortableStoryItemComponent = SortableElement(
   (value: IStoryItemComponentProps) => (
-    <div className={"story-item-wrapper"}>
-      <StoryItemComponent {...value}>
-        <DragHandle />
-      </StoryItemComponent>
-    </div>
+    <StoryItemComponent {...value}>
+      <DragHandle />
+    </StoryItemComponent>
   )
 );
 
 const VirtualList = (props: IVirtualListProps) => {
   const ref = useRef() as React.RefObject<List>;
-  const [totalHeight, setTotalHeight] = useState<number>(0);
 
   useMount(() => {
     if (ref.current) {
@@ -77,7 +74,7 @@ const VirtualList = (props: IVirtualListProps) => {
 
     return (
       <SortableStoryItemComponent
-        key={key}
+        key={item.id}
         item={item}
         style={{ margin: 0, ...style }}
         index={index}
@@ -89,15 +86,19 @@ const VirtualList = (props: IVirtualListProps) => {
     return props.items[index].renderHeight() || 40;
   };
 
+  const rowCount = () => {
+    return props.items.length;
+  };
+
   return (
     <AutoSizer>
       {({ height, width }) => (
         <List
           ref={ref}
-          overscanRowCount={20}
+          overscanRowCount={120}
           rowHeight={getRowHeight}
           rowRenderer={renderRow}
-          rowCount={props.items.length}
+          rowCount={rowCount()}
           onRowsRendered={(info) => {
             for (
               let i = info.overscanStartIndex;
@@ -108,7 +109,7 @@ const VirtualList = (props: IVirtualListProps) => {
             }
           }}
           width={width}
-          height={height}
+          height={height - 40}
         />
       )}
     </AutoSizer>
@@ -117,21 +118,25 @@ const VirtualList = (props: IVirtualListProps) => {
 
 const SortableVirtualList = SortableContainer(VirtualList);
 
+const allItems = story.getAllItems();
 export const StoryboardView = () => {
-  const [items, setItems] = useState(story.getAllItems());
+  const [items, setItems] = useState<StoryItem[]>(allItems);
   const [listRef, setListRef] = useState<List>();
 
   useEffect(() => {
     return autoSubScribe(
       GlobalEvents.StoryItemListShouldRender,
       (event, data) => {
-        setItems(story.getAllItems());
-        console.log("on changed StoryItemListShouldRender", items);
+        const allItems = story.getAllItems();
 
-        if (listRef) {
-          listRef.recomputeRowHeights();
-          listRef.forceUpdate();
-        }
+        setItems(allItems);
+        console.log(
+          "on changed StoryItemListShouldRender",
+          story.getAllItems()
+        );
+
+        listRef?.recomputeRowHeights();
+        listRef?.forceUpdate();
       }
     );
   });

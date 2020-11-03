@@ -67,7 +67,7 @@ export class DialogueItem extends StoryItem {
 
     this.calcHeight();
 
-    PubSub.publish(GlobalEvents.StoryItemContentChanged, this.onSave());
+    PubSub.publishSync(GlobalEvents.StoryItemContentChanged, this.onSave());
     PubSub.publishSync(GlobalEvents.RecomputeStoryNodeHeights, { item: this });
   }
 
@@ -137,6 +137,14 @@ export class DialogueItem extends StoryItem {
 
       // set scroll to the end if multiline
       target.scrollTop = target.scrollHeight;
+    }
+  }
+
+  // 重写焦点事件，设置为输入框
+  focus() {
+    if (this._inputRef) {
+      this._inputRef.focus();
+      this.onFocus();
     }
   }
 

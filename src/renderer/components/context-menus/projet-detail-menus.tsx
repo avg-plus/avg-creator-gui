@@ -11,13 +11,8 @@ import { DBProjects } from "../../../common/database/db-project";
 import { GUIToaster } from "../../services/toaster";
 import { useForceUpdate } from "../../hooks/use-forceupdate";
 
-interface IProjectDetailContextMenuProps {
-  project: AVGProjectData | null;
-}
 export const ProjectDetailContextMenu = () => {
   const { state, dispatch } = useContext(CreatorContext);
-
-  const forceUdpate = useForceUpdate();
 
   const updateEngine = async (newEngineHash: string) => {
     await DBProjects.update(

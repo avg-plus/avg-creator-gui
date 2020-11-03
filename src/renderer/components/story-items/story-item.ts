@@ -19,7 +19,6 @@ export abstract class StoryItem implements IStoryItem {
   protected _ref!: HTMLDivElement;
   private _itemType: StoryItemType = StoryItemType.None;
   public selected = false;
-  protected _renderHeight: number = 0;
 
   constructor(story: Story, type: StoryItemType) {
     this._story = story;
@@ -108,6 +107,8 @@ export abstract class StoryItem implements IStoryItem {
   focus() {
     if (this._ref) {
       this._ref.focus();
+      console.log("set focus ", this);
+
       this.onFocus();
     }
   }
