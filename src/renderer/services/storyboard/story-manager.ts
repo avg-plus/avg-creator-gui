@@ -76,6 +76,14 @@ export class StoryManager {
     );
   }
 
+  static renderStoryItemList(sync: boolean = false) {
+    if (sync) {
+      PubSub.publishSync(GlobalEvents.StoryItemListShouldRender);
+    } else {
+      PubSub.publish(GlobalEvents.StoryItemListShouldRender);
+    }
+  }
+
   static loadStory() {
     // =====================================================================
     // for test
@@ -106,6 +114,7 @@ export class StoryManager {
         }
         case StoryItemType.Scene: {
           const item = v as SceneItem;
+          item.sceneName = randomIn(["三藩市", "米花市", "东京都"]);
         }
       }
     };
@@ -125,30 +134,7 @@ export class StoryManager {
 
     randomAddItems();
 
-    // const d1 = new DialogueItem(this.currentStory);
-    // // d1.isHeadDialogue = true;
-    // d1.isWithCharacter = true;
-    // const d2 = new DialogueItem(this.currentStory);
-    // const d3 = new DialogueItem(this.currentStory);
-    // const d4 = new DialogueItem(this.currentStory);
-    // const d5 = new DialogueItem(this.currentStory);
-    // d5.isEndDialogue = true;
-
-    // this.currentStory.addItem(d1, d2, d3, d4, d5);
-    // // this.currentStory.addItem(d1, d2, d3);
-    // this.currentStory.getAllItems().forEach((v) => {
-    //   fillRandomData(v);
-    // });
-
-    PubSub.publishSync(GlobalEvents.StoryItemListShouldRender);
-
-    // const item = this.currentStory.getItem(0) as DialogueItem;
-    // item.isHeadDialogue = true;
-
-    // [5, 10, 15].forEach((v) => {
-    //   (this.currentStory.getItem(v) as DialogueItem).isEndDialogue = true;
-    // });
-    // =====================================================================
+    this.renderStoryItemList();
 
     WorkspaceDebugUI.registerButton("生成代码", () => {
       const code = StoryManager.currentStory.getAllItems().map((v) => {
@@ -160,7 +146,7 @@ export class StoryManager {
 
     WorkspaceDebugUI.registerButton("随机添加一些API", () => {
       randomAddItems(10);
-      PubSub.publishSync(GlobalEvents.StoryItemListShouldRender);
+      this.renderStoryItemList();
     });
 
     WorkspaceDebugUI.registerButton("删除 index-1", () => {
@@ -169,12 +155,19 @@ export class StoryManager {
         this.currentStory.remove(item.id);
       }
 
-      PubSub.publishSync(GlobalEvents.StoryItemListShouldRender);
+      this.renderStoryItemList();
     });
 
     WorkspaceDebugUI.registerButton("清空剧情", () => {
       this.currentStory.clear();
-      PubSub.publishSync(GlobalEvents.StoryItemListShouldRender);
+      this.renderStoryItemList();
+    });
+
+    WorkspaceDebugUI.registerButton("添加对话节点", () => {
+      const item = new DialogueItem(this.currentStory);
+      fillRandomData(item);
+      this.currentStory.addItem(item);
+      this.renderStoryItemList();
     });
 
     return this.currentStory;
