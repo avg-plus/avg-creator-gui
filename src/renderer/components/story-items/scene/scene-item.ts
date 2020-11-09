@@ -4,8 +4,18 @@ import { StoryItem } from "../story-item";
 import { render } from "./scene-item.component";
 
 export class SceneItem extends StoryItem {
+  private _sceneName: string;
+
   constructor(story: Story) {
     super(story, StoryItemType.Scene);
+  }
+
+  get sceneName() {
+    return this._sceneName;
+  }
+
+  set sceneName(value: string) {
+    this._sceneName = value;
   }
 
   render() {
@@ -13,7 +23,7 @@ export class SceneItem extends StoryItem {
   }
 
   renderHeight(): number {
-    return 40;
+    return 80;
   }
 
   onSave() {

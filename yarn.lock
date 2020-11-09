@@ -4963,20 +4963,10 @@ caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
   resolved "https://registry.npm.taobao.org/caniuse-db/download/caniuse-db-1.0.30001048.tgz#4f431c688cb6bc0435994dcbb8e565d004869d43"
   integrity sha1-T0McaIy2vAQ1mU3LuOVl0ASGnUM=
 
-caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001043:
-  version "1.0.30001046"
-  resolved "https://registry.npm.taobao.org/caniuse-lite/download/caniuse-lite-1.0.30001046.tgz?cache=0&sync_timestamp=1587623815718&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcaniuse-lite%2Fdownload%2Fcaniuse-lite-1.0.30001046.tgz#7a06d3e8fd8aa7f4d21c9a2e313f35f2d06b013e"
-  integrity sha1-egbT6P2Kp/TSHJouMT818tBrAT4=
-
-caniuse-lite@^1.0.30000844:
-  version "1.0.30001048"
-  resolved "https://registry.npm.taobao.org/caniuse-lite/download/caniuse-lite-1.0.30001048.tgz#4bb4f1bc2eb304e5e1154da80b93dee3f1cf447e"
-  integrity sha1-S7TxvC6zBOXhFU2oC5Pe4/HPRH4=
-
-caniuse-lite@^1.0.30001093:
-  version "1.0.30001109"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001109.tgz#a9f3f26a0c3753b063d7acbb48dfb9c0e46f2b19"
-  integrity sha512-4JIXRodHzdS3HdK8nSgIqXYLExOvG+D2/EenSvcub2Kp3QEADjo2v2oUn5g0n0D+UNwG9BtwKOyGcSq2qvQXvQ==
+caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30001043, caniuse-lite@^1.0.30001093:
+  version "1.0.30001154"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001154.tgz"
+  integrity sha512-y9DvdSti8NnYB9Be92ddMZQrcOe04kcQtcxtBx4NkB04+qZ+JUWotnXBJTmxlKudhxNTQ3RRknMwNU2YQl/Org==
 
 capture-exit@^2.0.0:
   version "2.0.0"

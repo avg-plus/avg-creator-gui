@@ -8,6 +8,7 @@ import "./dialogue-item.component.less";
 import fakeAvatarImage from "../../../images/fake-data/avatar.png";
 import { IComponentProps } from "../component-props";
 import { StoryItemType } from "../../../../common/story-item-type";
+import { StoryItem } from "../story-item";
 
 interface IDialogueTextComponentProps extends IComponentProps<DialogueItem> {}
 
@@ -38,20 +39,34 @@ const DialogueItemComponent = (props: IDialogueTextComponentProps) => {
     const prevItem = props.data.getPrevItem();
     const nextItem = props.data.getNextItem();
 
-    // if (
-    //   (prevItem && prevItem.itemType === StoryItemType.ShowDialogue) ||
-    //   (nextItem && nextItem.itemType === StoryItemType.ShowDialogue)
-    // ) {
+    const isDialogueItem = (item: StoryItem) => {
+      return item.itemType === StoryItemType.ShowDialogue;
+    };
+
+    const isHeadDialogueNode =
+      (!prevItem || !isDialogueItem(prevItem)) &&
+      nextItem &&
+      isDialogueItem(nextItem);
+
+    const isMiddleDialogue =
+      prevItem &&
+      nextItem &&
+      prevItem.itemType === StoryItemType.ShowDialogue &&
+      nextItem.itemType === StoryItemType.ShowDialogue;
+
+    const isEndDialogueNode =
+      prevItem &&
+      prevItem.itemType === StoryItemType.ShowDialogue &&
+      (!nextItem || nextItem.itemType !== StoryItemType.ShowDialogue);
+
     return (
       <>
         <div
           className={classnames("context-line", {
             "avatar-node": props.data.isWithCharacter,
-            "head-dialogue-node":
-              props.data.isHeadDialogue &&
-              nextItem &&
-              nextItem.itemType === StoryItemType.ShowDialogue,
-            "end-dialogue-node": props.data.isEndDialogue
+            "head-dialogue-node": isHeadDialogueNode,
+            "middle-dialogue-node": isMiddleDialogue,
+            "end-dialogue-node": isEndDialogueNode
           })}
         ></div>
 
@@ -64,9 +79,6 @@ const DialogueItemComponent = (props: IDialogueTextComponentProps) => {
         )}
       </>
     );
-    // }
-
-    return <></>;
   };
 
   return (

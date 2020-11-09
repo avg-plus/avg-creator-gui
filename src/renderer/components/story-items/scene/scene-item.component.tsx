@@ -15,7 +15,11 @@ const SceneItemComponent = (props: ISceneComponentProps) => {
     props.data.onRefInit(ref);
   });
 
-  return <> 这是一个场景{/* <img src={testBG} /> */}</>;
+  return (
+    <div className={"scene-item"} style={{ background: `url(${testBG})` }}>
+      <div className={"name"}>{props.data.sceneName}</div>
+    </div>
+  );
 };
 
 export const render = (data: SceneItem) => {

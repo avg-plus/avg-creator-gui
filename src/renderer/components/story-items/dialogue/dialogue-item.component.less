@@ -22,9 +22,7 @@
   .context-line {
     position: absolute;
     border-left: 2px dashed #4c4c4c;
-    height: 100%;
     left: @avatar_position * 2.5;
-    top: 0;
 
     // 是否带立绘
     &.avatar-node {
@@ -33,14 +31,21 @@
       top: unset;
     }
 
-    // 开始对话节点
+    // 开始对话节点，下方带连接线
     &.head-dialogue-node {
       height: calc(100% / 2);
       top: unset;
       bottom: 0 !important;
     }
 
-    // 如果是结束对话节点，则连接线只有一半
+    // 中间对华加节点，上线都带连接线
+    &.middle-dialogue-node {
+      top: 0;
+      height: 100% !important;
+      bottom: unset;
+    }
+
+    // 如果是结束对话节点，上方带连接线
     &.end-dialogue-node {
       height: calc(100% / 2);
       bottom: unset;
