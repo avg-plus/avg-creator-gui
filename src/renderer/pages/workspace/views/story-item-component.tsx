@@ -6,6 +6,7 @@ import { ContextMenu } from "@blueprintjs/core";
 import { StoryItemContextMenu } from "../../../components/context-menus/story-item-menus";
 
 import "./story-item-component.less";
+import { StoryManager } from "../../../services/storyboard/story-manager";
 
 export interface IStoryItemComponentProps {
   item: StoryItem;
@@ -33,7 +34,13 @@ const StoryItemComponent = (props: IStoryItemComponentProps) => {
         setSelected(true);
         event.preventDefault();
         ContextMenu.show(
-          <StoryItemContextMenu item={item} />,
+          <StoryItemContextMenu
+            item={item}
+            onDelete={(item: StoryItem) => {
+              item.getStory().remove(item.id);
+              StoryManager.renderStoryItemList(true);
+            }}
+          />,
           {
             left: event.clientX,
             top: event.clientY

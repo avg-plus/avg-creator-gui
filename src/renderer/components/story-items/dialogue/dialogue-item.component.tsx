@@ -73,7 +73,8 @@ const DialogueItemComponent = (props: IDialogueTextComponentProps) => {
         {!props.data.isWithCharacter && (
           <div
             className={classnames("indicator-point", {
-              "end-dialogue": props.data.isEndDialogue
+              // 是否为结束节点，UI的结束意味着对话不会有向下连接线，逻辑上的结束节点意味着对话会隐藏
+              "end-dialogue": isEndDialogueNode && props.data.isEndDialogue
             })}
           ></div>
         )}

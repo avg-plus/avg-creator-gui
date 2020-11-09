@@ -76,7 +76,7 @@ const VirtualList = (props: IVirtualListProps) => {
       <SortableStoryItemComponent
         key={item.id}
         item={item}
-        style={{ margin: 0, ...style }}
+        style={{ margin: 0, overflowX: "hidden", ...style }}
         index={index}
       ></SortableStoryItemComponent>
     );
