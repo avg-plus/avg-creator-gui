@@ -11,11 +11,11 @@ import _ from "underscore";
 interface IWaitComponentProps extends IComponentProps<WaitItem> {}
 const WaitItemComponent = (props: IWaitComponentProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [oldValue, setOldValue] = useState(props.data.time);
+  const [oldValue, setOldValue] = useState(props.item.time);
   const [waitTime, setWaitTime] = useState(oldValue);
 
   useMount(() => {
-    props.data.onRefInit(ref);
+    props.item.onRefInit(ref);
   });
 
   return (
@@ -49,11 +49,11 @@ const WaitItemComponent = (props: IWaitComponentProps) => {
           // 延时不能大于一天
           setWaitTime(v);
           setOldValue(v);
-          props.data.time = v;
+          props.item.time = v;
         }}
         onCancel={(value: string) => {
           setWaitTime(oldValue);
-          props.data.time = oldValue;
+          props.item.time = oldValue;
         }}
       />
       秒
@@ -62,5 +62,5 @@ const WaitItemComponent = (props: IWaitComponentProps) => {
 };
 
 export const render = (data: WaitItem) => {
-  return <WaitItemComponent data={data}></WaitItemComponent>;
+  return <WaitItemComponent item={data}></WaitItemComponent>;
 };

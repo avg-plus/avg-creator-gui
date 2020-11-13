@@ -1,6 +1,17 @@
 .story-item-wrapper {
   position: absolute;
 
+  .drag-handle {
+    position: absolute;
+    right: 2%;
+    top: 10%;
+    // transform: translateY(-200%);
+    width: 24px;
+    height: 24px;
+    background: url("../../../images/icons/sort.png") no-repeat top left;
+    cursor: grab;
+  }
+
   .item-selected {
     background-color: #f0f8ff;
 
@@ -31,14 +42,5 @@
     // 上下保留点间隔，防止连接线粘在一起
     padding-top: 2px;
     padding-bottom: 2px;
-  }
-
-  .drag-handle {
-    position: absolute;
-    right: 2%;
-    transform: translateY(-200%);
-    width: 24px;
-    height: 24px;
-    background: url("../../../images/icons/sort.png") no-repeat top left;
   }
 }

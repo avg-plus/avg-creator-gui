@@ -10,7 +10,10 @@ import {
 import {
   SortableContainer,
   SortableElement,
-  SortableHandle
+  SortableHandle,
+  SortEnd,
+  SortEvent,
+  SortStart
 } from "react-sortable-hoc";
 
 import arrayMove from "array-move";
@@ -23,11 +26,12 @@ import StoryItemComponent, {
 } from "./story-item-component";
 
 import "./storyboard-view.less";
-import { useMount } from "react-use";
+import { useEffectOnce, useMount } from "react-use";
 import Scrollbars from "react-custom-scrollbars";
 import { autoSubScribe } from "../../../../common/utils";
 import { GlobalEvents } from "../../../../common/global-events";
 import _ from "underscore";
+import { ResizeSensor } from "css-element-queries";
 
 const story = StoryManager.loadStory();
 
@@ -36,24 +40,30 @@ interface IVirtualListProps {
   getRef: (ref: List) => void;
 }
 
-const DragHandle = SortableHandle(() => (
-  <div className={"drag-handle"}>:: ---</div>
-));
 const SortableStoryItemComponent = SortableElement(
   (value: IStoryItemComponentProps) => (
-    <StoryItemComponent {...value}>
-      <DragHandle />
-    </StoryItemComponent>
+    <StoryItemComponent {...value}></StoryItemComponent>
   )
 );
 
 const VirtualList = (props: IVirtualListProps) => {
   const ref = useRef() as React.RefObject<List>;
+  const [listHeight, setListHeight] = useState(0);
+  const [listWidth, setListWidth] = useState(0);
 
   useMount(() => {
     if (ref.current) {
       props.getRef(ref.current);
     }
+
+    new ResizeSensor($("#editor").get()[0], (size) => {
+      const height = size.height - 50;
+      const width = size.width;
+
+      setListHeight(height);
+      setListWidth(width);
+      StoryManager.renderStoryItemList(true);
+    });
   });
 
   useEffect(() => {
@@ -91,28 +101,24 @@ const VirtualList = (props: IVirtualListProps) => {
   };
 
   return (
-    <AutoSizer>
-      {({ height, width }) => (
-        <List
-          ref={ref}
-          overscanRowCount={120}
-          rowHeight={getRowHeight}
-          rowRenderer={renderRow}
-          rowCount={rowCount()}
-          onRowsRendered={(info) => {
-            for (
-              let i = info.overscanStartIndex;
-              i <= info.overscanStopIndex;
-              ++i
-            ) {
-              ref.current?.recomputeRowHeights(i);
-            }
-          }}
-          width={width}
-          height={height - 40}
-        />
-      )}
-    </AutoSizer>
+    <List
+      ref={ref}
+      overscanRowCount={100}
+      rowHeight={getRowHeight}
+      rowRenderer={renderRow}
+      rowCount={rowCount()}
+      onRowsRendered={(info) => {
+        for (
+          let i = info.overscanStartIndex;
+          i <= info.overscanStopIndex;
+          ++i
+        ) {
+          ref.current?.recomputeRowHeights(i);
+        }
+      }}
+      width={listWidth}
+      height={listHeight}
+    />
   );
 };
 
@@ -130,10 +136,6 @@ export const StoryboardView = () => {
         const allItems = story.getAllItems();
 
         setItems(allItems);
-        console.log(
-          "on changed StoryItemListShouldRender",
-          story.getAllItems()
-        );
 
         listRef?.recomputeRowHeights();
         listRef?.forceUpdate();
@@ -141,31 +143,49 @@ export const StoryboardView = () => {
     );
   });
 
-  const onSortEnd = ({ oldIndex, newIndex }) => {
+  useEffect(() => {
+    return autoSubScribe(GlobalEvents.ScrollToStoryItem, (event, data) => {
+      if (data && data.index >= 0) {
+        listRef?.scrollToRow(data.index);
+      }
+    });
+  });
+
+  const onSortStart = (sort: SortStart, event: SortEvent) => {};
+
+  const onSortEnd = (sort: SortEnd, event: SortEvent) => {
+    const oldIndex = sort.oldIndex;
+    const newIndex = sort.newIndex;
+
     if (oldIndex === newIndex) {
       return;
     }
 
-    setItems(arrayMove(items, oldIndex, newIndex));
+    const newItems = arrayMove(items, oldIndex, newIndex);
 
-    // We need to inform React Virtualized that the items have changed heights
-    // This can either be done by imperatively calling the recomputeRowHeights and
-    // forceUpdate instance methods on the `List` ref, or by passing an additional prop
-    // to List that changes whenever the order changes to force it to re-render
-    if (listRef) {
-      listRef.recomputeRowHeights();
-      listRef.forceUpdate();
-    }
+    story.setItems(newItems);
+    StoryManager.renderStoryItemList(true);
+
+    listRef?.scrollToRow(newIndex);
+
+    const currentStoryItem = newItems[newIndex];
+    currentStoryItem.focus();
+    currentStoryItem.onDrop();
+
+    console.log("event.currentTarget", newItems[newIndex]);
   };
 
   return (
     <div id={"editor"}>
       <SortableVirtualList
-        useWindowAsScrollContainer={true}
+        helperClass="item-draging"
+        axis="y"
+        lockAxis="y"
         items={items}
         useDragHandle={true}
         getRef={setListRef}
         onSortEnd={onSortEnd}
+        onSortStart={onSortStart}
       ></SortableVirtualList>
     </div>
   );

@@ -7,19 +7,18 @@ import "./dialogue-item.component.less";
 
 import fakeAvatarImage from "../../../images/fake-data/avatar.png";
 import { IComponentProps } from "../component-props";
-import { StoryItemType } from "../../../../common/story-item-type";
-import { StoryItem } from "../story-item";
+import { MenuItem } from "@blueprintjs/core";
 
 interface IDialogueTextComponentProps extends IComponentProps<DialogueItem> {}
 
 const DialogueItemComponent = (props: IDialogueTextComponentProps) => {
-  const [text, setText] = useState(props.data.getText());
+  const [text, setText] = useState(props.item.getText());
   const ref = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLDivElement>(null);
 
   useMount(() => {
-    props.data.onRefInit(ref);
-    props.data.onInputRefInit(inputRef);
+    props.item.onRefInit(ref);
+    props.item.onInputRefInit(inputRef);
   });
 
   const onPaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
@@ -30,51 +29,36 @@ const DialogueItemComponent = (props: IDialogueTextComponentProps) => {
   };
 
   const eventProps = {
-    onInput: props.data.onChanged.bind(props.data),
-    onKeyUp: props.data.onKeyUp.bind(props.data),
-    onKeyDown: props.data.onKeyDown.bind(props.data)
+    onInput: props.item.onChanged.bind(props.item),
+    onKeyUp: props.item.onKeyUp.bind(props.item),
+    onKeyDown: props.item.onKeyDown.bind(props.item)
   };
 
   const renderContextLine = () => {
-    const prevItem = props.data.getPrevItem();
-    const nextItem = props.data.getNextItem();
+    // const prevItem = props.data.getPrevItem();
+    // const nextItem = props.data.getNextItem();
+    const item = props.item;
 
-    const isDialogueItem = (item: StoryItem) => {
-      return item.itemType === StoryItemType.ShowDialogue;
-    };
-
-    const isHeadDialogueNode =
-      (!prevItem || !isDialogueItem(prevItem)) &&
-      nextItem &&
-      isDialogueItem(nextItem);
-
-    const isMiddleDialogue =
-      prevItem &&
-      nextItem &&
-      prevItem.itemType === StoryItemType.ShowDialogue &&
-      nextItem.itemType === StoryItemType.ShowDialogue;
-
-    const isEndDialogueNode =
-      prevItem &&
-      prevItem.itemType === StoryItemType.ShowDialogue &&
-      (!nextItem || nextItem.itemType !== StoryItemType.ShowDialogue);
+    const isHeadDialogueNode = item.isHeadContextNode();
+    const isMiddleDialogue = item.isMiddleContextNode();
+    const isEndDialogueNode = item.isTailContextNode();
 
     return (
       <>
         <div
           className={classnames("context-line", {
-            "avatar-node": props.data.isWithCharacter,
+            "avatar-node": item.isWithCharacter,
             "head-dialogue-node": isHeadDialogueNode,
             "middle-dialogue-node": isMiddleDialogue,
             "end-dialogue-node": isEndDialogueNode
           })}
         ></div>
 
-        {!props.data.isWithCharacter && (
+        {!item.isWithCharacter && (
           <div
             className={classnames("indicator-point", {
               // 是否为结束节点，UI的结束意味着对话不会有向下连接线，逻辑上的结束节点意味着对话会隐藏
-              "end-dialogue": isEndDialogueNode && props.data.isEndDialogue
+              "end-dialogue": isEndDialogueNode && item.isAsEndDialogue()
             })}
           ></div>
         )}
@@ -86,36 +70,59 @@ const DialogueItemComponent = (props: IDialogueTextComponentProps) => {
     <div
       ref={ref}
       className={classnames("dialogue-item", {
-        "avatar-node": props.data.isWithCharacter
+        "avatar-node": props.item.isWithCharacter
       })}
     >
-      {props.data.isWithCharacter && (
+      {props.item.isWithCharacter && (
         <img className={"character-avatar"} src={fakeAvatarImage}></img>
       )}
 
       {renderContextLine()}
 
       <div className={"content"}>
-        {props.data.isWithCharacter && <div className={"name"}>林沐风</div>}
+        {props.item.isWithCharacter && <div className={"name"}>林沐风</div>}
         <div
           ref={inputRef}
           className={classnames("edit-content", "text", {
-            "avatar-node": props.data.isWithCharacter
+            "avatar-node": props.item.isWithCharacter
           })}
           {...eventProps}
-          contentEditable={true}
+          contentEditable={false}
           onPaste={onPaste}
           dangerouslySetInnerHTML={{ __html: text }}
         ></div>
       </div>
 
-      {props.data.isEndDialogue && (
+      {props.item.isAsEndDialogue() && (
         <div className="terminal-dialogue-border"></div>
       )}
     </div>
   );
 };
 
-export const render = (data: DialogueItem) => {
-  return <DialogueItemComponent data={data}></DialogueItemComponent>;
+export const render = (item: DialogueItem) => {
+  return <DialogueItemComponent item={item}></DialogueItemComponent>;
+};
+
+export const renderExtendContextMenu = (item: DialogueItem) => {
+  const menus: JSX.Element[] = [];
+  if (item.isTailContextNode()) {
+    if (!item.isAsEndDialogue()) {
+      menus.push(
+        <MenuItem
+          text="设为结束对话"
+          onClick={() => item.markAsEndDialogue()}
+        />
+      );
+    } else {
+      menus.push(
+        <MenuItem
+          text="取消结束对话"
+          onClick={() => item.markAsEndDialogue(false)}
+        />
+      );
+    }
+  }
+
+  return menus;
 };

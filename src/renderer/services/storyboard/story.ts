@@ -42,7 +42,7 @@ export class Story {
     this.storyItems = [];
   }
 
-  setItems(...items: StoryItem[]) {
+  setItems(items: StoryItem[]) {
     this.storyItems = items;
   }
 
@@ -85,6 +85,9 @@ export class Story {
     }
 
     const lastItem = this.getItem(lastIndex);
+
+    console.log("get last item = ", lastItem);
+
     if (lastItem) {
       lastItem.focus();
       if (lastItem.itemType === StoryItemType.ShowDialogue) {

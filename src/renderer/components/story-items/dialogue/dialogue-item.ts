@@ -1,7 +1,7 @@
 import React, { EventHandler } from "react";
 import PubSub from "pubsub-js";
 
-import { render } from "./dialogue-item.component";
+import { render, renderExtendContextMenu } from "./dialogue-item.component";
 
 import { StoryItem } from "../story-item";
 import { GlobalEvents } from "../../../../common/global-events";
@@ -13,8 +13,10 @@ export class DialogueItem extends StoryItem {
   private _text: string = "";
 
   private _inputRef: HTMLDivElement;
-  private _isHeadDialogue = false;
-  private _isEndDialogue = false;
+
+  // 标记是否为逻辑结束对话的节点，如果为 true 则表示对话应该隐藏
+  private _asEndDialogueNode = false;
+
   private _withCharacter = false;
 
   constructor(story: Story) {
@@ -29,24 +31,68 @@ export class DialogueItem extends StoryItem {
     return this._withCharacter;
   }
 
-  set isHeadDialogue(value: boolean) {
-    this._isHeadDialogue = value;
+  markAsEndDialogue(value: boolean = true) {
+    this._asEndDialogueNode = value;
   }
 
-  get isHeadDialogue() {
-    return this._isHeadDialogue;
-  }
-
-  set isEndDialogue(value: boolean) {
-    this._isEndDialogue = value;
-  }
-
-  get isEndDialogue() {
-    return this._isEndDialogue;
+  isAsEndDialogue() {
+    return this._asEndDialogueNode;
   }
 
   render() {
     return render(this);
+  }
+
+  renderExtendContextMenu(): JSX.Element[] {
+    return renderExtendContextMenu(this);
+  }
+
+  static isDialogueItem(item: StoryItem) {
+    return item.itemType === StoryItemType.ShowDialogue;
+  }
+
+  // 是否为连续对话的开始点
+  isHeadContextNode() {
+    const prevItem = super.getPrevItem();
+    const nextItem = super.getNextItem();
+
+    return (
+      (!prevItem || prevItem.itemType !== StoryItemType.ShowDialogue) &&
+      nextItem &&
+      nextItem.itemType === StoryItemType.ShowDialogue
+    );
+  }
+
+  // 是否为连续对话的中间节点
+  isMiddleContextNode() {
+    const prevItem = super.getPrevItem();
+    const nextItem = super.getNextItem();
+
+    return (
+      prevItem &&
+      nextItem &&
+      prevItem.itemType === StoryItemType.ShowDialogue &&
+      nextItem.itemType === StoryItemType.ShowDialogue
+    );
+  }
+
+  // 是否为连续对话的结束节点
+  isTailContextNode() {
+    const prevItem = super.getPrevItem();
+    const nextItem = super.getNextItem();
+
+    const isEnd =
+      prevItem &&
+      prevItem.itemType === StoryItemType.ShowDialogue &&
+      (!nextItem || nextItem.itemType !== StoryItemType.ShowDialogue);
+
+    // 如果已经不是结束节点，则取消设为结束对话
+    // 防止在中间插入新对话时，仍然渲染结束对话的UI
+    if (!isEnd) {
+      this.markAsEndDialogue(false);
+    }
+
+    return isEnd;
   }
 
   onInputRefInit(ref: React.RefObject<HTMLDivElement>) {
@@ -85,7 +131,7 @@ export class DialogueItem extends StoryItem {
       minHeight = 80;
     }
 
-    if (this.isEndDialogue) {
+    if (this.isAsEndDialogue()) {
       compensationHeight = 40;
     }
 

@@ -3,7 +3,6 @@
   height: 100%;
   background-color: white;
   padding-top: 10px;
-  // padding-top: 10px;
 }
 
 .api-selector-panel-container {
@@ -15,4 +14,19 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 99999;
+}
+
+.item-draging {
+  cursor: default;
+  visibility: visible;
+  border: 1px dashed rosybrown;
+  background-color: antiquewhite;
+  z-index: 99999999 !important;
+  list-style-type: none;
+  padding: 0.3em;
+  animation: all 0.5s ease;
+
+  .drag-placed {
+    opacity: 0;
+  }
 }

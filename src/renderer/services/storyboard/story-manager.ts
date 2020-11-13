@@ -170,6 +170,13 @@ export class StoryManager {
       this.renderStoryItemList();
     });
 
+    WorkspaceDebugUI.registerButton("添加场景节点", () => {
+      const item = new SceneItem(this.currentStory);
+      fillRandomData(item);
+      this.currentStory.addItem(item);
+      this.renderStoryItemList();
+    });
+
     return this.currentStory;
   }
 

@@ -1,18 +1,5 @@
 import React, { useState, useContext } from "react";
-import {
-  MenuDivider,
-  Menu,
-  MenuItem,
-  Alert,
-  Dialog,
-  Tag,
-  Intent
-} from "@blueprintjs/core";
-import { shell, app, remote } from "electron";
-import { AutoUpdater } from "../../services/autoupdater";
-import { GUIToaster } from "../../services/toaster";
-import { CreatorContext } from "../../hooks/context";
-import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
+import { MenuDivider, Menu, MenuItem } from "@blueprintjs/core";
 import { StoryItem } from "../story-items/story-item";
 
 type StoryItemMenuEvent = (item: StoryItem) => void;
@@ -31,20 +18,26 @@ interface IStoryItemMenuProps {
 }
 
 export const StoryItemContextMenu = (props: IStoryItemMenuProps) => {
+  let extendMenus: JSX.Element[] = [];
+  if (
+    props.item.renderExtendContextMenu &&
+    props.item.renderExtendContextMenu().length
+  ) {
+    extendMenus = props.item.renderExtendContextMenu();
+  }
+
+  const renderExtendMenus = () => {
+    if (extendMenus && extendMenus.length) {
+      return [<MenuDivider title="创作" />, ...extendMenus];
+    }
+
+    return [];
+  };
+
   return (
     <>
       <Menu>
-        <MenuDivider title="创作" />
-        <MenuItem text="插入" icon="insert">
-          <MenuDivider title="文本" />
-          <MenuItem text="显示对话" />
-          <MenuDivider title="角色" />
-          <MenuItem text="显示立绘" />
-          <MenuItem text="执行立绘动画" />
-          <MenuItem text="隐藏立绘" />
-          <MenuDivider title="高级" />
-          <MenuItem text="自定义脚本" />
-        </MenuItem>
+        {...renderExtendMenus()}
         <MenuDivider title="调试" />
         <MenuItem text="从头运行到此处" icon="play" />
         <MenuItem text="本章开头运行到此处" icon="play" />

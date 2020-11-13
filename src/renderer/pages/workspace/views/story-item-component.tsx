@@ -7,12 +7,15 @@ import { StoryItemContextMenu } from "../../../components/context-menus/story-it
 
 import "./story-item-component.less";
 import { StoryManager } from "../../../services/storyboard/story-manager";
+import { SortableHandle } from "react-sortable-hoc";
 
 export interface IStoryItemComponentProps {
   item: StoryItem;
   index?: number;
   style?: Object;
 }
+
+const DragHandle = SortableHandle(() => <div className={"drag-handle"}></div>);
 
 const StoryItemComponent = (props: IStoryItemComponentProps) => {
   const { item, style } = props;
@@ -22,6 +25,7 @@ const StoryItemComponent = (props: IStoryItemComponentProps) => {
   return (
     <div
       ref={ref}
+      id={`item_${item.itemType}_${item.id}`}
       className={classnames("story-item-wrapper")}
       style={{ ...style, paddingLeft: `${10 * item.depth}px` }}
       onMouseDown={(event) => {
@@ -60,7 +64,7 @@ const StoryItemComponent = (props: IStoryItemComponentProps) => {
         <div className={classnames("item-render")}>{item.render()}</div>
       </div>
 
-      {/* <div className={"drag-handle"}>:::</div> */}
+      <DragHandle />
     </div>
   );
 };

@@ -13,29 +13,20 @@ const SceneItemComponent = (props: ISceneComponentProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useMount(() => {
-    props.data.onRefInit(ref);
+    props.item.onRefInit(ref);
   });
 
   return (
     <div className={"scene-item"} style={{ background: `url(${testBG})` }}>
-      <div className={"name"}>{props.data.sceneName}</div>
+      <div className={"name"}>{props.item.sceneName}</div>
     </div>
   );
 };
 
 export const render = (data: SceneItem) => {
-  return <SceneItemComponent data={data}></SceneItemComponent>;
+  return <SceneItemComponent item={data}></SceneItemComponent>;
 };
 
 export const renderExtendContextMenu = () => {
-  return [
-    <MenuDivider title="文本" />,
-    <MenuItem text="显示对话" />,
-    <MenuDivider title="角色" />,
-    <MenuItem text="显示立绘" />,
-    <MenuItem text="执行立绘动画" />,
-    <MenuItem text="隐藏立绘" />,
-    <MenuDivider title="高级" />,
-    <MenuItem text="自定义脚本" />
-  ];
+  return [];
 };

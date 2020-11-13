@@ -29,6 +29,7 @@ export abstract class StoryItem implements IStoryItem {
   public depth = 0;
 
   abstract render(): JSX.Element;
+  abstract renderExtendContextMenu(): JSX.Element[];
   abstract renderHeight(): number;
   abstract onSave(): any;
 
@@ -37,6 +38,7 @@ export abstract class StoryItem implements IStoryItem {
   }
 
   onFocus() {}
+  onBlur() {}
   onRefInit(ref: React.RefObject<HTMLDivElement>): void {}
   onChanged(e: React.ChangeEvent<HTMLInputElement>): void {}
 
@@ -102,6 +104,28 @@ export abstract class StoryItem implements IStoryItem {
     }
 
     return null;
+  }
+
+  onDrop() {
+    $(this._ref).animate(
+      {
+        opacity: 0.4,
+        marginLeft: "0.6in",
+        fontSize: "3em",
+        borderWidth: "10px",
+        backgroundColor: "#ff0000"
+      },
+      1000
+    );
+  }
+
+  blur() {
+    if (this._ref) {
+      this._ref.blur();
+      console.log("set blur ", this);
+
+      this.onBlur();
+    }
   }
 
   focus() {

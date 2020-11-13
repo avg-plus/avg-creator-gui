@@ -18,5 +18,8 @@ export enum GlobalEvents {
   StoryItemNavigateTo = "StoryItemNavigateTo",
 
   // 触发故事节点列表计算高度
-  RecomputeStoryNodeHeights = "RecomputeStoryNodeHeights"
+  RecomputeStoryNodeHeights = "RecomputeStoryNodeHeights",
+
+  // 滚动到指定故事节点
+  ScrollToStoryItem = "ScrollToStoryItem"
 }
