@@ -24,9 +24,20 @@
   z-index: 99999999 !important;
   list-style-type: none;
   padding: 0.3em;
-  animation: all 0.5s ease;
+}
 
-  .drag-placed {
-    opacity: 0;
+@keyframes drop-flash {
+  0% {
+    background: unset;
   }
+  25% {
+    background: rgb(255, 141, 107);
+  }
+  100% {
+    background: unset;
+  }
+}
+
+.drag-placed {
+  animation: drop-flash 1s;
 }

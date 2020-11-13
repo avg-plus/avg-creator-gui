@@ -28,6 +28,10 @@ export abstract class StoryItem implements IStoryItem {
 
   public depth = 0;
 
+  getElementId() {
+    return `item_${this.itemType}_${this.id}`;
+  }
+
   abstract render(): JSX.Element;
   abstract renderExtendContextMenu(): JSX.Element[];
   abstract renderHeight(): number;
@@ -106,18 +110,7 @@ export abstract class StoryItem implements IStoryItem {
     return null;
   }
 
-  onDrop() {
-    $(this._ref).animate(
-      {
-        opacity: 0.4,
-        marginLeft: "0.6in",
-        fontSize: "3em",
-        borderWidth: "10px",
-        backgroundColor: "#ff0000"
-      },
-      1000
-    );
-  }
+  onDrop() {}
 
   blur() {
     if (this._ref) {
@@ -135,6 +128,10 @@ export abstract class StoryItem implements IStoryItem {
 
       this.onFocus();
     }
+  }
+
+  getRef() {
+    return this._ref;
   }
 
   saveData(data: any) {

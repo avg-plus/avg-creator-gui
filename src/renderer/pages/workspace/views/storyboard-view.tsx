@@ -4,6 +4,7 @@ import {
   AutoSizer,
   CellMeasurer,
   CellMeasurerCache,
+  OnScrollParams,
   ListRowProps
 } from "react-virtualized";
 
@@ -103,11 +104,16 @@ const VirtualList = (props: IVirtualListProps) => {
   return (
     <List
       ref={ref}
-      overscanRowCount={100}
+      overscanRowCount={10}
       rowHeight={getRowHeight}
       rowRenderer={renderRow}
       rowCount={rowCount()}
+      onScroll={(params: OnScrollParams) => {
+        story.updateScrollParamsFromView(params);
+      }}
       onRowsRendered={(info) => {
+        story.updateRenderedInfoFromView(info);
+
         for (
           let i = info.overscanStartIndex;
           i <= info.overscanStopIndex;
@@ -162,17 +168,23 @@ export const StoryboardView = () => {
     }
 
     const newItems = arrayMove(items, oldIndex, newIndex);
-
     story.setItems(newItems);
-    StoryManager.renderStoryItemList(true);
-
-    listRef?.scrollToRow(newIndex);
+    setItems(newItems);
 
     const currentStoryItem = newItems[newIndex];
     currentStoryItem.focus();
     currentStoryItem.onDrop();
 
-    console.log("event.currentTarget", newItems[newIndex]);
+    $(currentStoryItem.getRef()).addClass("drag-placed");
+    setTimeout(() => {
+      $(currentStoryItem.getRef()).removeClass("drag-placed");
+    }, 1000);
+
+    // 重新计算视图内所有行的高度，放置拖动后导致高度不一致
+    const renderedInfo = story.getRenderedInfo();
+    for (let i = renderedInfo.startIndex; i < renderedInfo.stopIndex; ++i) {
+      listRef?.recomputeRowHeights(i);
+    }
   };
 
   return (

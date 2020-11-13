@@ -25,7 +25,7 @@ const StoryItemComponent = (props: IStoryItemComponentProps) => {
   return (
     <div
       ref={ref}
-      id={`item_${item.itemType}_${item.id}`}
+      id={item.getElementId()}
       className={classnames("story-item-wrapper")}
       style={{ ...style, paddingLeft: `${10 * item.depth}px` }}
       onMouseDown={(event) => {

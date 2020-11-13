@@ -1,6 +1,13 @@
 import produce from "immer";
 import _ from "underscore";
 import { logger } from "../../../common/lib/logger";
+
+import {
+  OverscanIndexRange,
+  IndexRange,
+  OnScrollParams
+} from "react-virtualized";
+
 import { StoryItemType } from "../../../common/story-item-type";
 import { DialogueItem } from "../../components/story-items/dialogue/dialogue-item";
 import { StoryItem } from "../../components/story-items/story-item";
@@ -8,6 +15,8 @@ import { StoryItem } from "../../components/story-items/story-item";
 export class Story {
   storyItems: StoryItem[] = [];
   selectedItem?: StoryItem;
+  renderedInfo: OverscanIndexRange & IndexRange;
+  scrollParams: OnScrollParams;
 
   constructor() {}
 
@@ -19,6 +28,23 @@ export class Story {
     }
 
     console.log("selected item: ", this.selectedItem);
+  }
+
+  // 把视图滚动数据储存
+  updateScrollParamsFromView(params: OnScrollParams) {
+    this.scrollParams = params;
+  }
+
+  getScrollParams() {
+    return this.scrollParams;
+  }
+
+  updateRenderedInfoFromView(info: OverscanIndexRange & IndexRange) {
+    this.renderedInfo = info;
+  }
+
+  getRenderedInfo() {
+    return this.renderedInfo;
   }
 
   getSelectedItem() {
