@@ -5,7 +5,6 @@ import { v4 as uuidv4 } from "uuid";
 
 import extract from "extract-zip";
 
-import { isNullOrUndefined } from "util";
 import { DBProjects } from "../../common/database/db-project";
 import { LocalAppConfig } from "../../common/local-app-config";
 import { TDAPP } from "../services/td-analytics";
@@ -14,7 +13,6 @@ import { BundleOption } from "../components/create-project-dialog/create-project
 import { GUIToaster } from "../services/toaster";
 import { Intent } from "@blueprintjs/core";
 import { assert } from "../../common/exception";
-import { BundlesManager } from "../services/bundles-manager/bundles-manager";
 
 export class AVGProjectData {
   _id: string;

@@ -12,6 +12,8 @@ import { StoryItem } from "../../components/story-items/story-item";
 import { WaitItem } from "../../components/story-items/wait/wait-item";
 import { SceneItem } from "../../components/story-items/scene/scene-item";
 import { WorkspaceDebugUI } from "../workspace-debug-ui";
+import { GameRunner } from "../game-runner";
+import { Workspace } from "../workspace";
 
 export class StoryManager {
   static currentStory: Story = new Story();
@@ -175,6 +177,10 @@ export class StoryManager {
       fillRandomData(item);
       this.currentStory.addItem(item);
       this.renderStoryItemList();
+    });
+
+    WorkspaceDebugUI.registerButton("运行客户端", () => {
+      GameRunner.runAsDesktop(Workspace.getCurrentProject());
     });
 
     return this.currentStory;

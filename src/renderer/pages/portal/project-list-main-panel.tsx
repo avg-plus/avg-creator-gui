@@ -191,7 +191,7 @@ export default () => {
     // });
 
     // v2: Open workspace
-    WorkspaceLayout.launchWindow();
+    WorkspaceLayout.launchWindow(project);
   };
 
   return (

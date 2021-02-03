@@ -1,5 +1,5 @@
 import React from "react";
-import { remote } from "electron";
+import { ipcMain, remote } from "electron";
 import createClass from "create-react-class";
 
 import $ from "jquery";
@@ -14,6 +14,7 @@ import { PropertyView } from "../pages/workspace/views/property-view";
 import { ResourceTreeView } from "../pages/workspace/views/resource-tree-view/resource-tree-view";
 import { _DevelopmentDebugView } from "../pages/workspace/views/_debug-view";
 import _ from "underscore";
+import { AVGProjectData } from "../manager/project-manager";
 
 export class WorkspaceLayout {
   static views = {
@@ -23,7 +24,7 @@ export class WorkspaceLayout {
     _debugView: <_DevelopmentDebugView></_DevelopmentDebugView>
   };
 
-  static launchWindow() {
+  static launchWindow(project: AVGProjectData) {
     const editorWindow = new remote.BrowserWindow({
       width: 1280,
       height: 760,
@@ -43,6 +44,11 @@ export class WorkspaceLayout {
     editorWindow.loadFile("./dist/static/workspace.index.html");
     editorWindow.webContents.openDevTools();
     editorWindow.on("ready-to-show", () => {
+      // 发送项目数据
+      editorWindow.webContents.send("InitAVGProject", {
+        ...project
+      });
+
       editorWindow.show();
     });
   }

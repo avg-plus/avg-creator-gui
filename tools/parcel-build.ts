@@ -26,7 +26,7 @@ async function compileParcel(options = {}) {
     cache: false, // Enabled or disables caching, defaults to true
     cacheDir: ".cache", // The directory cache gets put in, defaults to .cache
     contentHash: false, // Disable content hash from being included on the filename
-    minify: true, // Minify files, enabled if process.env.NODE_ENV === 'production'
+    minify: false, // Minify files, enabled if process.env.NODE_ENV === 'production'
     scopeHoist: false, // turn on experimental scope hoisting/tree shaking flag, for smaller production bundles
     target: "node", // browser/node/electron, defaults to browser
     // https: { // Define a custom {key, cert} pair, use true to generate one or false to use http

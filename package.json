@@ -5,7 +5,7 @@
   "description": "The game creator with GUI for AVGPlus",
   "main": "dist/src/main/main.js",
   "scripts": {
-    "start": "run-p -r watch electron:start",
+    "dev": "run-p -r watch electron:start",
     "build": "ts-node tools/parcel-build.ts",
     "watch": "ts-node tools/parcel-build.ts --watch",
     "package": "ts-node tools/packager.ts",

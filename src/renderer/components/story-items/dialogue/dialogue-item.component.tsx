@@ -87,7 +87,7 @@ const DialogueItemComponent = (props: IDialogueTextComponentProps) => {
             "avatar-node": props.item.isWithCharacter
           })}
           {...eventProps}
-          contentEditable={false}
+          contentEditable={true}
           onPaste={onPaste}
           dangerouslySetInnerHTML={{ __html: text }}
         ></div>
