@@ -7,28 +7,26 @@ import { StoryItem } from "../story-item";
 import { GlobalEvents } from "../../../../common/global-events";
 import { StoryItemType } from "../../../../common/story-item-type";
 import { Story } from "../../../services/storyboard/story";
-import { max } from "underscore";
+import { CharacterItem } from "../character/character-item";
 
 export class DialogueItem extends StoryItem {
   private _text: string = "";
-
   private _inputRef: HTMLDivElement;
 
   // 标记是否为逻辑结束对话的节点，如果为 true 则表示对话应该隐藏
   private _asEndDialogueNode = false;
-
-  private _withCharacter = false;
+  private _linkedCharacter: CharacterItem | null = null;
 
   constructor(story: Story) {
     super(story, StoryItemType.ShowDialogue);
   }
 
-  set isWithCharacter(value: boolean) {
-    this._withCharacter = value;
+  setLinkedCharacter(character: CharacterItem) {
+    this._linkedCharacter = character;
   }
 
-  get isWithCharacter() {
-    return this._withCharacter;
+  getLinkedCharacter() {
+    return this._linkedCharacter;
   }
 
   markAsEndDialogue(value: boolean = true) {
@@ -56,6 +54,17 @@ export class DialogueItem extends StoryItem {
     const prevItem = super.getPrevItem();
     const nextItem = super.getNextItem();
 
+    if (
+      this.getLinkedCharacter() &&
+      nextItem &&
+      nextItem.itemType === StoryItemType.ShowDialogue &&
+      !(nextItem as DialogueItem).getLinkedCharacter()
+    ) {
+      console.log("is head");
+
+      return true;
+    }
+
     return (
       (!prevItem || prevItem.itemType !== StoryItemType.ShowDialogue) &&
       nextItem &&
@@ -72,7 +81,8 @@ export class DialogueItem extends StoryItem {
       prevItem &&
       nextItem &&
       prevItem.itemType === StoryItemType.ShowDialogue &&
-      nextItem.itemType === StoryItemType.ShowDialogue
+      nextItem.itemType === StoryItemType.ShowDialogue &&
+      !(nextItem as DialogueItem).getLinkedCharacter()
     );
   }
 
@@ -80,6 +90,10 @@ export class DialogueItem extends StoryItem {
   isTailContextNode() {
     const prevItem = super.getPrevItem();
     const nextItem = super.getNextItem();
+
+    if (this.getLinkedCharacter()) {
+      return false;
+    }
 
     const isEnd =
       prevItem &&
@@ -126,8 +140,8 @@ export class DialogueItem extends StoryItem {
     let compensationHeight = 30;
     let minHeight = 0;
 
-    if (this.isWithCharacter) {
-      compensationHeight = 40;
+    if (this.getLinkedCharacter() !== null) {
+      compensationHeight = 50;
       minHeight = 80;
     }
 

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import classNames from "classnames";
 import SortableTree, {
   ExtendedNodeData,
   NodeData,
@@ -11,17 +10,13 @@ import Scrollbars from "react-custom-scrollbars";
 import Row from "antd/lib/row";
 import Col from "antd/lib/col";
 
-import PubSub from "pubsub-js";
-
 import "./resource-tree-view.less";
-import { logger } from "../../../../../common/lib/logger";
 import { ResourceTreeNodeTypes } from "../../../../../common/resource-tree-node-types";
-import { Alignment, Button, ContextMenu, Navbar } from "@blueprintjs/core";
+import { ContextMenu } from "@blueprintjs/core";
 import { ResourceTreeContextMenu } from "../../../../components/context-menus/resource-tree-menus";
 
 // Icons
 import Icon from "@ant-design/icons/lib/components/Icon";
-import FolderIcon from "../../../../images/icons/resource-tree/folder.svg";
 import StoryIcon from "../../../../images/icons/resource-tree/write.svg";
 import ScriptFolderIcon from "../../../../images/icons/resource-tree/script.svg";
 import AddNodeIcon from "../../../../images/icons/resource-tree/add-node.svg";
@@ -82,7 +77,6 @@ export const ResourceTreeView = () => {
   const handleGenerateNodeProps = (data: ExtendedNodeData) => {
     return {
       renderNodeIcon: () => {
-        // スクリプト/シナリオ
         const nodeType = data.node.nodeType as ResourceTreeNodeTypes;
         switch (nodeType) {
           case ResourceTreeNodeTypes.StoryRootFolder:

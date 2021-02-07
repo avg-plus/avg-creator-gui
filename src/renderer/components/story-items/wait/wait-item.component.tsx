@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
-import { EditableText } from "@blueprintjs/core";
+import { Button, EditableText } from "@blueprintjs/core";
+import { Select } from "@blueprintjs/select";
 
 import { IComponentProps } from "../component-props";
 import { WaitItem } from "./wait-item";
@@ -7,8 +8,13 @@ import { WaitItem } from "./wait-item";
 import "./wait-item.component.less";
 import { useMount } from "react-use";
 import _ from "underscore";
+import { FlatButton } from "../../../controls/flat-button/index.component";
+import { MenuSelect } from "../../../controls/menu-select/index.component";
 
 interface IWaitComponentProps extends IComponentProps<WaitItem> {}
+interface IMenuSelectWaitTimes {
+  title: string;
+}
 const WaitItemComponent = (props: IWaitComponentProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [oldValue, setOldValue] = useState(props.item.time);
@@ -21,6 +27,10 @@ const WaitItemComponent = (props: IWaitComponentProps) => {
   return (
     <>
       延时{" "}
+      <MenuSelect<IMenuSelectWaitTimes>
+        displayField={"title"}
+        items={[{ title: "1111" }, { title: "2222" }]}
+      ></MenuSelect>
       <EditableText
         type={"number"}
         selectAllOnFocus={true}

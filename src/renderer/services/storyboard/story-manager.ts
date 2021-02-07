@@ -14,6 +14,7 @@ import { SceneItem } from "../../components/story-items/scene/scene-item";
 import { WorkspaceDebugUI } from "../workspace-debug-ui";
 import { GameRunner } from "../game-runner";
 import { Workspace } from "../workspace";
+import { CharacterItem } from "../../components/story-items/character/character-item";
 
 export class StoryManager {
   static currentStory: Story = new Story();
@@ -167,6 +168,23 @@ export class StoryManager {
 
     WorkspaceDebugUI.registerButton("添加对话节点", () => {
       const item = new DialogueItem(this.currentStory);
+      fillRandomData(item);
+      this.currentStory.addItem(item);
+      this.renderStoryItemList();
+    });
+
+    WorkspaceDebugUI.registerButton("添加延时节点", () => {
+      const item = new WaitItem(this.currentStory);
+      fillRandomData(item);
+      this.currentStory.addItem(item);
+      this.renderStoryItemList();
+    });
+
+    WorkspaceDebugUI.registerButton("添加对话节点（带立绘）", () => {
+      const item = new DialogueItem(this.currentStory);
+      const char = new CharacterItem(this.currentStory);
+      char.name = randomIn(["林沐风", "学姐"]);
+      item.setLinkedCharacter(char);
       fillRandomData(item);
       this.currentStory.addItem(item);
       this.renderStoryItemList();

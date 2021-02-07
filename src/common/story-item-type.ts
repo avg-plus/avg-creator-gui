@@ -1,6 +1,7 @@
 export enum StoryItemType {
   None,
   ShowDialogue,
+  Character,
   Scene,
   Wait
 }

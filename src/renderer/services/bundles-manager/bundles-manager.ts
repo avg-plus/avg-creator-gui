@@ -297,8 +297,10 @@ export class BundlesManager {
     // 清空配置
     LocalAppConfig.clear("desktopShell");
     return new Promise((resolve) => {
-      LocalAppConfig.save(() => {
-        resolve();
+      LocalAppConfig.save((err) => {
+        if (err) throw new Error("保存配置失败。");
+
+        resolve({});
       });
     });
   }

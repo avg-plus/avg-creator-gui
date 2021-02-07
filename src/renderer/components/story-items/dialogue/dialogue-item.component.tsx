@@ -5,7 +5,7 @@ import { DialogueItem } from "./dialogue-item";
 
 import "./dialogue-item.component.less";
 
-import fakeAvatarImage from "../../../images/fake-data/avatar.png";
+// import fakeAvatarImage from "../../../images/fake-data/avatar.png";
 import { IComponentProps } from "../component-props";
 import { MenuItem } from "@blueprintjs/core";
 
@@ -15,6 +15,9 @@ const DialogueItemComponent = (props: IDialogueTextComponentProps) => {
   const [text, setText] = useState(props.item.getText());
   const ref = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLDivElement>(null);
+
+  const character = props.item.getLinkedCharacter();
+  const isWithCharacter = character !== null;
 
   useMount(() => {
     props.item.onRefInit(ref);
@@ -35,8 +38,6 @@ const DialogueItemComponent = (props: IDialogueTextComponentProps) => {
   };
 
   const renderContextLine = () => {
-    // const prevItem = props.data.getPrevItem();
-    // const nextItem = props.data.getNextItem();
     const item = props.item;
 
     const isHeadDialogueNode = item.isHeadContextNode();
@@ -47,14 +48,14 @@ const DialogueItemComponent = (props: IDialogueTextComponentProps) => {
       <>
         <div
           className={classnames("context-line", {
-            "avatar-node": item.isWithCharacter,
+            "avatar-node": isWithCharacter,
             "head-dialogue-node": isHeadDialogueNode,
             "middle-dialogue-node": isMiddleDialogue,
             "end-dialogue-node": isEndDialogueNode
           })}
         ></div>
 
-        {!item.isWithCharacter && (
+        {!isWithCharacter && (
           <div
             className={classnames("indicator-point", {
               // 是否为结束节点，UI的结束意味着对话不会有向下连接线，逻辑上的结束节点意味着对话会隐藏
@@ -70,21 +71,23 @@ const DialogueItemComponent = (props: IDialogueTextComponentProps) => {
     <div
       ref={ref}
       className={classnames("dialogue-item", {
-        "avatar-node": props.item.isWithCharacter
+        "avatar-node": isWithCharacter
       })}
     >
-      {props.item.isWithCharacter && (
-        <img className={"character-avatar"} src={fakeAvatarImage}></img>
+      {isWithCharacter && (
+        <img className={"character-avatar"} src={character?.getAvatar()}></img>
       )}
 
       {renderContextLine()}
 
       <div className={"content"}>
-        {props.item.isWithCharacter && <div className={"name"}>林沐风</div>}
+        {isWithCharacter && (
+          <div className={"name"}>{isWithCharacter && character?.name}</div>
+        )}
         <div
           ref={inputRef}
           className={classnames("edit-content", "text", {
-            "avatar-node": props.item.isWithCharacter
+            "avatar-node": isWithCharacter
           })}
           {...eventProps}
           contentEditable={true}

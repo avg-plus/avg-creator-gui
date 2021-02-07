@@ -1,30 +1,33 @@
 import { StoryItemType } from "../../../../common/story-item-type";
 import { Story } from "../../../services/storyboard/story";
 import { StoryItem } from "../story-item";
-import { render } from "./wait-item.component";
+import { render } from "./character-item.component";
 
-export class WaitItem extends StoryItem {
+export class CharacterItem extends StoryItem {
   renderExtendContextMenu(): JSX.Element[] {
     throw new Error("Method not implemented.");
   }
 
-  private _time: number = 0;
+  private _name: string = "";
 
   constructor(story: Story) {
-    super(story, StoryItemType.Wait);
+    super(story, StoryItemType.Character);
   }
 
-  set time(value: number) {
-    if (value <= 0 || value >= Number.MAX_SAFE_INTEGER) {
-      value = 1000;
-    }
-
-    this._time = value;
+  set name(name: string) {
+    this._name = name;
   }
 
-  get time() {
-    return this._time;
+  get name() {
+    return this._name;
   }
+
+  getAvatar() {
+    // TODO
+    return require("../../../images/fake-data/avatar.png");
+  }
+
+  setAvatar() {}
 
   render() {
     return render(this);
@@ -36,7 +39,7 @@ export class WaitItem extends StoryItem {
 
   onSave() {
     return super.saveData({
-      time: this._time
+      name: this._name
     });
   }
 }

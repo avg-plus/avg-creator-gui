@@ -1,17 +1,9 @@
 import * as React from "react";
-import {
-  List,
-  AutoSizer,
-  CellMeasurer,
-  CellMeasurerCache,
-  OnScrollParams,
-  ListRowProps
-} from "react-virtualized";
+import { List, OnScrollParams, ListRowProps } from "react-virtualized";
 
 import {
   SortableContainer,
   SortableElement,
-  SortableHandle,
   SortEnd,
   SortEvent,
   SortStart
@@ -27,8 +19,7 @@ import StoryItemComponent, {
 } from "./story-item-component";
 
 import "./storyboard-view.less";
-import { useEffectOnce, useMount } from "react-use";
-import Scrollbars from "react-custom-scrollbars";
+import { useMount } from "react-use";
 import { autoSubScribe } from "../../../../common/utils";
 import { GlobalEvents } from "../../../../common/global-events";
 import _ from "underscore";
@@ -80,7 +71,7 @@ const VirtualList = (props: IVirtualListProps) => {
     );
   });
 
-  const renderRow = ({ index, style, parent, key }: ListRowProps) => {
+  const renderRow = ({ index, style }: ListRowProps) => {
     const item: StoryItem = props.items[index];
 
     return (
@@ -136,17 +127,14 @@ export const StoryboardView = () => {
   const [listRef, setListRef] = useState<List>();
 
   useEffect(() => {
-    return autoSubScribe(
-      GlobalEvents.StoryItemListShouldRender,
-      (event, data) => {
-        const allItems = story.getAllItems();
+    return autoSubScribe(GlobalEvents.StoryItemListShouldRender, () => {
+      const allItems = story.getAllItems();
 
-        setItems(allItems);
+      setItems(allItems);
 
-        listRef?.recomputeRowHeights();
-        listRef?.forceUpdate();
-      }
-    );
+      listRef?.recomputeRowHeights();
+      listRef?.forceUpdate();
+    });
   });
 
   useEffect(() => {
@@ -157,9 +145,9 @@ export const StoryboardView = () => {
     });
   });
 
-  const onSortStart = (sort: SortStart, event: SortEvent) => {};
+  const onSortStart = () => {};
 
-  const onSortEnd = (sort: SortEnd, event: SortEvent) => {
+  const onSortEnd = (sort: SortEnd) => {
     const oldIndex = sort.oldIndex;
     const newIndex = sort.newIndex;
 
