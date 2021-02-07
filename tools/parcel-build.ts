@@ -22,9 +22,9 @@ async function compileParcel(options = {}) {
     outDir, // The out directory to put the build files in, defaults to dist
     outFile: undefined, // The name of the outputFile
     publicUrl: "../", // The url to server on, defaults to dist
-    watch: false, // whether to watch the files and rebuild them on change, defaults to process.env.NODE_ENV !== 'production'
-    cache: false, // Enabled or disables caching, defaults to true
-    cacheDir: ".cache", // The directory cache gets put in, defaults to .cache
+    watch: true, // whether to watch the files and rebuild them on change, defaults to process.env.NODE_ENV !== 'production'
+    cache: true, // Enabled or disables caching, defaults to true
+    cacheDir: ".parcel-cache", // The directory cache gets put in, defaults to .cache
     contentHash: false, // Disable content hash from being included on the filename
     minify: false, // Minify files, enabled if process.env.NODE_ENV === 'production'
     scopeHoist: false, // turn on experimental scope hoisting/tree shaking flag, for smaller production bundles

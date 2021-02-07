@@ -1,5 +1,6 @@
 # output
 /.cache
+/.parcel-cache
 /coverage
 /src/renderer/.parcel
 /src/main/.parcel

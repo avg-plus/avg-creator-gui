@@ -1903,6 +1903,23 @@
     resize-observer-polyfill "^1.5.1"
     tslib "~1.10.0"
 
+"@blueprintjs/core@^3.38.2":
+  version "3.38.2"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-3.38.2.tgz#fae1ab6ae9c2b21af63d9afd8cb851bb94a7168f"
+  integrity sha512-YOTZ8UkaKCjP/g8fm9e2py5/9TvAWHwhhDQAH30NV53FD5oBOjYu0+mUU1hRys9TrBflvA3cQn8EgHRP1y/K9A==
+  dependencies:
+    "@blueprintjs/icons" "^3.24.0"
+    "@types/dom4" "^2.0.1"
+    classnames "^2.2"
+    dom4 "^2.1.5"
+    normalize.css "^8.0.1"
+    popper.js "^1.16.1"
+    react-lifecycles-compat "^3.0.4"
+    react-popper "^1.3.7"
+    react-transition-group "^2.9.0"
+    resize-observer-polyfill "^1.5.1"
+    tslib "~1.13.0"
+
 "@blueprintjs/icons@^3.15.0", "@blueprintjs/icons@^3.15.1":
   version "3.15.1"
   resolved "https://registry.npm.taobao.org/@blueprintjs/icons/download/@blueprintjs/icons-3.15.1.tgz#81b278d237169afaba0fb7ac0547d95b53b4255d"
@@ -1910,6 +1927,23 @@
   dependencies:
     classnames "^2.2"
     tslib "~1.10.0"
+
+"@blueprintjs/icons@^3.24.0":
+  version "3.24.0"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/icons/-/icons-3.24.0.tgz#aa7e6042e40806d22f85da8d62990ff0296adcf2"
+  integrity sha512-OvDDI5EUueS1Y3t594iS8LAGoHhLhYjC2GuN/01a85n+ASLSp0jf0/+uix2JeCOj41iTdRRCINbWuRwVQNNGPw==
+  dependencies:
+    classnames "^2.2"
+    tslib "~1.13.0"
+
+"@blueprintjs/select@^3.15.4":
+  version "3.15.4"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/select/-/select-3.15.4.tgz#bca5042e1b66ed89da5bc89693ddc1942b22dc25"
+  integrity sha512-TsDDn5Pp39Bazv1Spu8evALKpBjQ5j+5SOlCBuXokMWcFI99RekG5jI9fYQKsOlyvXGWxazMG/vsIuIf5tXKoA==
+  dependencies:
+    "@blueprintjs/core" "^3.38.2"
+    classnames "^2.2"
+    tslib "~1.13.0"
 
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
@@ -11588,7 +11622,7 @@ pn@^1.1.0:
   resolved "https://registry.npm.taobao.org/pn/download/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
   integrity sha1-4vTO8OIZ9GPBeas3Rj5OHs3Muvs=
 
-popper.js@^1.14.4, popper.js@^1.15.0:
+popper.js@^1.14.4, popper.js@^1.15.0, popper.js@^1.16.1:
   version "1.16.1"
   resolved "https://registry.npm.taobao.org/popper.js/download/popper.js-1.16.1.tgz#2a223cb3dc7b6213d740e40372be40de43e65b1b"
   integrity sha1-KiI8s9x7YhPXQOQDcr5A3kPmWxs=
@@ -15042,7 +15076,7 @@ tslib@^1.10.0, tslib@^1.8.1:
   resolved "https://registry.npm.taobao.org/tslib/download/tslib-1.11.1.tgz#eb15d128827fbee2841549e171f45ed338ac7e35"
   integrity sha1-6xXRKIJ/vuKEFUnhcfRe0zisfjU=
 
-tslib@^1.9.3:
+tslib@^1.9.3, tslib@~1.13.0:
   version "1.13.0"
   resolved "https://registry.npm.taobao.org/tslib/download/tslib-1.13.0.tgz?cache=0&sync_timestamp=1589411820927&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftslib%2Fdownload%2Ftslib-1.13.0.tgz#c881e13cc7015894ed914862d276436fa9a47043"
   integrity sha1-yIHhPMcBWJTtkUhi0nZDb6mkcEM=
