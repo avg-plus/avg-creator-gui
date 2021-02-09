@@ -13,7 +13,7 @@ export class TemplateItem extends StoryItem {
   }
 
   renderExtendContextMenu(): JSX.Element[] {
-    throw new Error("Method not implemented.");
+    return [];
   }
 
   renderHeight(): number {

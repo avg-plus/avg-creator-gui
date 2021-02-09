@@ -5,7 +5,7 @@ import { render } from "./wait-item.component";
 
 export class WaitItem extends StoryItem {
   renderExtendContextMenu(): JSX.Element[] {
-    throw new Error("Method not implemented.");
+    return [];
   }
 
   private _time: number = 0;

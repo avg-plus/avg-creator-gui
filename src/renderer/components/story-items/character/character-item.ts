@@ -5,7 +5,7 @@ import { render } from "./character-item.component";
 
 export class CharacterItem extends StoryItem {
   renderExtendContextMenu(): JSX.Element[] {
-    throw new Error("Method not implemented.");
+    return [];
   }
 
   private _name: string = "";
