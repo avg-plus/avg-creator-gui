@@ -18,6 +18,7 @@ export function MenuSelect<T>(props: IMenuSelectProps<T>) {
   const renderOptions = (item: T, itemProps: IItemRendererProps) => {
     const itemClicked = () => {
       setSelectedItem(item);
+      props.onItemSelect && props.onItemSelect(item);
     };
 
     return (
