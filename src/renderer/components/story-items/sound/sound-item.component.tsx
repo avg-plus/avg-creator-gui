@@ -5,7 +5,6 @@ import { SoundItem } from "./sound-item";
 import { MenuSelect } from "../../../controls/menu-select/index.component";
 import "./sound-item.component.less";
 import { FileInput, Slider, Tag } from "@blueprintjs/core";
-import { url } from "inspector";
 
 interface ISoundComponentProps extends IComponentProps<SoundItem> { }
 interface IMenuSelectSoundTrack {
