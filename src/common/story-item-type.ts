@@ -3,7 +3,8 @@ export enum StoryItemType {
   ShowDialogue,
   Character,
   Scene,
-  Wait
+  Wait,
+  Sound
 }
 
 export interface ISaveDataContent {}
