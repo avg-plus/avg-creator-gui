@@ -11,7 +11,7 @@ import _ from "underscore";
 import { FlatButton } from "../../../controls/flat-button/index.component";
 import { MenuSelect } from "../../../controls/menu-select/index.component";
 
-interface IWaitComponentProps extends IComponentProps<WaitItem> {}
+interface IWaitComponentProps extends IComponentProps<WaitItem> { }
 interface IMenuSelectWaitTimes {
   title: string;
 }

@@ -15,6 +15,7 @@ import { WorkspaceDebugUI } from "../workspace-debug-ui";
 import { GameRunner } from "../game-runner";
 import { Workspace } from "../workspace";
 import { CharacterItem } from "../../components/story-items/character/character-item";
+import { SoundItem } from "../../components/story-items/sound/sound-item";
 
 export class StoryManager {
   static currentStory: Story = new Story();
@@ -197,6 +198,13 @@ export class StoryManager {
       this.renderStoryItemList();
     });
 
+    WorkspaceDebugUI.registerButton("添加音频", () => {
+      const item = new SoundItem(this.currentStory);
+      fillRandomData(item);
+      this.currentStory.addItem(item);
+      this.renderStoryItemList();
+    });
+
     WorkspaceDebugUI.registerButton("运行客户端", () => {
       GameRunner.runAsDesktop(Workspace.getCurrentProject());
     });
@@ -204,5 +212,5 @@ export class StoryManager {
     return this.currentStory;
   }
 
-  static selectItem(item: StoryItem) {}
+  static selectItem(item: StoryItem) { }
 }
