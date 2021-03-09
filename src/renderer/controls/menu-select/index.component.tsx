@@ -37,7 +37,7 @@ export function MenuSelect<T>(props: IMenuSelectProps<T>) {
       items={props.items}
       filterable={false}
       popoverProps={{ minimal: true }}
-      onItemSelect={props.onItemSelect ?? ((item) => {})}
+      onItemSelect={props.onItemSelect ?? ((item) => { })}
     >
       <FlatButton
         minimal={true}
