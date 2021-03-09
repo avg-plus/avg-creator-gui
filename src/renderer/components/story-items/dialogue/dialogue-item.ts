@@ -54,14 +54,16 @@ export class DialogueItem extends StoryItem {
     const prevItem = super.getPrevItem();
     const nextItem = super.getNextItem();
 
+    if (this.getLinkedCharacter()) {
+      return true;
+    }
+
     if (
       this.getLinkedCharacter() &&
       nextItem &&
       nextItem.itemType === StoryItemType.ShowDialogue &&
       !(nextItem as DialogueItem).getLinkedCharacter()
     ) {
-      console.log("is head");
-
       return true;
     }
 
@@ -76,6 +78,10 @@ export class DialogueItem extends StoryItem {
   isMiddleContextNode() {
     const prevItem = super.getPrevItem();
     const nextItem = super.getNextItem();
+
+    if (this.getLinkedCharacter()) {
+      return false;
+    }
 
     return (
       prevItem &&

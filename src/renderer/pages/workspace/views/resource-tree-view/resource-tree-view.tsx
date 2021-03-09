@@ -128,6 +128,10 @@ export const ResourceTreeView = () => {
       </div>
       <div
         className={"tree-wrapper"}
+        onDoubleClick={(e) => {
+          handleSelectNode(null, false);
+          e.stopPropagation();
+        }}
         onMouseDown={(e) => {
           handleSelectNode(null, false);
           e.stopPropagation();
