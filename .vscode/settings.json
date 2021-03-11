@@ -6,7 +6,7 @@
   },
   "typescript.tsdk": "node_modules/typescript/lib",
   "[typescriptreact]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[less]": {
     "editor.defaultFormatter": "Wscats.eno"

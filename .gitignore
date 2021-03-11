@@ -16,3 +16,6 @@
 
 # logs
 *.log
+
+.vscode
+.yarnrc
