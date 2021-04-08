@@ -14,7 +14,7 @@ import { PropertyView } from "../pages/workspace/views/property-view";
 import { ResourceTreeView } from "../pages/workspace/views/resource-tree-view/resource-tree-view";
 import { _DevelopmentDebugView } from "../pages/workspace/views/_debug-view";
 import _ from "underscore";
-import { AVGProjectData } from "../manager/project-manager";
+import { AVGProjectData } from "../manager/project-manager.v2.ts";
 
 export class WorkspaceLayout {
   static views = {

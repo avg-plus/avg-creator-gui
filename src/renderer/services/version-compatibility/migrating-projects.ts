@@ -10,7 +10,7 @@ import {
   AVGProjectData,
   RecentlyProjectRecord,
   AVGProjectManager
-} from "../../manager/project-manager";
+} from "../../manager/project-manager.v2.ts";
 import { logger } from "../../../common/lib/logger";
 import { remote } from "electron";
 

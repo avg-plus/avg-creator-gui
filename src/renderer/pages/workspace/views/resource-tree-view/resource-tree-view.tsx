@@ -7,26 +7,27 @@ import SortableTree, {
 } from "react-sortable-tree";
 import Scrollbars from "react-custom-scrollbars";
 
-import Row from "antd/lib/row";
-import Col from "antd/lib/col";
-
 import "./resource-tree-view.less";
 import { ResourceTreeNodeTypes } from "../../../../../common/resource-tree-node-types";
-import { ContextMenu } from "@blueprintjs/core";
+import { ContextMenu, Tab, Tabs, Icon } from "@blueprintjs/core";
 import { ResourceTreeContextMenu } from "../../../../components/context-menus/resource-tree-menus";
 
 // Icons
-import Icon from "@ant-design/icons/lib/components/Icon";
-import StoryIcon from "../../../../images/icons/resource-tree/write.svg";
-import ScriptFolderIcon from "../../../../images/icons/resource-tree/script.svg";
-import AddNodeIcon from "../../../../images/icons/resource-tree/add-node.svg";
+// import Icon from "@ant-design/icons/lib/components/Icon";
+import StoryIcon from "../../../../images/icons/write.svg";
+import ScriptFolderIcon from "../../../../images/icons/script.svg";
+import AddNodeIcon from "../../../../images/icons/add-node.svg";
+import BookIcon from "../../../../images/icons/book.svg";
 
 import theme from "./theme";
 import { DefaultTreeNodes } from "../../../../../common/default-tree-nodes";
 import { NodeSelecteStatus } from "./select-status";
+import { autoSubScribe } from "../../../../../common/utils";
 
 export const ResourceTreeView = () => {
   const [treeData, setTreeData] = useState<TreeItem[]>(DefaultTreeNodes);
+
+  autoSubScribe();
 
   const onChange = (treeData: React.SetStateAction<TreeItem[]>) => {
     setTreeData(treeData);
@@ -80,9 +81,9 @@ export const ResourceTreeView = () => {
         const nodeType = data.node.nodeType as ResourceTreeNodeTypes;
         switch (nodeType) {
           case ResourceTreeNodeTypes.StoryRootFolder:
-            return <Icon component={StoryIcon}></Icon>;
+          // return <Icon component={StoryIcon}></Icon>;
           case ResourceTreeNodeTypes.ScriptRootFolder:
-            return <Icon component={ScriptFolderIcon}></Icon>;
+          // return <Icon component={ScriptFolderIcon}></Icon>;
         }
 
         return <></>;
@@ -115,16 +116,15 @@ export const ResourceTreeView = () => {
   return (
     <>
       <div className={"toolbar"}>
-        <Row justify="end">
-          <Col></Col>
-          <Col>
-            <div className="flat-button">
-              <Icon component={AddNodeIcon}></Icon>
-            </div>
-            {/* <Button minimal={true}>
-            </Button> */}
-          </Col>
-        </Row>
+        <Tabs
+          animate={true}
+          id="TabsExample"
+          key={"story-view"}
+          vertical={false}
+        >
+          <Tab id="story-view" title="故事视图" panel={<></>} />
+          <Tab id="scene-view" title="剧本视图" panel={<></>} />
+        </Tabs>
       </div>
       <div
         className={"tree-wrapper"}

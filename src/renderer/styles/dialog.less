@@ -1,6 +1,4 @@
-@import (less) "../../../node_modules/@blueprintjs/core/lib/css/blueprint.css";
-@import (less)
-  "../../../node_modules/@blueprintjs/icons/lib/css/blueprint-icons.css";
+@import "../../../node_modules/@blueprintjs/core/lib/less/variables";
 
 .bp3-dialog {
   background: white !important;
@@ -40,7 +38,7 @@
 .avg-window-header {
   -webkit-app-region: drag;
   -webkit-user-select: none;
-  background-color: #b82020;
+  background-color: @pt-intent-primary;
 
   .avg-window-header-title {
     text-align: center;

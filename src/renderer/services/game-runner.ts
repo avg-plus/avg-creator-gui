@@ -4,7 +4,7 @@ import URL from "url";
 import fs from "fs-extra";
 import child_process from "child_process";
 
-import { AVGProjectData } from "./../manager/project-manager";
+import { AVGProjectData } from "../manager/project-manager.v2.ts";
 import connect from "connect";
 import serveStatic from "serve-static";
 import getPort from "get-port";

@@ -11,10 +11,12 @@ import { Scrollbars } from "react-custom-scrollbars";
 
 import { ProjectListItem } from "./project-list-item";
 // import { ProjectSettingPanel } from "./project-setting-panel";
-import {
-  AVGProjectManager,
-  AVGProjectData
-} from "../../manager/project-manager";
+// import {
+//   AVGProjectManager,
+//   AVGProjectData
+// } from "../../manager/project-manager.ts";
+
+import { AVGProjectManager } from "../../manager/project-manager";
 import { CreatorContext } from "../../hooks/context";
 import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
 import styled from "styled-components";

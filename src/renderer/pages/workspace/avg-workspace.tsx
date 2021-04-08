@@ -15,7 +15,7 @@ import { FocusStyleManager } from "@blueprintjs/core";
 import { Codegen } from "../../services/storyboard/codegen";
 import { ipcRenderer, IpcRendererEvent } from "electron";
 import { Workspace } from "../../services/workspace";
-import { AVGProjectData } from "../../manager/project-manager";
+import { AVGProjectData } from "../../manager/project-manager.v2.ts";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 

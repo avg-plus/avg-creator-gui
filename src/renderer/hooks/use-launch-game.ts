@@ -1,10 +1,6 @@
-import { useState, useEffect } from "react";
 import { GameRunner } from "../services/game-runner";
-import { AVGProjectData } from "../manager/project-manager";
+import { AVGProjectData } from "../manager/project-manager.v2.ts";
 import { DebugServer } from "../../main/debug-server/debug-server";
-import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
-import PubSub from "pubsub-js";
-import { SubcribeEvents } from "../../common/subcribe-events";
 
 export async function useLaunchGame(project: AVGProjectData) {
   await DebugServer.start();

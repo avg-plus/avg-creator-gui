@@ -16,6 +16,7 @@ import { GameRunner } from "../game-runner";
 import { Workspace } from "../workspace";
 import { CharacterItem } from "../../components/story-items/character/character-item";
 import { SoundItem } from "../../components/story-items/sound/sound-item";
+import { ProjectManagerV2 } from "../../manager/project-manager.v2";
 
 export class StoryManager {
   static currentStory: Story = new Story();
@@ -140,6 +141,12 @@ export class StoryManager {
 
     this.renderStoryItemList();
 
+    WorkspaceDebugUI.registerButton("*测试加载项目", () => {
+      ProjectManagerV2.loadProject(
+        "/Users/angrypowman/Workspace/Programming/Revisions/avg-plus/game-projects/v2.workspace.example"
+      );
+    });
+
     WorkspaceDebugUI.registerButton("生成代码", () => {
       const code = StoryManager.currentStory.getAllItems().map((v) => {
         return Codegen.generate(v.onSave());
@@ -212,5 +219,5 @@ export class StoryManager {
     return this.currentStory;
   }
 
-  static selectItem(item: StoryItem) { }
+  static selectItem(item: StoryItem) {}
 }

@@ -34,7 +34,7 @@ import { GUIToaster } from "../../services/toaster";
 import {
   AVGProjectData,
   AVGProjectManager
-} from "../../../renderer/manager/project-manager";
+} from "../../manager/project-manager.v2.ts";
 import {
   BundlesManager,
   ILocalBundle,
@@ -71,9 +71,10 @@ export default () => {
 
   const defaultEngineBundleHash = LocalAppConfig.get("defaultEngine") as string;
 
-  const [selectedEngineBundle, setSelectedEngineBundle] = useState<
-    BundleOption
-  >();
+  const [
+    selectedEngineBundle,
+    setSelectedEngineBundle
+  ] = useState<BundleOption>();
 
   const [
     selectedTemplateBundle,

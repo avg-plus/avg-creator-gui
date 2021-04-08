@@ -49,6 +49,7 @@ app.on("ready", async () => {
   mainWindow.once("ready-to-show", () => {});
 
   mainWindow.loadFile("./dist/static/index.html");
+  // mainWindow.loadFile("./dist/static/project-manager.index.html");
 });
 
 app.on("window-all-closed", app.quit);

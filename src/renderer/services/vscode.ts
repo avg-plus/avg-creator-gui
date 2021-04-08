@@ -2,9 +2,6 @@ import fs from "fs-extra";
 import { execFile, execSync } from "child_process";
 import { Env } from "../../common/env";
 import commandExists from "command-exists";
-import { logger } from "../../common/lib/logger";
-import { shell } from "electron";
-
 export class VSCode {
   static async run(projectDir: string) {
     const parameters = [projectDir];

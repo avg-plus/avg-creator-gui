@@ -1,15 +1,22 @@
+@import "../../../../styles/theme.less";
+
 .toolbar {
   height: 40px;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding: 10px;
   margin-bottom: 12px;
-  box-shadow: 0 0 0 1px rgba(16, 22, 26, 0.1), 0 0 0 rgba(16, 22, 26, 0),
-    0 1px 1px rgba(16, 22, 26, 0.2);
+  // background-color: white;
+  // box-shadow: 0 0 0 1px rgba(16, 22, 26, 0.1), 0 0 0 rgba(16, 22, 26, 0),
+  //   0 1px 1px rgba(16, 22, 26, 0.2);
+  border-bottom: solid 1px #d8d8d8;
 
-  .flat-button {
-    &:hover {
-      background-color: cornflowerblue;
-    }
+  // .flat-button {
+  //   &:hover {
+  //     background-color: cornflowerblue;
+  //   }
+  // }
+
+  .tab-icon {
+    color: @pt-intent-primary;
   }
 }
 
