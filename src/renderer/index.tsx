@@ -7,7 +7,7 @@ import { Env } from "../common/env";
 import "../common/lib/logger";
 
 import { Titlebar, Color } from "custom-electron-titlebar";
-import { AppInit } from "./services/app-init";
+import { AppInit } from "../common/services/app-init";
 import AVGPortal from "./pages/portal/avg-portal";
 
 import "./index.less";

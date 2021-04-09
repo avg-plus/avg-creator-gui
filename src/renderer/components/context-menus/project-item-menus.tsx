@@ -2,7 +2,7 @@ import { Menu, Intent } from "@blueprintjs/core";
 import React, { useContext, useEffect, useState } from "react";
 import { IAVGServer } from "../../redux/reducers/avg-creator-reducers";
 import { Env } from "../../../common/env";
-import { WorkspaceLayout } from "../../services/workspace-layout";
+import { WorkspaceLayout } from "../../../common/services/workspace-layout";
 
 interface IProjectItemContextMenuProps {
   server: IAVGServer;

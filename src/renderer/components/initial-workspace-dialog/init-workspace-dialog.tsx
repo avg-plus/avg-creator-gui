@@ -16,7 +16,7 @@ import "./init-workspace-dialog.less";
 
 import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
 import { CreatorContext } from "../../hooks/context";
-import { GUIToaster } from "../../../../src/renderer/services/toaster";
+import { GUIToaster } from "../../common/toaster";
 import { IconNames } from "@blueprintjs/icons";
 import { LocalAppConfig } from "../../../common/local-app-config";
 import { remote } from "electron";

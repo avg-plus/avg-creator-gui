@@ -1,8 +1,10 @@
 import fs, { Stats } from "fs-extra";
 import fg from "fast-glob";
 import path from "path";
-import { assert } from "../../common/exception";
+import { assert } from "../exception";
 import { ProjectFileReader } from "../services/file-reader/project-file-reader";
+import { ObservableModule } from "../services/observable-module";
+import { TreeItem } from "react-sortable-tree";
 
 interface VerifiedFile {
   name: string;
@@ -34,8 +36,12 @@ const VerifyFileList = [
   }
 ] as VerifiedFile[];
 
-export class ProjectManagerV2 {
-  static loadProject(dir: string) {
+export class ProjectManagerV2 extends ObservableModule {
+  constructor() {
+    super();
+  }
+
+  loadProject(dir: string): TreeItem[] {
     if (!this.verifyProject(dir)) {
       throw new Error("加载项目出错");
     }
@@ -52,10 +58,28 @@ export class ProjectManagerV2 {
     // 读取故事树`${storiesDir}/**`
     const fileTree = this.buildFileTree(storiesDir);
 
-    console.log("file tree: ", fileTree);
+    const convertPathObjectToTreeItem = (pathObjects: PathObject[]) => {
+      const items: TreeItem[] = [];
+      pathObjects.forEach((obj) => {
+        const treeItem: TreeItem = {};
+        treeItem.title = obj.name;
+        if (obj.children?.length) {
+          treeItem.children = convertPathObjectToTreeItem(obj.children);
+        }
+
+        items.push(treeItem);
+      });
+
+      return items;
+    };
+
+    const treeItems: TreeItem[] = convertPathObjectToTreeItem(fileTree);
+    this._subject.next(treeItems);
+
+    return [];
   }
 
-  private static buildFileTree(dir: string, extensions = []) {
+  private buildFileTree(dir: string, extensions = []) {
     const files = fg.sync(`${dir}/**/*`, {
       objectMode: true,
       onlyFiles: false,
@@ -73,7 +97,7 @@ export class ProjectManagerV2 {
       const stats = file.stats!;
       const relativePath = path.relative(dir, filePath);
 
-      relativePath.split("/").reduce((r, name) => {
+      relativePath.split("/").reduce((r: { result: PathObject[] }, name) => {
         if (!r[name]) {
           r[name] = { result: [] };
           r.result.push({ name, stats, children: r[name].result });
@@ -82,10 +106,11 @@ export class ProjectManagerV2 {
         return r[name];
       }, level);
     });
+
     return result;
   }
 
-  private static verifyProject(dir: string) {
+  private verifyProject(dir: string) {
     assert(fs.existsSync(dir), "项目目录不存在");
 
     for (let i = 0; i < VerifyFileList.length; ++i) {
@@ -112,3 +137,5 @@ export class ProjectManagerV2 {
     return true;
   }
 }
+
+export default new ProjectManagerV2();

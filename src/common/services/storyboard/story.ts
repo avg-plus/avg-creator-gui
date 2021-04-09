@@ -1,6 +1,6 @@
 import produce from "immer";
 import _ from "underscore";
-import { logger } from "../../../common/lib/logger";
+import { logger } from "../../lib/logger";
 
 import {
   OverscanIndexRange,
@@ -8,9 +8,9 @@ import {
   OnScrollParams
 } from "react-virtualized";
 
-import { StoryItemType } from "../../../common/story-item-type";
-import { DialogueItem } from "../../components/story-items/dialogue/dialogue-item";
-import { StoryItem } from "../../components/story-items/story-item";
+import { StoryItemType } from "../../story-item-type";
+import { DialogueItem } from "../../../renderer/components/story-items/dialogue/dialogue-item";
+import { StoryItem } from "../../../renderer/components/story-items/story-item";
 
 export class Story {
   storyItems: StoryItem[] = [];

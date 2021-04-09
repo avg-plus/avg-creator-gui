@@ -5,7 +5,7 @@ import {
   AVGCreatorActionType,
   AVGCreatorAction
 } from "../../../renderer/redux/actions/avg-creator-actions";
-import { AVGProjectManager } from "../../manager/project-manager";
+import { AVGProjectManager } from "../../../common/manager/project-manager";
 import { GUIAlertDialog } from "../../modals/alert-dialog";
 
 interface IProjectListContextMenuProps {

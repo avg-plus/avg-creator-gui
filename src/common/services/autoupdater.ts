@@ -2,13 +2,13 @@ import fs from "fs-extra";
 import url from "url";
 import path from "path";
 import { remote } from "electron";
-import { logger } from "../../common/lib/logger";
+import { logger } from "../lib/logger";
 import { apiGetUpdate } from "./APIs/software-update-api";
 import SemVer from "semver";
-import { Env } from "../../common/env";
+import { Env } from "../env";
 import got, { Progress, CancelableRequest } from "got";
 import { Response } from "got/dist/source/core";
-import { LocalAppConfig } from "../../common/local-app-config";
+import { LocalAppConfig } from "../local-app-config";
 
 export interface UpdateItem {
   url: string;

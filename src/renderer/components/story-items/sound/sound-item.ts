@@ -1,6 +1,6 @@
 import { trim } from "jquery";
 import { StoryItemType } from "../../../../common/story-item-type";
-import { Story } from "../../../services/storyboard/story";
+import { Story } from "../../../../common/services/storyboard/story";
 import { StoryItem } from "../story-item";
 import { render } from "./sound-item.component";
 
@@ -73,6 +73,6 @@ export class SoundItem extends StoryItem {
       action: this._action,
       url: this._url,
       volume: this._volume
-    })
+    });
   }
 }

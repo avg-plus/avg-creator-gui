@@ -7,7 +7,7 @@ import {
 import {
   BundleType,
   BundlesManager
-} from "../../services/bundles-manager/bundles-manager";
+} from "../../../common/services/bundles-manager/bundles-manager";
 
 interface IBundleListItemContextMenuProps {
   bundle: BundleItem;

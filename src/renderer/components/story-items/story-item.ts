@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { GlobalEvents } from "../../../common/global-events";
 import { StoryItemType } from "../../../common/story-item-type";
-import { Story } from "../../services/storyboard/story";
+import { Story } from "../../../common/services/storyboard/story";
 
 interface IStoryItem {
   render(): JSX.Element;

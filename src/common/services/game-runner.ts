@@ -10,12 +10,12 @@ import serveStatic from "serve-static";
 import getPort from "get-port";
 import { BundlesManager } from "./bundles-manager/bundles-manager";
 
-import { EnginePlatform } from "../../common/engine-platform";
-import { logger } from "../../common/lib/logger";
+import { EnginePlatform } from "../models/engine-platform";
+import { logger } from "../lib/logger";
 import { AddressInfo } from "net";
 import { shell } from "electron";
 import PubSub from "pubsub-js";
-import { SubcribeEvents } from "../../common/subcribe-events";
+import { SubcribeEvents } from "../subcribe-events";
 import { AVGScriptHotReload } from "./fs-watch";
 import { DebugServer } from "../../main/debug-server/debug-server";
 

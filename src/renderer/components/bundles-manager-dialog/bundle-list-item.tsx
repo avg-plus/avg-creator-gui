@@ -12,9 +12,9 @@ import {
   BundlesManager,
   BundleDownloadContext,
   BundleType
-} from "../../services/bundles-manager/bundles-manager";
+} from "../../../common/services/bundles-manager/bundles-manager";
 import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
-import { GUIToaster } from "../../services/toaster";
+import { GUIToaster } from "../../common/toaster";
 import { useForceUpdate } from "../../hooks/use-forceupdate";
 
 import "./bundle-list-item.less";

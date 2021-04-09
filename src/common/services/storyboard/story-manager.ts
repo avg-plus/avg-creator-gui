@@ -1,22 +1,22 @@
 import PubSub from "pubsub-js";
 
 import { Codegen } from "./codegen";
-import { GlobalEvents } from "../../../common/global-events";
-import { DialogueItem } from "../../components/story-items/dialogue/dialogue-item";
+import { GlobalEvents } from "../../global-events";
+import { DialogueItem } from "../../../renderer/components/story-items/dialogue/dialogue-item";
 
 import { Story } from "./story";
-import { getRandomIntInclusive, randomIn } from "../../../common/utils";
-import { ISaveData, StoryItemType } from "../../../common/story-item-type";
-import { logger } from "../../../common/lib/logger";
-import { StoryItem } from "../../components/story-items/story-item";
-import { WaitItem } from "../../components/story-items/wait/wait-item";
-import { SceneItem } from "../../components/story-items/scene/scene-item";
+import { getRandomIntInclusive, randomIn } from "../../utils";
+import { ISaveData, StoryItemType } from "../../story-item-type";
+import { logger } from "../../lib/logger";
+import { StoryItem } from "../../../renderer/components/story-items/story-item";
+import { WaitItem } from "../../../renderer/components/story-items/wait/wait-item";
+import { SceneItem } from "../../../renderer/components/story-items/scene/scene-item";
 import { WorkspaceDebugUI } from "../workspace-debug-ui";
 import { GameRunner } from "../game-runner";
 import { Workspace } from "../workspace";
-import { CharacterItem } from "../../components/story-items/character/character-item";
-import { SoundItem } from "../../components/story-items/sound/sound-item";
-import { ProjectManagerV2 } from "../../manager/project-manager.v2";
+import { CharacterItem } from "../../../renderer/components/story-items/character/character-item";
+import { SoundItem } from "../../../renderer/components/story-items/sound/sound-item";
+import ProjectManagerV2 from "../../manager/project-manager.v2";
 
 export class StoryManager {
   static currentStory: Story = new Story();

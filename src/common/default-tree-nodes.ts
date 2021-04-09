@@ -1,4 +1,4 @@
-import { ResourceTreeNodeTypes } from "./resource-tree-node-types";
+import { ResourceTreeNodeTypes } from "./models/resource-tree-node-types";
 
 export const DefaultTreeNodes = [
   //   {

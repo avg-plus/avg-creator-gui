@@ -1,6 +1,6 @@
 import fs from "fs-extra";
 import { execFile, execSync } from "child_process";
-import { Env } from "../../common/env";
+import { Env } from "../env";
 import commandExists from "command-exists";
 export class VSCode {
   static async run(projectDir: string) {

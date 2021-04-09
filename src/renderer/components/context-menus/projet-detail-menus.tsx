@@ -5,10 +5,10 @@ import { CreatorContext } from "../../hooks/context";
 import {
   BundlesManager,
   BundleType
-} from "../../services/bundles-manager/bundles-manager";
-import { AVGProjectData } from "../../manager/project-manager.v2.ts";
+} from "../../../common/services/bundles-manager/bundles-manager";
+import { AVGProjectData } from "../../../common/manager/project-manager.v2.ts";
 import { DBProjects } from "../../../common/database/db-project";
-import { GUIToaster } from "../../services/toaster";
+import { GUIToaster } from "../../common/toaster";
 import { useForceUpdate } from "../../hooks/use-forceupdate";
 
 export const ProjectDetailContextMenu = () => {

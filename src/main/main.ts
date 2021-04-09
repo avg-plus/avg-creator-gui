@@ -10,20 +10,19 @@ app.commandLine.appendSwitch("in-process-gpu");
 
 app.on("ready", async () => {
   const mainWindow = new BrowserWindow({
-    width: 460,
-    height: 680,
     minWidth: 400,
     minHeight: 680,
-    maxWidth: 600,
-    maxHeight: 800,
     frame: false,
-    show: false,
     transparent: true,
     thickFrame: false,
+    width: 1280,
+    height: 760,
+    show: false,
     center: true,
     hasShadow: true,
     resizable: true,
-    titleBarStyle: "hiddenInset",
+    titleBarStyle: "hidden",
+    title: "AVG Workspace",
     webPreferences: {
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
@@ -48,8 +47,7 @@ app.on("ready", async () => {
 
   mainWindow.once("ready-to-show", () => {});
 
-  mainWindow.loadFile("./dist/static/index.html");
-  // mainWindow.loadFile("./dist/static/project-manager.index.html");
+  mainWindow.loadFile("./dist/static/workspace.index.html");
 });
 
 app.on("window-all-closed", app.quit);

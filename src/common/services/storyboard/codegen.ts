@@ -3,7 +3,7 @@ import {
   ISaveData,
   IWaitSaveData,
   StoryItemType
-} from "../../../common/story-item-type";
+} from "../../story-item-type";
 
 export class Codegen {
   static generators = new Map<StoryItemType, (data: any) => string>();

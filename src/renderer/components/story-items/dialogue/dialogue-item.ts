@@ -6,7 +6,7 @@ import { render, renderExtendContextMenu } from "./dialogue-item.component";
 import { StoryItem } from "../story-item";
 import { GlobalEvents } from "../../../../common/global-events";
 import { StoryItemType } from "../../../../common/story-item-type";
-import { Story } from "../../../services/storyboard/story";
+import { Story } from "../../../../common/services/storyboard/story";
 import { CharacterItem } from "../character/character-item";
 
 export class DialogueItem extends StoryItem {

@@ -1,10 +1,10 @@
 import os from "os";
 import { FocusStyleManager } from "@blueprintjs/core";
 
-import "../../common/local-app-config";
-import { logger } from "../../common/lib/logger";
+import "../local-app-config";
+import { logger } from "../lib/logger";
 import { remote } from "electron";
-import { Env } from "../../common/env";
+import { Env } from "../env";
 import "./version-compatibility";
 
 export class AppInit {

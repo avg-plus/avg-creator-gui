@@ -1,12 +1,12 @@
 import React, { useRef, useState } from "react";
 import classnames from "classnames";
+import { ContextMenu } from "@blueprintjs/core";
 
 import { StoryItem } from "../../../components/story-items/story-item";
-import { ContextMenu } from "@blueprintjs/core";
 import { StoryItemContextMenu } from "../../../components/context-menus/story-item-menus";
 
 import "./story-item-component.less";
-import { StoryManager } from "../../../services/storyboard/story-manager";
+import { StoryManager } from "../../../../common/services/storyboard/story-manager";
 import { SortableHandle } from "react-sortable-hoc";
 
 export interface IStoryItemComponentProps {

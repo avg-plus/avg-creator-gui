@@ -12,7 +12,7 @@ import {
 import arrayMove from "array-move";
 
 import { useEffect, useRef, useState } from "react";
-import { StoryManager } from "../../../services/storyboard/story-manager";
+import { StoryManager } from "../../../../common/services/storyboard/story-manager";
 import { StoryItem } from "../../../components/story-items/story-item";
 import StoryItemComponent, {
   IStoryItemComponentProps
@@ -24,6 +24,7 @@ import { autoSubScribe } from "../../../../common/utils";
 import { GlobalEvents } from "../../../../common/global-events";
 import _ from "underscore";
 import { ResizeSensor } from "css-element-queries";
+import { Scrollbars } from "react-custom-scrollbars";
 
 const story = StoryManager.loadStory();
 
@@ -95,7 +96,7 @@ const VirtualList = (props: IVirtualListProps) => {
   return (
     <List
       ref={ref}
-      overscanRowCount={10}
+      overscanRowCount={50}
       rowHeight={getRowHeight}
       rowRenderer={renderRow}
       rowCount={rowCount()}

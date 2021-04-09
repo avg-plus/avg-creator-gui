@@ -1,4 +1,4 @@
-import { logger } from "../../common/lib/logger";
+import { logger } from "../lib/logger";
 import { AVGProjectData } from "../manager/project-manager.v2.ts";
 import { BundlesManager } from "./bundles-manager/bundles-manager";
 

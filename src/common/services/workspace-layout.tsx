@@ -9,10 +9,10 @@ ElementQueries.listen();
 
 import GoldenLayout from "golden-layout";
 
-import { StoryboardView } from "../pages/workspace/views/storyboard-view";
-import { PropertyView } from "../pages/workspace/views/property-view";
-import { ResourceTreeView } from "../pages/workspace/views/resource-tree-view/resource-tree-view";
-import { _DevelopmentDebugView } from "../pages/workspace/views/_debug-view";
+import { StoryboardView } from "../../renderer/pages/workspace/views/storyboard-view";
+import { PropertyView } from "../../renderer/pages/workspace/views/property-view";
+import { ResourceTreeView } from "../../renderer/pages/workspace/views/resource-tree-view/resource-tree-view";
+import { _DevelopmentDebugView } from "../../renderer/pages/workspace/views/_debug-view";
 import _ from "underscore";
 import { AVGProjectData } from "../manager/project-manager.v2.ts";
 
@@ -133,7 +133,7 @@ export class WorkspaceLayout {
         });
       };
 
-      const debounceUpdate = _.debounce(update, 500);
+      const debounceUpdate = _.debounce(update, 1);
       debounceUpdate();
     }
 

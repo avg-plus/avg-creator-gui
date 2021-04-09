@@ -30,16 +30,16 @@ import "./create-project-dialog.less";
 import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
 import { IconNames } from "@blueprintjs/icons";
 import { CreatorContext } from "../../hooks/context";
-import { GUIToaster } from "../../services/toaster";
+import { GUIToaster } from "../../common/toaster";
 import {
   AVGProjectData,
   AVGProjectManager
-} from "../../manager/project-manager.v2.ts";
+} from "../../../common/manager/project-manager.v2.ts";
 import {
   BundlesManager,
   ILocalBundle,
   BundleType
-} from "../../services/bundles-manager/bundles-manager";
+} from "../../../common/services/bundles-manager/bundles-manager";
 import { LocalAppConfig } from "../../../common/local-app-config";
 import { useMount } from "react-use";
 import { logger } from "../../../common/lib/logger";

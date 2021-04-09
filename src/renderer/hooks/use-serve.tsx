@@ -1,9 +1,9 @@
 import { useContext } from "react";
-import { GameRunner } from "../services/game-runner";
-import { GUIToaster } from "../services/toaster";
+import { GameRunner } from "../../common/services/game-runner";
+import { GUIToaster } from "../common/toaster";
 import { Intent } from "@blueprintjs/core";
 import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
-import { AVGProjectData } from "../manager/project-manager.v2.ts";
+import { AVGProjectData } from "../../common/manager/project-manager.v2.ts";
 
 export async function useServe(
   project: AVGProjectData,

@@ -1,4 +1,4 @@
-export enum NodeSelecteStatus {
+export enum NodeSelectedStatus {
   NotSelected,
   Selected,
   SelectedWithoutFocus

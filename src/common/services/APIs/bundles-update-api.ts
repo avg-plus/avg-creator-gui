@@ -1,4 +1,4 @@
-import got from "../../../common/got-request";
+import got from "../../got-request";
 
 const API_PREFIX = "v1/bundle-update";
 export async function apiGetManifest<T>() {

@@ -2,7 +2,7 @@ import { Button } from "@blueprintjs/core";
 import React, { useEffect, useState } from "react";
 import { GlobalEvents } from "../../../../common/global-events";
 import { autoSubScribe } from "../../../../common/utils";
-import { WorkspaceDebugUI } from "../../../services/workspace-debug-ui";
+import { WorkspaceDebugUI } from "../../../../common/services/workspace-debug-ui";
 
 export const _DevelopmentDebugView = () => {
   const [components, setComponents] = useState(WorkspaceDebugUI.components);

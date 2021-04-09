@@ -9,7 +9,7 @@ import {
   UpdateItem,
   AutoUpdater,
   LocalPendingUpdateItem
-} from "../../services/autoupdater";
+} from "../../../common/services/autoupdater";
 
 import "./update-alert.less";
 
@@ -140,7 +140,7 @@ export default () => {
 
   useEffect(() => {
     setDownloadingStatus(downloadingStatus);
-    return () => { };
+    return () => {};
   }, [downloadingStatus]);
 
   const handleDownload = async (updateItem: UpdateItem) => {
@@ -193,7 +193,7 @@ export default () => {
       LocalAppConfig.save();
     })
       .then(
-        () => { },
+        () => {},
         (reason: RequestError) => {
           logger.error("Download error: ", reason.message);
 
@@ -219,11 +219,11 @@ export default () => {
           });
         }
       )
-      .catch((reason: string) => { });
+      .catch((reason: string) => {});
   };
 
   const quitAndInstall = async (filename: string) => {
-    logger.debug("quitAndInstall", filename)
+    logger.debug("quitAndInstall", filename);
 
     // 打开安装程序
     if (Env.getOSName() === "MacOS") {

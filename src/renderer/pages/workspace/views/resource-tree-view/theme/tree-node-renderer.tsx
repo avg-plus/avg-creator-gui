@@ -6,7 +6,7 @@ import { TreeRendererProps } from "react-sortable-tree";
 import { logger } from "../../../../../../common/lib/logger";
 
 import "./tree-node-renderer.less";
-import { NodeSelecteStatus } from "../select-status";
+import { NodeSelectedStatus } from "../select-status";
 
 const ResourceTreeThemeTreeNodeRenderer = (props: TreeRendererProps) => {
   const {
@@ -36,8 +36,8 @@ const ResourceTreeThemeTreeNodeRenderer = (props: TreeRendererProps) => {
     <div
       {...otherProps}
       className={classNames("item-container", {
-        selected: node.selected !== NodeSelecteStatus.NotSelected,
-        unfocus: node.selected === NodeSelecteStatus.SelectedWithoutFocus
+        selected: node.selected !== NodeSelectedStatus.NotSelected,
+        unfocus: node.selected === NodeSelectedStatus.SelectedWithoutFocus
       })}
       style={{
         paddingLeft: scaffoldBlockPxWidth * scaffoldBlockCount

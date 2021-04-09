@@ -9,8 +9,8 @@ import {
   Intent
 } from "@blueprintjs/core";
 import { shell, app, remote } from "electron";
-import { AutoUpdater } from "../../services/autoupdater";
-import { GUIToaster } from "../../services/toaster";
+import { AutoUpdater } from "../../../common/services/autoupdater";
+import { GUIToaster } from "../../common/toaster";
 import { CreatorContext } from "../../hooks/context";
 import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
 

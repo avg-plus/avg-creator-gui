@@ -5,14 +5,15 @@
  */
 
 import { VersionCompatibility } from "./compatibility-base";
-import { DBProjects } from "../../../common/database/db-project";
-import {
-  AVGProjectData,
-  RecentlyProjectRecord,
-  AVGProjectManager
-} from "../../manager/project-manager.v2.ts";
-import { logger } from "../../../common/lib/logger";
+import { DBProjects } from "../../database/db-project";
+
+import { logger } from "../../lib/logger";
 import { remote } from "electron";
+import {
+  RecentlyProjectRecord,
+  AVGProjectData,
+  AVGProjectManager
+} from "../../manager/project-manager";
 
 export class VC_MigratingProjects extends VersionCompatibility {
   expect() {

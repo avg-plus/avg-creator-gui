@@ -1,5 +1,5 @@
 import fs from "fs-extra";
-import { assert } from "../../../common/exception";
+import { assert } from "../../exception";
 import { AVGFileReader } from "./file-reader";
 
 interface ProjectFileData {

@@ -1,4 +1,4 @@
-import got from "../../../common/got-request";
+import got from "../../got-request";
 
 const API_PREFIX = "creator-gui";
 export async function apiGetUpdate<T>() {

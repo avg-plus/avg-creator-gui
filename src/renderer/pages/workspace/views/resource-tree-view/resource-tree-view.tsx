@@ -8,26 +8,27 @@ import SortableTree, {
 import Scrollbars from "react-custom-scrollbars";
 
 import "./resource-tree-view.less";
-import { ResourceTreeNodeTypes } from "../../../../../common/resource-tree-node-types";
-import { ContextMenu, Tab, Tabs, Icon } from "@blueprintjs/core";
+import { ResourceTreeNodeTypes } from "../../../../../common/models/resource-tree-node-types";
+import { ContextMenu, Tab, Tabs } from "@blueprintjs/core";
 import { ResourceTreeContextMenu } from "../../../../components/context-menus/resource-tree-menus";
 
 // Icons
 // import Icon from "@ant-design/icons/lib/components/Icon";
-import StoryIcon from "../../../../images/icons/write.svg";
-import ScriptFolderIcon from "../../../../images/icons/script.svg";
-import AddNodeIcon from "../../../../images/icons/add-node.svg";
-import BookIcon from "../../../../images/icons/book.svg";
 
 import theme from "./theme";
 import { DefaultTreeNodes } from "../../../../../common/default-tree-nodes";
-import { NodeSelecteStatus } from "./select-status";
-import { autoSubScribe } from "../../../../../common/utils";
+import { NodeSelectedStatus } from "./select-status";
+import ProjectManagerV2 from "../../../../../common/manager/project-manager.v2";
+import { useMount } from "react-use";
 
 export const ResourceTreeView = () => {
   const [treeData, setTreeData] = useState<TreeItem[]>(DefaultTreeNodes);
 
-  autoSubScribe();
+  useMount(() => {
+    ProjectManagerV2.subject().subscribe((treeItems: TreeItem[]) => {
+      setTreeData(treeItems);
+    });
+  });
 
   const onChange = (treeData: React.SetStateAction<TreeItem[]>) => {
     setTreeData(treeData);
@@ -51,17 +52,17 @@ export const ResourceTreeView = () => {
       treeData,
       getNodeKey: ({ treeIndex }) => treeIndex,
       callback: ({ node }) => {
-        node.selected = NodeSelecteStatus.NotSelected;
+        node.selected = NodeSelectedStatus.NotSelected;
       },
       ignoreCollapsed: false
     });
 
     if (data) {
       data.node.selected = focus
-        ? NodeSelecteStatus.Selected
-        : NodeSelecteStatus.SelectedWithoutFocus;
+        ? NodeSelectedStatus.Selected
+        : NodeSelectedStatus.SelectedWithoutFocus;
     } else {
-      setTreeData([...treeData]);
+      // setTreeData([...treeData]);
     }
   };
 
@@ -122,45 +123,52 @@ export const ResourceTreeView = () => {
           key={"story-view"}
           vertical={false}
         >
-          <Tab id="story-view" title="故事视图" panel={<></>} />
+          <Tab
+            id="story-view"
+            title="故事视图"
+            panel={
+              <>
+                <div
+                  className={"tree-wrapper"}
+                  onDoubleClick={(e) => {
+                    handleSelectNode(null, false);
+                    e.stopPropagation();
+                  }}
+                  onMouseDown={(e) => {
+                    handleSelectNode(null, false);
+                    e.stopPropagation();
+                  }}
+                  onContextMenu={(e) => {
+                    showTreeContextMenu(e);
+                    e.stopPropagation();
+                    e.preventDefault();
+                  }}
+                >
+                  <Scrollbars
+                    className={"scroll-area"}
+                    style={{ height: "100%" }}
+                    universal={true}
+                    autoHideTimeout={1000}
+                  >
+                    <SortableTree
+                      className={"tree"}
+                      maxDepth={5}
+                      rowHeight={renderRowHeight}
+                      treeData={treeData}
+                      onChange={onChange}
+                      canDrag={canDrag}
+                      generateNodeProps={handleGenerateNodeProps}
+                      theme={theme}
+                      shouldCopyOnOutsideDrop={true}
+                      isVirtualized={false}
+                    ></SortableTree>
+                  </Scrollbars>
+                </div>
+              </>
+            }
+          />
           <Tab id="scene-view" title="剧本视图" panel={<></>} />
         </Tabs>
-      </div>
-      <div
-        className={"tree-wrapper"}
-        onDoubleClick={(e) => {
-          handleSelectNode(null, false);
-          e.stopPropagation();
-        }}
-        onMouseDown={(e) => {
-          handleSelectNode(null, false);
-          e.stopPropagation();
-        }}
-        onContextMenu={(e) => {
-          showTreeContextMenu(e);
-          e.stopPropagation();
-          e.preventDefault();
-        }}
-      >
-        <Scrollbars
-          className={"scroll-area"}
-          style={{ height: "100%" }}
-          universal={true}
-          autoHideTimeout={1000}
-        >
-          <SortableTree
-            className={"tree"}
-            maxDepth={5}
-            rowHeight={renderRowHeight}
-            treeData={treeData}
-            onChange={onChange}
-            canDrag={canDrag}
-            generateNodeProps={handleGenerateNodeProps}
-            theme={theme}
-            shouldCopyOnOutsideDrop={true}
-            isVirtualized={false}
-          ></SortableTree>
-        </Scrollbars>
       </div>
     </>
   );

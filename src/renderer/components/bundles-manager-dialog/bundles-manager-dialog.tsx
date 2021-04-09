@@ -8,7 +8,7 @@ import {
   BundlesManager,
   BundleType,
   BundleInfo
-} from "../../services/bundles-manager/bundles-manager";
+} from "../../../common/services/bundles-manager/bundles-manager";
 import { useMount } from "react-use";
 
 import "./bundles-manager-dialog.less";
@@ -24,7 +24,7 @@ import {
 import { CreatorContext } from "../../hooks/context";
 import { LocalAppConfig } from "../../../common/local-app-config";
 import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
-import { GUIToaster } from "../../services/toaster";
+import { GUIToaster } from "../../common/toaster";
 import { BundleDesktopPage } from "./bundle-desktop-page";
 import { delayExecution } from "../../../common/utils";
 

@@ -5,14 +5,14 @@ import { v4 as uuidv4 } from "uuid";
 
 import extract from "extract-zip";
 
-import { DBProjects } from "../../common/database/db-project";
-import { LocalAppConfig } from "../../common/local-app-config";
+import { DBProjects } from "../database/db-project";
+import { LocalAppConfig } from "../local-app-config";
 import { TDAPP } from "../services/td-analytics";
-import { logger } from "../../common/lib/logger";
-import { BundleOption } from "../components/create-project-dialog/create-project-dialog";
-import { GUIToaster } from "../services/toaster";
+import { logger } from "../lib/logger";
+import { BundleOption } from "../../renderer/components/create-project-dialog/create-project-dialog";
+import { GUIToaster } from "../../renderer/common/toaster";
 import { Intent } from "@blueprintjs/core";
-import { assert } from "../../common/exception";
+import { assert } from "../exception";
 
 export class AVGProjectData {
   _id: string;

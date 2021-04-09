@@ -2,7 +2,6 @@ import React from "react";
 import classNames from "classnames";
 import { isDescendant, NodeRendererProps } from "react-sortable-tree";
 import ExpandIcon from "../../../../../images/icons/expand.svg";
-import Icon from "@ant-design/icons/lib/components/Icon";
 
 import "./node-content-renderer.less";
 
@@ -108,7 +107,7 @@ const ResourceTreeThemeNodeContentRenderer = (props: NodeRendererProps) => {
       }}
     >
       <span>
-        <Icon
+        {/* <Icon
           className={classNames(
             "expand-icon",
             { expand: node.expanded },
@@ -116,7 +115,7 @@ const ResourceTreeThemeNodeContentRenderer = (props: NodeRendererProps) => {
             { hidden: !node.children || node.children.length === 0 }
           )}
           component={ExpandIcon}
-        ></Icon>
+        ></Icon> */}
       </span>
 
       {renderNodeIcon && <div className="node-icon">{renderNodeIcon()}</div>}

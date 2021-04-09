@@ -16,22 +16,22 @@ import { ProjectListItem } from "./project-list-item";
 //   AVGProjectData
 // } from "../../manager/project-manager.ts";
 
-import { AVGProjectManager } from "../../manager/project-manager";
+import { AVGProjectManager } from "../../../common/manager/project-manager";
 import { CreatorContext } from "../../hooks/context";
 import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
 import styled from "styled-components";
 
 import { ProjectItemContextMenu } from "../../components/context-menus/project-item-menus";
 import { ProjectListContextMenu } from "../../components/context-menus/project-list-menus";
-import { GUIToaster } from "../../services/toaster";
-import { VSCode } from "../../services/vscode";
+import { GUIToaster } from "../../common/toaster";
+import { VSCode } from "../../../common/services/vscode";
 
 import "./project-list-main-panel.less";
-import { TDAPP } from "../../services/td-analytics";
+import { TDAPP } from "../../../common/services/td-analytics";
 import { logger } from "../../../common/lib/logger";
 import { useServe, useStopServe } from "../../hooks/use-serve";
 import { GUIAlertDialog } from "../../modals/alert-dialog";
-import { WorkspaceLayout } from "../../services/workspace-layout";
+import { WorkspaceLayout } from "../../../common/services/workspace-layout";
 
 const NoProjectHint = styled.label`
   font-size: 16px;
