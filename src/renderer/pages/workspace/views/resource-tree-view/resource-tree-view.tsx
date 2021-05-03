@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { ContextMenu, Tab, Tabs } from "@blueprintjs/core";
+
 import SortableTree, {
   ExtendedNodeData,
   NodeData,
@@ -9,29 +11,31 @@ import Scrollbars from "react-custom-scrollbars";
 
 import "./resource-tree-view.less";
 import { ResourceTreeNodeTypes } from "../../../../../common/models/resource-tree-node-types";
-import { ContextMenu, Tab, Tabs } from "@blueprintjs/core";
 import { ResourceTreeContextMenu } from "../../../../components/context-menus/resource-tree-menus";
 
-// Icons
-// import Icon from "@ant-design/icons/lib/components/Icon";
-
 import theme from "./theme";
-import { DefaultTreeNodes } from "../../../../../common/default-tree-nodes";
 import { NodeSelectedStatus } from "./select-status";
-import ProjectManagerV2 from "../../../../../common/manager/project-manager.v2";
 import { useMount } from "react-use";
+import { AVGTreeNode } from "../../../../../common/models/tree-node";
+import { GlobalEvents } from "../../../../../common/global-events";
+import ResourceTreeFigure from "./resource-tree-figure";
+import { ObservableContext } from "../../../../../common/services/observable-module";
 
 export const ResourceTreeView = () => {
-  const [treeData, setTreeData] = useState<TreeItem[]>(DefaultTreeNodes);
+  const [treeData, setTreeData] = useState<AVGTreeNode[]>([]);
 
   useMount(() => {
-    ProjectManagerV2.subject().subscribe((treeItems: TreeItem[]) => {
-      setTreeData(treeItems);
-    });
+    ObservableContext.subscribe<TreeItem[]>(
+      GlobalEvents.OnProjectLoaded,
+      onProjectLoaded
+    );
   });
 
+  const onProjectLoaded = (treeItems: AVGTreeNode[]) => {
+    setTreeData(treeItems);
+  };
   const onChange = (treeData: React.SetStateAction<TreeItem[]>) => {
-    setTreeData(treeData);
+    setTreeData(treeData as AVGTreeNode[]);
   };
 
   const renderRowHeight = (info: NodeData): number => {
@@ -47,7 +51,10 @@ export const ResourceTreeView = () => {
     return heightInfos.get(nodeType) ?? 0;
   };
 
-  const handleSelectNode = (data: ExtendedNodeData | null, focus = true) => {
+  const handleSelectNode = (
+    nodeData: ExtendedNodeData | null,
+    focus = true
+  ) => {
     walk({
       treeData,
       getNodeKey: ({ treeIndex }) => treeIndex,
@@ -57,12 +64,14 @@ export const ResourceTreeView = () => {
       ignoreCollapsed: false
     });
 
-    if (data) {
-      data.node.selected = focus
+    if (nodeData) {
+      nodeData.node.selected = focus
         ? NodeSelectedStatus.Selected
         : NodeSelectedStatus.SelectedWithoutFocus;
+
+      ResourceTreeFigure.openStory(nodeData.node as AVGTreeNode);
     } else {
-      // setTreeData([...treeData]);
+      setTreeData([...treeData]);
     }
   };
 
@@ -160,7 +169,7 @@ export const ResourceTreeView = () => {
                       generateNodeProps={handleGenerateNodeProps}
                       theme={theme}
                       shouldCopyOnOutsideDrop={true}
-                      isVirtualized={false}
+                      isVirtualized={true}
                     ></SortableTree>
                   </Scrollbars>
                 </div>

@@ -6,7 +6,7 @@ import {
   BundlesManager,
   BundleType
 } from "../../../common/services/bundles-manager/bundles-manager";
-import { AVGProjectData } from "../../../common/manager/project-manager.v2.ts";
+import { ProjectFileData } from "../../../common/manager/project-manager.ts";
 import { DBProjects } from "../../../common/database/db-project";
 import { GUIToaster } from "../../common/toaster";
 import { useForceUpdate } from "../../hooks/use-forceupdate";

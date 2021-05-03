@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { GlobalEvents } from "../../../common/global-events";
 import { StoryItemType } from "../../../common/story-item-type";
-import { Story } from "../../../common/services/storyboard/story";
+import { Story } from "../../../common/models/story";
 
 interface IStoryItem {
   render(): JSX.Element;
@@ -133,6 +133,8 @@ export abstract class StoryItem implements IStoryItem {
   getRef() {
     return this._ref;
   }
+
+  abstract parseFrom(data: any): void;
 
   saveData(data: any) {
     return {

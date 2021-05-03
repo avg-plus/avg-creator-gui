@@ -1,6 +1,6 @@
 import { trim } from "jquery";
 import { StoryItemType } from "../../../../common/story-item-type";
-import { Story } from "../../../../common/services/storyboard/story";
+import { Story } from "../../../../common/models/story";
 import { StoryItem } from "../story-item";
 import { render } from "./sound-item.component";
 

@@ -12,19 +12,19 @@ import {
 import arrayMove from "array-move";
 
 import { useEffect, useRef, useState } from "react";
-import { StoryManager } from "../../../../common/services/storyboard/story-manager";
-import { StoryItem } from "../../../components/story-items/story-item";
+import { StoryManager } from "../../../../../common/services/story-manager";
+import { StoryItem } from "../../../../components/story-items/story-item";
 import StoryItemComponent, {
   IStoryItemComponentProps
-} from "./story-item-component";
+} from "../../../../components/story-items/story-item-component";
 
 import "./storyboard-view.less";
 import { useMount } from "react-use";
-import { autoSubScribe } from "../../../../common/utils";
-import { GlobalEvents } from "../../../../common/global-events";
+import { autoSubScribe } from "../../../../../common/utils";
+import { GlobalEvents } from "../../../../../common/global-events";
 import _ from "underscore";
 import { ResizeSensor } from "css-element-queries";
-import { Scrollbars } from "react-custom-scrollbars";
+import { ObservableContext } from "../../../../../common/services/observable-module";
 
 const story = StoryManager.loadStory();
 
@@ -126,6 +126,17 @@ const allItems = story.getAllItems();
 export const StoryboardView = () => {
   const [items, setItems] = useState<StoryItem[]>(allItems);
   const [listRef, setListRef] = useState<List>();
+
+  useMount(() => {
+    ObservableContext.subscribe<StoryItem[]>(
+      GlobalEvents.OnStoryLoaded,
+      (items) => {
+        // ...
+        // setItems(item);
+        console.log("Load story item...");
+      }
+    );
+  });
 
   useEffect(() => {
     return autoSubScribe(GlobalEvents.StoryItemListShouldRender, () => {

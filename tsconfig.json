@@ -13,7 +13,13 @@
     "removeComments": false,
     "preserveConstEnums": true,
     "sourceMap": false,
-    "lib": ["dom", "dom.iterable", "esnext", "es6", "es2015.promise"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext",
+      "es6",
+      "es2015.promise"
+    ],
     "noImplicitAny": false,
     "noImplicitReturns": true,
     "suppressImplicitAnyIndexErrors": true,
@@ -29,11 +35,21 @@
     "target": "es5",
     "module": "commonjs",
     "jsx": "react",
-    "typeRoots": ["./node_modules/@types", "./typings"],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./typings"
+    ],
     "baseUrl": "../src"
   },
-  "include": ["src/**/*", "typings/nconf/nconf.d.ts"],
-  "exclude": ["node_modules", "dist", "build"],
+  "include": [
+    "src/**/*",
+    "typings/nconf/nconf.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build"
+  ],
   "formatCodeOptions": {
     "indentSize": 2,
     "tabSize": 2

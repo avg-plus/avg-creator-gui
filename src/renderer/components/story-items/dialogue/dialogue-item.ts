@@ -6,7 +6,7 @@ import { render, renderExtendContextMenu } from "./dialogue-item.component";
 import { StoryItem } from "../story-item";
 import { GlobalEvents } from "../../../../common/global-events";
 import { StoryItemType } from "../../../../common/story-item-type";
-import { Story } from "../../../../common/services/storyboard/story";
+import { Story } from "../../../../common/models/story";
 import { CharacterItem } from "../character/character-item";
 
 export class DialogueItem extends StoryItem {
@@ -17,7 +17,7 @@ export class DialogueItem extends StoryItem {
   private _asEndDialogueNode = false;
   private _linkedCharacter: CharacterItem | null = null;
 
-  constructor(story: Story) {
+  constructor(story: Story, data?: any) {
     super(story, StoryItemType.ShowDialogue);
   }
 
@@ -218,6 +218,10 @@ export class DialogueItem extends StoryItem {
 
   getText() {
     return this._text;
+  }
+
+  parseFrom(data: any) {
+    this.setText(data.text);
   }
 
   onSave() {

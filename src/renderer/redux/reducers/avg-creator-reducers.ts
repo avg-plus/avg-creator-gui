@@ -2,11 +2,11 @@ import {
   AVGCreatorActionType,
   AVGCreatorAction
 } from "./../actions/avg-creator-actions";
-import { AVGProjectData } from "../../../common/manager/project-manager.v2.ts";
+import { ProjectFileData } from "../../../common/manager/project-manager.ts";
 import { UpdateItem } from "../../../common/services/autoupdater";
 
 export interface IAVGServer {
-  serveProject: AVGProjectData | null;
+  serveProject: ProjectFileData | null;
   engineURL: string;
   assetsURL: string;
   isRunning: boolean;
@@ -34,8 +34,8 @@ export interface IAVGCreatorInitialState {
     updateItem: UpdateItem | null;
   };
   silentUpdateAvailable: boolean;
-  projects: AVGProjectData[];
-  openedProject: AVGProjectData | null;
+  projects: ProjectFileData[];
+  openedProject: ProjectFileData | null;
   currentServer: IAVGServer;
   currentDesktopProcess: {
     status: "normal" | "closed";

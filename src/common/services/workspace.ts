@@ -1,15 +1,15 @@
 import { logger } from "../lib/logger";
-import { AVGProjectData } from "../manager/project-manager.v2.ts";
+import { ProjectFileData } from "../manager/project-manager.ts";
 import { BundlesManager } from "./bundles-manager/bundles-manager";
 
 export class Workspace {
-  private static project: AVGProjectData;
+  private static project: ProjectFileData;
 
   static getCurrentProject() {
     return this.project;
   }
 
-  static async loadProject(project: AVGProjectData) {
+  static async loadProject(project: ProjectFileData) {
     logger.info("Loading project: ", project);
     Workspace.project = project;
 

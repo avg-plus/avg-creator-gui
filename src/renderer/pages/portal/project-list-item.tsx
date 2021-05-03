@@ -4,11 +4,11 @@ import React from "react";
 import "./project-list-item.less";
 import Row from "antd/lib/row";
 import Col from "antd/lib/col";
-import { AVGProjectData } from "../../../common/manager/project-manager.v2.ts";
+import { ProjectFileData } from "../../../common/manager/project-manager.ts";
 import DefaultCover from "../../images/default-project-cover.png";
 
 export interface IProjectListItemProps {
-  projectData: AVGProjectData;
+  projectData: ProjectFileData;
 }
 
 export const ProjectListItem = (props: IProjectListItemProps) => {

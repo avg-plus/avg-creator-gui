@@ -1,6 +1,4 @@
 import { Card, Elevation, Tab, TabId, Tabs } from "@blueprintjs/core";
-import Col from "antd/lib/col";
-import Row from "antd/lib/row";
 import React from "react";
 import { useState } from "react";
 

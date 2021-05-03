@@ -21,5 +21,12 @@ export enum GlobalEvents {
   RecomputeStoryNodeHeights = "RecomputeStoryNodeHeights",
 
   // 滚动到指定故事节点
-  ScrollToStoryItem = "ScrollToStoryItem"
+  ScrollToStoryItem = "ScrollToStoryItem",
+
+  /**
+   * 工程文件相关
+   */
+
+  OnProjectLoaded = "OnProjectLoaded",
+  OnStoryLoaded = "OnStoryLoaded"
 }

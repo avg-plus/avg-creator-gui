@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import _ from "underscore";
-import Progress from "antd/lib/progress";
-import List from "antd/lib/list";
 
 import { formatBytes } from "../../../common/utils";
 import { BundleItem, BundleStatus } from "./bundles-manager-dialog";

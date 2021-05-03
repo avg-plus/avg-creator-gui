@@ -1,8 +1,8 @@
 import { GameRunner } from "../../common/services/game-runner";
-import { AVGProjectData } from "../../common/manager/project-manager.v2.ts";
+import { ProjectFileData } from "../../common/manager/project-manager.ts";
 import { DebugServer } from "../../main/debug-server/debug-server";
 
-export async function useLaunchGame(project: AVGProjectData) {
+export async function useLaunchGame(project: ProjectFileData) {
   await DebugServer.start();
   const result = await GameRunner.runAsDesktop(project);
 

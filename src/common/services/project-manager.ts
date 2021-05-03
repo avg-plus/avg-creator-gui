@@ -2,9 +2,16 @@ import fs, { Stats } from "fs-extra";
 import fg from "fast-glob";
 import path from "path";
 import { assert } from "../exception";
-import { ProjectFileReader } from "../services/file-reader/project-file-reader";
-import { ObservableModule } from "../services/observable-module";
-import { TreeItem } from "react-sortable-tree";
+import {
+  ProjectFileData,
+  ProjectFileReader
+} from "../services/file-reader/project-file-reader";
+import { ObservableContext } from "../services/observable-module";
+import { AVGTreeNode } from "../models/tree-node";
+import { ResourceTreeNodeTypes } from "../models/resource-tree-node-types";
+import { GlobalEvents } from "../global-events";
+import { StoryFileReader } from "../services/file-reader/story-file-reader";
+import { Nullable } from "../traits";
 
 interface VerifiedFile {
   name: string;
@@ -15,6 +22,7 @@ interface VerifiedFile {
 interface PathObject {
   name: string;
   stats: Stats;
+  path: string;
   children: PathObject[];
 }
 
@@ -36,48 +44,61 @@ const VerifyFileList = [
   }
 ] as VerifiedFile[];
 
-export class ProjectManagerV2 extends ObservableModule {
-  constructor() {
-    super();
-  }
+export class AVGProjectManager {
+  private projectRootDir: string;
+  projectData: ProjectFileData;
 
-  loadProject(dir: string): TreeItem[] {
+  loadProject(dir: string) {
     if (!this.verifyProject(dir)) {
       throw new Error("加载项目出错");
     }
 
+    this.projectRootDir = dir;
+
     const projectFile = path.join(dir, "project.avg");
-    const storiesDir = path.join(dir, "stories");
-    const dataDir = path.join(dir, "data");
+    const storiesDir = this.getDir("stories");
+    const dataDir = this.getDir("data");
 
     // 读取工程文件 project.avg
     const projectReader = new ProjectFileReader(projectFile);
-    const data = projectReader.load();
-    console.log("project data: ", data);
+    this.projectData = projectReader.load();
 
-    // 读取故事树`${storiesDir}/**`
+    // 读取故事树
     const fileTree = this.buildFileTree(storiesDir);
-
     const convertPathObjectToTreeItem = (pathObjects: PathObject[]) => {
-      const items: TreeItem[] = [];
+      const items: AVGTreeNode[] = [];
       pathObjects.forEach((obj) => {
-        const treeItem: TreeItem = {};
+        const treeItem: Partial<AVGTreeNode> = {};
         treeItem.title = obj.name;
         if (obj.children?.length) {
           treeItem.children = convertPathObjectToTreeItem(obj.children);
         }
 
-        items.push(treeItem);
+        treeItem.data = {
+          nodeType: obj.stats.isDirectory()
+            ? ResourceTreeNodeTypes.Folder
+            : ResourceTreeNodeTypes.StoryNode,
+          MD5: "",
+          path: obj.path
+        };
+
+        items.push(treeItem as AVGTreeNode);
       });
 
       return items;
     };
 
-    const treeItems: TreeItem[] = convertPathObjectToTreeItem(fileTree);
-    this._subject.next(treeItems);
+    const treeItems: AVGTreeNode[] = convertPathObjectToTreeItem(fileTree);
 
-    return [];
+    ObservableContext.next(GlobalEvents.OnProjectLoaded, treeItems);
   }
+
+  openStory(filename: string) {
+    const storyReader = new StoryFileReader(filename);
+    return storyReader.load();
+  }
+
+  saveStory(data: any) {}
 
   private buildFileTree(dir: string, extensions = []) {
     const files = fg.sync(`${dir}/**/*`, {
@@ -100,7 +121,12 @@ export class ProjectManagerV2 extends ObservableModule {
       relativePath.split("/").reduce((r: { result: PathObject[] }, name) => {
         if (!r[name]) {
           r[name] = { result: [] };
-          r.result.push({ name, stats, children: r[name].result });
+          r.result.push({
+            name,
+            stats,
+            path: filePath,
+            children: r[name].result
+          });
         }
 
         return r[name];
@@ -109,6 +135,8 @@ export class ProjectManagerV2 extends ObservableModule {
 
     return result;
   }
+
+  generateIndexes() {}
 
   private verifyProject(dir: string) {
     assert(fs.existsSync(dir), "项目目录不存在");
@@ -136,6 +164,15 @@ export class ProjectManagerV2 extends ObservableModule {
 
     return true;
   }
+
+  getDir(dir: "stories" | "data") {
+    switch (dir) {
+      case "stories":
+        return path.join(this.projectRootDir, "stories");
+      case "data":
+        return path.join(this.projectRootDir, "data");
+    }
+  }
 }
 
-export default new ProjectManagerV2();
+export default new AVGProjectManager();

@@ -32,9 +32,9 @@ import { IconNames } from "@blueprintjs/icons";
 import { CreatorContext } from "../../hooks/context";
 import { GUIToaster } from "../../common/toaster";
 import {
-  AVGProjectData,
+  ProjectFileData,
   AVGProjectManager
-} from "../../../common/manager/project-manager.v2.ts";
+} from "../../../common/manager/project-manager.ts";
 import {
   BundlesManager,
   ILocalBundle,

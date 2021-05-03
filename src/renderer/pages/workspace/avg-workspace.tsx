@@ -10,19 +10,16 @@ import { WorkspaceLayout } from "../../../common/services/workspace-layout";
 import { delayExecution } from "../../../common/utils";
 
 import "./avg-workspace.less";
-import { StoryManager } from "../../../common/services/storyboard/story-manager";
+import { StoryManager } from "../../../common/services/story-manager";
 import { FocusStyleManager } from "@blueprintjs/core";
 import { Codegen } from "../../../common/services/storyboard/codegen";
-import { ipcRenderer, IpcRendererEvent } from "electron";
-import { Workspace } from "../../../common/services/workspace";
-import { AVGProjectData } from "../../../common/manager/project-manager";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
 // ipcRenderer.once(
 //   "InitAVGProject",
 //   (event: IpcRendererEvent, ...args: any[]) => {
-//     const project = args[0] as AVGProjectData;
+//     const project = args[0] as ProjectFileData;
 //     Workspace.loadProject(project);
 //   }
 // );

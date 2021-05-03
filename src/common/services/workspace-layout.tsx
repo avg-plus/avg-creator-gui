@@ -9,12 +9,11 @@ ElementQueries.listen();
 
 import GoldenLayout from "golden-layout";
 
-import { StoryboardView } from "../../renderer/pages/workspace/views/storyboard-view";
 import { PropertyView } from "../../renderer/pages/workspace/views/property-view";
 import { ResourceTreeView } from "../../renderer/pages/workspace/views/resource-tree-view/resource-tree-view";
 import { _DevelopmentDebugView } from "../../renderer/pages/workspace/views/_debug-view";
 import _ from "underscore";
-import { AVGProjectData } from "../manager/project-manager.v2.ts";
+import { StoryboardView } from "../../renderer/pages/workspace/views/storyboard-view/storyboard-view";
 
 export class WorkspaceLayout {
   static views = {
@@ -24,7 +23,7 @@ export class WorkspaceLayout {
     _debugView: <_DevelopmentDebugView></_DevelopmentDebugView>
   };
 
-  static launchWindow(project: AVGProjectData) {
+  static launchWindow(projectDir: string) {
     const editorWindow = new remote.BrowserWindow({
       width: 1280,
       height: 760,
@@ -43,14 +42,14 @@ export class WorkspaceLayout {
 
     editorWindow.loadFile("./dist/static/workspace.index.html");
     editorWindow.webContents.openDevTools();
-    editorWindow.on("ready-to-show", () => {
-      // 发送项目数据
-      editorWindow.webContents.send("InitAVGProject", {
-        ...project
-      });
+    // editorWindow.on("ready-to-show", () => {
+    //   // 发送项目数据
+    //   editorWindow.webContents.send("InitAVGProject", {
+    //     ...project
+    //   });
 
-      editorWindow.show();
-    });
+    //   editorWindow.show();
+    // });
   }
 
   static initLayout() {

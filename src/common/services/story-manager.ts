@@ -1,22 +1,24 @@
 import PubSub from "pubsub-js";
 
-import { Codegen } from "./codegen";
-import { GlobalEvents } from "../../global-events";
-import { DialogueItem } from "../../../renderer/components/story-items/dialogue/dialogue-item";
+import { Codegen } from "../services/storyboard/codegen";
+import { GlobalEvents } from "../global-events";
+import { DialogueItem } from "../../renderer/components/story-items/dialogue/dialogue-item";
 
-import { Story } from "./story";
-import { getRandomIntInclusive, randomIn } from "../../utils";
-import { ISaveData, StoryItemType } from "../../story-item-type";
-import { logger } from "../../lib/logger";
-import { StoryItem } from "../../../renderer/components/story-items/story-item";
-import { WaitItem } from "../../../renderer/components/story-items/wait/wait-item";
-import { SceneItem } from "../../../renderer/components/story-items/scene/scene-item";
-import { WorkspaceDebugUI } from "../workspace-debug-ui";
-import { GameRunner } from "../game-runner";
-import { Workspace } from "../workspace";
-import { CharacterItem } from "../../../renderer/components/story-items/character/character-item";
-import { SoundItem } from "../../../renderer/components/story-items/sound/sound-item";
-import ProjectManagerV2 from "../../manager/project-manager.v2";
+import { Story } from "../models/story";
+import { getRandomIntInclusive, randomIn } from "../utils";
+import { ISaveData, StoryItemType } from "../story-item-type";
+import { logger } from "../lib/logger";
+import { StoryItem } from "../../renderer/components/story-items/story-item";
+import { WaitItem } from "../../renderer/components/story-items/wait/wait-item";
+import { SceneItem } from "../../renderer/components/story-items/scene/scene-item";
+import { WorkspaceDebugUI } from "../services/workspace-debug-ui";
+import { GameRunner } from "../services/game-runner";
+import { Workspace } from "../services/workspace";
+import { CharacterItem } from "../../renderer/components/story-items/character/character-item";
+import { SoundItem } from "../../renderer/components/story-items/sound/sound-item";
+import ProjectManager from "./project-manager";
+import { GUIToaster } from "../../renderer/common/toaster";
+import { Intent } from "@blueprintjs/core";
 
 export class StoryManager {
   static currentStory: Story = new Story();
@@ -142,9 +144,21 @@ export class StoryManager {
     this.renderStoryItemList();
 
     WorkspaceDebugUI.registerButton("*测试加载项目", () => {
-      ProjectManagerV2.loadProject(
+      ProjectManager.loadProject(
         "/Users/angrypowman/Workspace/Programming/Revisions/avg-plus/game-projects/v2.workspace.example"
       );
+
+      GUIToaster.show({
+        message: "测试加载项目成功",
+        icon: "lab-test",
+        timeout: 2000,
+        intent: Intent.SUCCESS
+      });
+    });
+
+    WorkspaceDebugUI.registerButton("测试故事保存", () => {
+      const documents = this.currentStory.toStoryDocuments();
+      ProjectManager.saveStory(this.currentStory);
     });
 
     WorkspaceDebugUI.registerButton("生成代码", () => {

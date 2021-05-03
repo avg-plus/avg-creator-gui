@@ -1,5 +1,5 @@
 import { StoryItemType } from "../../../../common/story-item-type";
-import { Story } from "../../../../common/services/storyboard/story";
+import { Story } from "../../../../common/models/story";
 import { StoryItem } from "../story-item";
 import { render } from "./template-item.component";
 
