@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="25px" height="25px" viewBox="0 0 25 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>项目</title>
+    <g id="启动窗口-项目管理" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="-" transform="translate(-550.000000, -198.000000)" fill-rule="nonzero">
+            <g id="Group" transform="translate(540.000000, 187.000000)">
+                <g id="项目" transform="translate(10.000000, 11.000000)">
+                    <polygon id="Path" fill="#DC2F2F" points="7.67159091 12.5046875 12.4650923 7.71118608 17.2586293 12.5046875 12.4650923 17.2982244"></polygon>
+                    <polygon id="Path" fill="#333333" points="16.1825284 15.2130682 12.4644886 18.9275568 8.75 15.2130682 5.75994318 18.203125 12.4680398 24.9076705 19.1725852 18.203125"></polygon>
+                    <polygon id="Path" fill="#DC2F2F" points="12.4644886 0.0319602273 0.0284090909 12.4715909 4.39630682 16.8394886 7.38636364 13.8494318 6.04403409 12.5071023 12.4644886 6.08309659 18.8884943 12.5071023 17.5461648 13.8494318 20.5362216 16.8394886 24.9041193 12.4715909"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

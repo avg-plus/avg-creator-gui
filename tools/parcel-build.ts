@@ -12,7 +12,7 @@ async function copyFiles() {
 
 async function compileParcel(options = {}) {
   const entryFiles = [
-    // path.join(__dirname, "../static/project-manager.index.html"),
+    path.join(__dirname, "../static/project-browser.index.html"),
     path.join(__dirname, "../static/workspace.index.html"),
     path.join(__dirname, "../src/main/preload.ts"),
     path.join(__dirname, "../src/main/main.ts")

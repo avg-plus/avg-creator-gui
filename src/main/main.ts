@@ -8,19 +8,21 @@ import path from "path";
 
 app.commandLine.appendSwitch("in-process-gpu");
 
+const WIDTH = 860;
+const HEIGHT = 640;
 app.on("ready", async () => {
   const mainWindow = new BrowserWindow({
-    minWidth: 400,
-    minHeight: 680,
+    minWidth: WIDTH,
+    minHeight: HEIGHT,
     frame: false,
-    transparent: true,
+    transparent: false,
     thickFrame: false,
-    width: 1280,
-    height: 760,
+    width: WIDTH,
+    height: HEIGHT,
     show: false,
     center: true,
     hasShadow: true,
-    resizable: true,
+    resizable: false,
     titleBarStyle: "hidden",
     title: "AVG Workspace",
     webPreferences: {
@@ -47,7 +49,7 @@ app.on("ready", async () => {
 
   mainWindow.once("ready-to-show", () => {});
 
-  mainWindow.loadFile("./dist/static/workspace.index.html");
+  mainWindow.loadFile("./dist/static/project-browser.index.html");
 });
 
 app.on("window-all-closed", app.quit);

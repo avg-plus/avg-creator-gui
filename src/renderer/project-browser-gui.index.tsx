@@ -1,15 +1,11 @@
-/** @format */
-
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-
-import { Env } from "../common/env";
 import "../common/lib/logger";
 
-import { Titlebar, Color } from "custom-electron-titlebar";
-import { AppInit } from "../common/services/app-init";
+import { Color, Titlebar } from "custom-electron-titlebar";
 
-import "./index.less";
+import "./project-browser-gui.index.less";
+import { AppInit } from "../common/services/app-init";
 import { ProjectBrowserGUIWindow } from "./pages/project-browser-gui/project-browser-gui";
 
 // ========================================
@@ -18,15 +14,13 @@ import { ProjectBrowserGUIWindow } from "./pages/project-browser-gui/project-bro
 
 AppInit.start();
 
-if (Env.getOSName() === "Windows") {
-  new Titlebar({
-    titleHorizontalAlignment: "left",
-    maximizable: true,
-    minimizable: true,
-    closeable: true,
-    backgroundColor: Color.fromHex("#AA3029")
-  });
-}
+new Titlebar({
+  titleHorizontalAlignment: "center",
+  maximizable: false,
+  minimizable: false,
+  closeable: true,
+  backgroundColor: Color.fromHex("#c62d24")
+});
 
 ReactDOM.render(
   <ProjectBrowserGUIWindow />,

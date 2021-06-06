@@ -1,3 +1,4 @@
-export class VersionCompatibility {
-  expect() {}
+export interface VersionCompatibility {
+  expect(): boolean;
+  run(): Promise<void>;
 }

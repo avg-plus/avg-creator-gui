@@ -48,20 +48,25 @@ export class AVGProjectManager {
   private projectRootDir: string;
   projectData: ProjectFileData;
 
-  loadProject(dir: string) {
-    if (!this.verifyProject(dir)) {
+  readProjectData(projectDir: string) {
+    if (!this.verifyProject(projectDir)) {
       throw new Error("加载项目出错");
     }
 
-    this.projectRootDir = dir;
-
-    const projectFile = path.join(dir, "project.avg");
-    const storiesDir = this.getDir("stories");
-    const dataDir = this.getDir("data");
+    const projectFile = path.join(projectDir, "project.avg");
 
     // 读取工程文件 project.avg
     const projectReader = new ProjectFileReader(projectFile);
-    this.projectData = projectReader.load();
+
+    return projectReader.load();
+  }
+
+  loadProject(dir: string) {
+    this.projectRootDir = dir;
+    this.projectData = this.readProjectData(this.projectRootDir);
+
+    const storiesDir = this.getDir("stories");
+    const dataDir = this.getDir("data");
 
     // 读取故事树
     const fileTree = this.buildFileTree(storiesDir);
@@ -114,7 +119,6 @@ export class AVGProjectManager {
 
     files.forEach((file) => {
       const filePath = file.path;
-      const ext = path.extname(filePath);
       const stats = file.stats!;
       const relativePath = path.relative(dir, filePath);
 

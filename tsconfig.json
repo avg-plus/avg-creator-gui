@@ -49,9 +49,5 @@
     "node_modules",
     "dist",
     "build"
-  ],
-  "formatCodeOptions": {
-    "indentSize": 2,
-    "tabSize": 2
-  }
+  ]
 }

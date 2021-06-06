@@ -3,8 +3,6 @@ import * as ReactDOM from "react-dom";
 
 import { Alert, Intent, IconName, Checkbox } from "@blueprintjs/core";
 import { ModalDialog, IModalDialogProps } from "./modal-dialog";
-import { useHotkeys } from "react-hotkeys-hook";
-import { logger } from "../../common/lib/logger";
 
 interface IAlertDialogResult {
   isCancel: boolean;

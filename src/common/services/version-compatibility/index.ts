@@ -1,8 +1,8 @@
-import { VC_MigratingProjects } from "./migrating-projects";
+import { VersionCompatibility } from "./compatibility-base";
 
-const compatibilities = [
+const compatibilities: VersionCompatibility[] = [
   // v1.0.5-beta.0 项目文件迁移
-  new VC_MigratingProjects()
+  // new VC_MigratingProjects()
 ];
 
 compatibilities.map(async (v) => {
