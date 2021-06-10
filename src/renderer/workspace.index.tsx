@@ -1,22 +1,40 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import fs from "fs-extra";
+import url from "url";
+import querystring from "querystring";
 
 import "./workspace.index.less";
 
-import "../common/lib/logger";
-
 import { AVGWorkspace } from "./pages/workspace/avg-workspace";
-import { Color, Titlebar } from "custom-electron-titlebar";
+import { GUIWindowApplication } from "../common/services/app-init";
+import { WorkspaceWindow } from "./windows/workspace-window";
+import { remote } from "electron";
 
-new Titlebar({
-  titleHorizontalAlignment: "center",
-  maximizable: true,
-  minimizable: true,
-  closeable: true,
-  backgroundColor: Color.fromHex("#c62d24")
-});
+const URL = remote.getCurrentWindow().webContents.getURL();
 
-ReactDOM.render(
-  <AVGWorkspace />,
-  document.getElementById("root") as HTMLElement
-);
+const urlObject = url.parse(URL);
+if (urlObject && urlObject.query?.length) {
+  const params = querystring.parse(urlObject.query);
+
+  const projectDir = params.project_dir as string;
+  if (!projectDir || !fs.existsSync(projectDir)) {
+    remote.dialog.showMessageBox({
+      type: "error",
+      title: "打开项目失败",
+      message: "无法打开项目，请检查路径是否正确。"
+    });
+
+    remote.getCurrentWindow().close();
+  } else {
+    GUIWindowApplication.setWindow(WorkspaceWindow);
+    GUIWindowApplication.start();
+
+    ReactDOM.render(
+      <AVGWorkspace />,
+      document.getElementById("root") as HTMLElement
+    );
+
+    remote.getCurrentWindow().show();
+  }
+}

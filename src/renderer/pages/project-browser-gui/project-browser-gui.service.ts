@@ -1,11 +1,12 @@
+import { BrowserWindow, remote } from "electron";
 import fs from "fs-extra";
+
 import { DBProjects } from "../../../common/database/db-project";
 import ProjectManager from "../../../common/services/project-manager";
+import { ProjectBrowserWindow } from "../../windows/project-browser-window";
+import { WorkspaceWindow } from "../../windows/workspace-window";
 
 export type ProjectBrowserItemType = "recently-project" | "templates";
-
-export type DBProjectData = {};
-
 export type ProjectBrowserItem = {
   id: string;
   itemType: ProjectBrowserItemType;
@@ -16,9 +17,10 @@ export type ProjectBrowserItem = {
 };
 
 export class ProjectBrowserGUI {
-  static async LoadProjectList(): Promise<ProjectBrowserItem[]> {
-    const projects = await DBProjects.find({}).sort({ updatedAt: 1 });
+  // pass project path to main window
 
+  static async loadProjectList(): Promise<ProjectBrowserItem[]> {
+    const projects = await DBProjects.find({}).sort({ updatedAt: 1 });
     const list: ProjectBrowserItem[] = [];
 
     projects.forEach((v) => {
@@ -31,7 +33,8 @@ export class ProjectBrowserGUI {
         list.push({
           id: v._id,
           itemType: "recently-project",
-          path,
+          path: path,
+          description: data.description,
           name: data.project_name
         } as ProjectBrowserItem);
       }
@@ -40,7 +43,27 @@ export class ProjectBrowserGUI {
     return list;
   }
 
-  static openProject() {
-    // pass project path to main window
+  static openProject(projectBrowserItem: ProjectBrowserItem) {
+    if (!projectBrowserItem.path || !fs.existsSync(projectBrowserItem.path)) {
+      remote.dialog.showMessageBox({
+        type: "error",
+        title: "打开项目失败",
+        message: "无法打开项目，请检查路径是否正确。"
+      });
+
+      return false;
+    }
+
+    console.log("ProjectBrowserWindow", ProjectBrowserWindow);
+
+    ProjectBrowserWindow.hide();
+    WorkspaceWindow.open(
+      { project_dir: projectBrowserItem.path },
+      { autoShow: false }
+    );
+
+    WorkspaceWindow.setTitle(`${projectBrowserItem.name} - AVG Workspace`);
+
+    return true;
   }
 }

@@ -2,27 +2,15 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import "../common/lib/logger";
 
-import { Color, Titlebar } from "custom-electron-titlebar";
-
 import "./project-browser-gui.index.less";
-import { AppInit } from "../common/services/app-init";
-import { ProjectBrowserGUIWindow } from "./pages/project-browser-gui/project-browser-gui";
+import { GUIWindowApplication } from "../common/services/app-init";
+import { ProjectBrowserGUIView } from "./pages/project-browser-gui/project-browser-gui";
+import { ProjectBrowserWindow } from "./windows/project-browser-window";
 
-// ========================================
-// 初始化应用
-// ========================================
-
-AppInit.start();
-
-new Titlebar({
-  titleHorizontalAlignment: "center",
-  maximizable: false,
-  minimizable: false,
-  closeable: true,
-  backgroundColor: Color.fromHex("#c62d24")
-});
+GUIWindowApplication.setWindow(ProjectBrowserWindow);
+GUIWindowApplication.start();
 
 ReactDOM.render(
-  <ProjectBrowserGUIWindow />,
+  <ProjectBrowserGUIView />,
   document.getElementById("root") as HTMLElement
 );

@@ -11,18 +11,7 @@ import { delayExecution } from "../../../common/utils";
 
 import "./avg-workspace.less";
 import { StoryManager } from "../../../common/services/story-manager";
-import { FocusStyleManager } from "@blueprintjs/core";
 import { Codegen } from "../../../common/services/storyboard/codegen";
-
-FocusStyleManager.onlyShowFocusOnTabs();
-
-// ipcRenderer.once(
-//   "InitAVGProject",
-//   (event: IpcRendererEvent, ...args: any[]) => {
-//     const project = args[0] as ProjectFileData;
-//     Workspace.loadProject(project);
-//   }
-// );
 
 export const AVGWorkspace = () => {
   useMount(() => {

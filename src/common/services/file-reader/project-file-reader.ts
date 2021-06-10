@@ -4,6 +4,7 @@ import { AVGFileReader } from "./file-reader";
 
 export interface ProjectFileData {
   project_name: string;
+  description: string;
   version: string;
 }
 

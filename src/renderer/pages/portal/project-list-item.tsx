@@ -4,8 +4,8 @@ import React from "react";
 import "./project-list-item.less";
 import Row from "antd/lib/row";
 import Col from "antd/lib/col";
-import { ProjectFileData } from "../../../common/manager/project-manager.ts";
 import DefaultCover from "../../images/default-project-cover.png";
+import { ProjectFileData } from "../../../common/services/file-reader/project-file-reader";
 
 export interface IProjectListItemProps {
   projectData: ProjectFileData;
@@ -21,7 +21,7 @@ export const ProjectListItem = (props: IProjectListItemProps) => {
       </Col>
       <Col span={12}>
         <Row justify={"start"}>
-          <div className="title">{props.projectData.name}</div>
+          <div className="title">{props.projectData.project_name}</div>
         </Row>
         <Row justify={"start"}>
           <div className="description">{props.projectData.description}</div>

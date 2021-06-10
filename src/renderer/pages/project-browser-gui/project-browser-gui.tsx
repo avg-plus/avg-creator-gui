@@ -22,17 +22,17 @@ import { useMount } from "react-use";
 
 const { Title, Text } = Typography;
 
-export const ProjectBrowserGUIWindow = () => {
+export const ProjectBrowserGUIView = () => {
   const [activeMenuItem, setActiveMenuItem] =
     useState<ProjectBrowserItemType>("recently-project");
 
   const [selectedID, setSelectedID] = useState<string>("");
 
-  const [projectItems, setProjectItems] = useState<ProjectBrowserItem[]>();
+  const [projectItems, setProjectItems] = useState<ProjectBrowserItem[]>([]);
   const [templateItems, setTemplateItems] = useState<ProjectBrowserItem[]>([]);
 
   useMount(async () => {
-    const projectList = await ProjectBrowserGUI.LoadProjectList();
+    const projectList = await ProjectBrowserGUI.loadProjectList();
     setProjectItems(projectList);
   });
 
@@ -47,6 +47,10 @@ export const ProjectBrowserGUIWindow = () => {
     }
   };
 
+  const handleClickBlankArea = () => {
+    setSelectedID("");
+  };
+
   const handleItemClick = (
     menuItemType: ProjectBrowserItemType,
     item: ProjectBrowserItem
@@ -58,21 +62,19 @@ export const ProjectBrowserGUIWindow = () => {
     }
   };
 
-  const handleItemDbClick = (
-    menuItemType: ProjectBrowserItemType,
-    item: ProjectBrowserItem
-  ) => {
-    ProjectBrowserGUI.openProject();
+  const handleItemDbClick = (item: ProjectBrowserItem) => {
+    ProjectBrowserGUI.openProject(item);
   };
 
   const handleContextMenu = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    item: ProjectBrowserItem
   ) => {
     ContextMenu.show(
       <ProjectItemContextMenu
         onDelete={() => {}}
         onExploreDir={() => {}}
-        onOpen={() => ProjectBrowserGUI.openProject()}
+        onOpen={() => ProjectBrowserGUI.openProject(item)}
       />,
       {
         left: event.clientX,
@@ -121,8 +123,8 @@ export const ProjectBrowserGUIWindow = () => {
               renderItem={(item) => (
                 <List.Item
                   onMouseDown={() => handleItemClick(activeMenuItem, item)}
-                  onDoubleClick={() => handleItemDbClick(activeMenuItem, item)}
-                  onContextMenu={(event) => handleContextMenu(event)}
+                  onDoubleClick={() => handleItemDbClick(item)}
+                  onContextMenu={(event) => handleContextMenu(event, item)}
                 >
                   <div className="box-wrapper">
                     <div
@@ -143,16 +145,14 @@ export const ProjectBrowserGUIWindow = () => {
                         </Col>
                       </Row>
 
-                      <div className={"description"}>
-                        人可以复仇，但人生不能只剩下复仇，人总有其他活下去的...
-                      </div>
+                      <div className={"description"}>{item.description}</div>
                     </div>
                     <div
                       className={classNames("title", {
                         selected: item.id === selectedID
                       })}
                     >
-                      白色相簿2
+                      {item.name}
                     </div>
                   </div>
                 </List.Item>

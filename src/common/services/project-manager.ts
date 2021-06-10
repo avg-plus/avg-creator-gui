@@ -66,7 +66,6 @@ export class AVGProjectManager {
     this.projectData = this.readProjectData(this.projectRootDir);
 
     const storiesDir = this.getDir("stories");
-    const dataDir = this.getDir("data");
 
     // 读取故事树
     const fileTree = this.buildFileTree(storiesDir);
