@@ -6642,6 +6642,13 @@ ejs@^3.1.3:
   dependencies:
     jake "^10.6.1"
 
+electron-better-ipc@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.nlark.com/electron-better-ipc/download/electron-better-ipc-2.0.0.tgz#2194ad02321122975cc792fb1e154b496a303ca9"
+  integrity sha1-IZStAjIRIpdcx5L7HhVLSWowPKk=
+  dependencies:
+    serialize-error "^8.1.0"
+
 electron-builder-squirrel-windows@^22.8.0:
   version "22.8.0"
   resolved "https://registry.npm.taobao.org/electron-builder-squirrel-windows/download/electron-builder-squirrel-windows-22.8.0.tgz#b82c6484e9c65c996dd6a8d0f337d3577d463d33"
@@ -13955,6 +13962,13 @@ serialize-error@^5.0.0:
   dependencies:
     type-fest "^0.8.0"
 
+serialize-error@^8.1.0:
+  version "8.1.0"
+  resolved "https://registry.nlark.com/serialize-error/download/serialize-error-8.1.0.tgz#3a069970c712f78634942ddd50fbbc0eaebe2f67"
+  integrity sha1-OgaZcMcS94Y0lC3dUPu8Dq6+L2c=
+  dependencies:
+    type-fest "^0.20.2"
+
 serialize-to-js@^3.0.0:
   version "3.1.1"
   resolved "https://registry.npm.taobao.org/serialize-to-js/download/serialize-to-js-3.1.1.tgz#b3e77d0568ee4a60bfe66287f991e104d3a1a4ac"
@@ -15182,6 +15196,11 @@ type-check@~0.3.2:
   integrity sha1-WITKtRLPHTVeP7eE8wgEsrUg23I=
   dependencies:
     prelude-ls "~1.1.2"
+
+type-fest@^0.20.2:
+  version "0.20.2"
+  resolved "https://registry.nlark.com/type-fest/download/type-fest-0.20.2.tgz?cache=0&sync_timestamp=1622543391721&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ftype-fest%2Fdownload%2Ftype-fest-0.20.2.tgz#1bf207f4b28f91583666cb5fbd327887301cd5f4"
+  integrity sha1-G/IH9LKPkVg2ZstfvTJ4hzAc1fQ=
 
 type-fest@^0.8.0, type-fest@^0.8.1:
   version "0.8.1"

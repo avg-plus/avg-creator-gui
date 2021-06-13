@@ -3,7 +3,9 @@ import fs from "fs-extra";
 
 import { DBProjects } from "../../../common/database/db-project";
 import ProjectManager from "../../../common/services/project-manager";
+import { WindowIDs } from "../../common/window-ids";
 import { ProjectBrowserWindow } from "../../windows/project-browser-window";
+import { WindowsManager } from "../../windows/windows-manager";
 import { WorkspaceWindow } from "../../windows/workspace-window";
 
 export type ProjectBrowserItemType = "recently-project" | "templates";
@@ -43,7 +45,7 @@ export class ProjectBrowserGUI {
     return list;
   }
 
-  static openProject(projectBrowserItem: ProjectBrowserItem) {
+  static async openProject(projectBrowserItem: ProjectBrowserItem) {
     if (!projectBrowserItem.path || !fs.existsSync(projectBrowserItem.path)) {
       remote.dialog.showMessageBox({
         type: "error",
@@ -54,9 +56,16 @@ export class ProjectBrowserGUI {
       return false;
     }
 
-    console.log("ProjectBrowserWindow", ProjectBrowserWindow);
+    const browserWindow = await WindowsManager.getWindow(
+      WindowIDs.ProjectBrowserWindow
+    );
 
-    ProjectBrowserWindow.hide();
+    const all = remote.BrowserWindow.getAllWindows();
+
+    console.log("browserWindow id ", all, browserWindow.id);
+
+    browserWindow.hide();
+
     WorkspaceWindow.open(
       { project_dir: projectBrowserItem.path },
       { autoShow: false }

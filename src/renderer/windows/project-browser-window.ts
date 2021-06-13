@@ -1,11 +1,12 @@
+import { WindowIDs } from "../common/window-ids";
 import { AVGWindow } from "./gui-window";
 
 const WIDTH = 860;
 const HEIGHT = 640;
 
-class GUIProjectBrowserWindow extends AVGWindow {
+export class GUIProjectBrowserWindow extends AVGWindow {
   constructor() {
-    super("project-browser.index.html", {
+    super(WindowIDs.ProjectBrowserWindow, "project-browser.index.html", {
       minWidth: WIDTH,
       minHeight: HEIGHT,
       frame: false,
@@ -16,6 +17,7 @@ class GUIProjectBrowserWindow extends AVGWindow {
       show: false,
       center: true,
       hasShadow: true,
+      closable: true,
       resizable: false,
       titleBarStyle: "hidden",
       webPreferences: {

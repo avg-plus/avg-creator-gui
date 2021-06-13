@@ -1,12 +1,13 @@
 import { BrowserWindowConstructorOptions } from "electron";
+import { WindowIDs } from "../common/window-ids";
 import { AVGWindow } from "./gui-window";
 
 const WIDTH = 860;
 const HEIGHT = 640;
 
-class GUIWorkspaceWindow extends AVGWindow {
+export class GUIWorkspaceWindow extends AVGWindow {
   constructor() {
-    super("workspace.index.html", {
+    super(WindowIDs.WorkspaceWindow, "workspace.index.html", {
       frame: false,
       transparent: false,
       thickFrame: false,
