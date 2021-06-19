@@ -4,11 +4,11 @@ import { AVGWindow } from "./gui-window";
 const WIDTH = 860;
 const HEIGHT = 640;
 
-interface GUIProjectBrowserWindowParams {}
+interface GUIProjectWizardWindowParams {}
 
-export class GUIProjectBrowserWindow extends AVGWindow<GUIProjectBrowserWindowParams> {
+export class GUIProjectWizardWindow extends AVGWindow<GUIProjectWizardWindowParams> {
   constructor() {
-    super(WindowIDs.ProjectBrowserWindow, "project-browser.index.html", {
+    super(WindowIDs.ProjectWizardWindow, "project-wizard.index.html", {
       autoShow: true,
       singleton: true,
       browserWindowOptions: {
@@ -35,4 +35,4 @@ export class GUIProjectBrowserWindow extends AVGWindow<GUIProjectBrowserWindowPa
   }
 }
 
-export const ProjectBrowserWindow = new GUIProjectBrowserWindow();
+export const ProjectWizardWindow = new GUIProjectWizardWindow();

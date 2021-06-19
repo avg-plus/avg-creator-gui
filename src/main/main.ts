@@ -5,7 +5,7 @@ import isDev from "electron-is-dev";
 process.env.NODE_ENV = isDev ? "development" : "production";
 
 import path from "path";
-import { IPCWindowManager } from "./ipc/ipc-window-manager";
+import "./window-manager";
 
 app.commandLine.appendSwitch("in-process-gpu");
 
@@ -27,8 +27,6 @@ app.on("ready", async () => {
 
   Menu.setApplicationMenu(null);
   mainWindow.loadFile("./dist/static/index.html");
-
-  IPCWindowManager.init();
 });
 
 app.on("window-all-closed", app.quit);

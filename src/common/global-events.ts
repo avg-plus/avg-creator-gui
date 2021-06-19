@@ -28,5 +28,11 @@ export enum GlobalEvents {
    */
 
   OnProjectLoaded = "OnProjectLoaded",
-  OnStoryLoaded = "OnStoryLoaded"
+  OnStoryLoaded = "OnStoryLoaded",
+
+  /**
+   * 通用
+   */
+
+  GUIAlertDialogVisibility = "GUIAlertDialogVisibility"
 }

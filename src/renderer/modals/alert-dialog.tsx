@@ -3,6 +3,9 @@ import * as ReactDOM from "react-dom";
 
 import { Alert, Intent, IconName, Checkbox } from "@blueprintjs/core";
 import { ModalDialog, IModalDialogProps } from "./modal-dialog";
+import { GlobalEvents } from "../../common/global-events";
+import { ObservableContext } from "../../common/services/observable-module";
+import { useMount, useUnmount } from "react-use";
 
 interface IAlertDialogResult {
   isCancel: boolean;
@@ -34,18 +37,15 @@ const RenderAlertDialog = (props: IAlertDialogProps) => {
   const [isChecked, setIsChecked] = useState(
     props.checkbox?.defaultChecked ?? false
   );
-  useEffect(() => {
-    const token = PubSub.subscribe(
-      SubcribeEvents.GUIAlertDialogVisibility,
-      (event: SubcribeEvents, data: any) => {
-        setIsShow(data.show);
+
+  useMount(() => {
+    ObservableContext.subscribe(
+      GlobalEvents.GUIAlertDialogVisibility,
+      (visibility: boolean) => {
+        setIsShow(visibility);
       }
     );
-
-    return () => {
-      PubSub.unsubscribe(token);
-    };
-  }, []);
+  });
 
   return (
     <Alert
@@ -119,9 +119,11 @@ class AlertDialog extends ModalDialog<IAlertDialogResult> {
           }}
           onClose={() => {
             props.onClose && props.onClose();
-            PubSub.publishSync(SubcribeEvents.GUIAlertDialogVisibility, {
-              show: false
-            });
+
+            ObservableContext.next(
+              GlobalEvents.GUIAlertDialogVisibility,
+              false
+            );
 
             resolve(result);
           }}

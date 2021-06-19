@@ -1,14 +1,15 @@
-import { BrowserWindow, remote } from "electron";
+import { remote } from "electron";
 import fs from "fs-extra";
 
 import { DBProjects } from "../../../common/database/db-project";
 import ProjectManager from "../../../common/services/project-manager";
-import { WindowIDs } from "../../common/window-ids";
 import { ProjectBrowserWindow } from "../../windows/project-browser-window";
-import { WindowsManager } from "../../windows/windows-manager";
 import { WorkspaceWindow } from "../../windows/workspace-window";
 
-export type ProjectBrowserItemType = "recently-project" | "templates";
+export type ProjectBrowserItemType =
+  | "recently-project"
+  | "templates"
+  | "add-new";
 export type ProjectBrowserItem = {
   id: string;
   itemType: ProjectBrowserItemType;
@@ -45,7 +46,64 @@ export class ProjectBrowserGUI {
     return list;
   }
 
-  static async openProject(projectBrowserItem: ProjectBrowserItem) {
+  static async removeProject(projectBrowserItem: ProjectBrowserItem) {
+    // remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
+    //   title: "移除最近项目",
+    //   message: `要从最近项目中移除 [${projectBrowserItem.name}] 吗？`,
+    //   detail: "此操作不会实际删除您硬盘中的数据",
+    //   checkboxLabel: "以后不再提醒",
+    //   buttons: ["确认", "取消"]
+    // });
+
+    await DBProjects.remove({ _id: projectBrowserItem.id }, { multi: true });
+  }
+
+  static async addProject(path: string) {
+    const project = await DBProjects.findOne({ path });
+    if (!project) {
+      // 尝试读取项目文件
+      await DBProjects.insert({
+        path: path
+      });
+    } else {
+      await DBProjects.update(
+        { _id: project._id },
+        { $set: { updatedAt: new Date() } }
+      );
+    }
+  }
+
+  static async addLocalProject() {
+    const paths = remote.dialog.showOpenDialogSync(remote.getCurrentWindow(), {
+      title: "打开本地 AVG 项目",
+      properties: ["openDirectory"]
+    });
+
+    if (!paths) {
+      return "cancel";
+    }
+
+    if (!paths.length) {
+      return "failed";
+    }
+
+    const dir = paths[0];
+
+    // 读取项目
+    if (ProjectManager.verifyProject(dir)) {
+      await this.addProject(dir);
+      return "success";
+    }
+
+    return "failed";
+  }
+
+  static async openProjectInWorkspace(projectBrowserItem: ProjectBrowserItem) {
+    if (projectBrowserItem.itemType === "add-new") {
+      // add new project
+      return;
+    }
+
     if (!projectBrowserItem.path || !fs.existsSync(projectBrowserItem.path)) {
       remote.dialog.showMessageBox({
         type: "error",
@@ -56,22 +114,15 @@ export class ProjectBrowserGUI {
       return false;
     }
 
-    const browserWindow = await WindowsManager.getWindow(
-      WindowIDs.ProjectBrowserWindow
-    );
-
-    const all = remote.BrowserWindow.getAllWindows();
-
-    console.log("browserWindow id ", all, browserWindow.id);
-
-    browserWindow.hide();
-
-    WorkspaceWindow.open(
+    await ProjectBrowserWindow.close();
+    await WorkspaceWindow.open(
       { project_dir: projectBrowserItem.path },
-      { autoShow: false }
+      `${projectBrowserItem.id}`
     );
 
-    WorkspaceWindow.setTitle(`${projectBrowserItem.name} - AVG Workspace`);
+    await WorkspaceWindow.setTitle(
+      `${projectBrowserItem.name} - AVG Workspace`
+    );
 
     return true;
   }

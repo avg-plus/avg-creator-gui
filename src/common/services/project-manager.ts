@@ -61,6 +61,8 @@ export class AVGProjectManager {
     return projectReader.load();
   }
 
+  isLegalProjectDir(projectDir: string) {}
+
   loadProject(dir: string) {
     this.projectRootDir = dir;
     this.projectData = this.readProjectData(this.projectRootDir);
@@ -141,8 +143,10 @@ export class AVGProjectManager {
 
   generateIndexes() {}
 
-  private verifyProject(dir: string) {
-    assert(fs.existsSync(dir), "项目目录不存在");
+  verifyProject(dir: string) {
+    if (!fs.existsSync(dir)) {
+      return false;
+    }
 
     for (let i = 0; i < VerifyFileList.length; ++i) {
       const v = VerifyFileList[i];

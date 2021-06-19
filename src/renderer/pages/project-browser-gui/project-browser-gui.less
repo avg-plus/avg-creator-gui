@@ -25,6 +25,12 @@
       }
     }
   }
+
+  .btn-open-project {
+    position: absolute;
+    bottom: 1%;
+    width: 90%;
+  }
 }
 
 .project-container {
@@ -40,7 +46,6 @@
 
   .box-wrapper {
     text-align: center;
-
     .box {
       width: 182px;
       height: 120px;
@@ -52,6 +57,17 @@
       border-radius: 8px;
       padding: 2px 4px;
       border: 2px solid transparent;
+
+      &.add-new-box {
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.07);
+      }
+
+      .add-new-icon {
+        position: absolute;
+        left: 33.33%;
+        top: 12%;
+      }
 
       .title {
         font-size: 20px;
@@ -84,4 +100,8 @@
       }
     }
   }
+}
+
+.bp3-overlay-backdrop {
+  background-color: transparent !important;
 }

@@ -1,21 +1,28 @@
-import { BrowserWindowConstructorOptions } from "electron";
-import { WindowIDs } from "../common/window-ids";
+import { WindowIDs } from "../../common/window-ids";
 import { AVGWindow } from "./gui-window";
 
 const WIDTH = 860;
 const HEIGHT = 640;
 
-export class GUIWorkspaceWindow extends AVGWindow {
+interface GUIWorkspaceWindowParams {
+  project_dir: string;
+}
+
+export class GUIWorkspaceWindow extends AVGWindow<GUIWorkspaceWindowParams> {
   constructor() {
     super(WindowIDs.WorkspaceWindow, "workspace.index.html", {
-      frame: false,
-      transparent: false,
-      thickFrame: false,
-      show: false,
-      center: true,
-      hasShadow: true,
-      resizable: false,
-      titleBarStyle: "hidden"
+      autoShow: true,
+      singleton: true,
+      browserWindowOptions: {
+        frame: false,
+        transparent: false,
+        thickFrame: false,
+        show: false,
+        center: true,
+        hasShadow: true,
+        resizable: true,
+        titleBarStyle: "hidden"
+      }
     });
   }
 }

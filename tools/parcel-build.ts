@@ -16,7 +16,8 @@ async function compileParcel(options = {}) {
     path.join(__dirname, "../static/workspace.index.html"),
     path.join(__dirname, "../static/index.html"),
     path.join(__dirname, "../src/main/preload.ts"),
-    path.join(__dirname, "../src/main/main.ts")
+    path.join(__dirname, "../src/main/main.ts"),
+    path.join(__dirname, "../src/main/window-manager.ts")
   ];
 
   const bundlerOptions: ParcelBundler.ParcelOptions = {
