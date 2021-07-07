@@ -45,13 +45,6 @@ async function compileParcel(options = {}) {
     path.join(__dirname, "../src/main/main.ts")
   );
 
-  // Add to entries
-  // enumFiles("./src/main/remote", ".ts").map((v) => {
-  //   entryFiles.push(v);
-  // });
-
-  console.log("entryFiles", entryFiles);
-
   const bundlerOptions: ParcelBundler.ParcelOptions = {
     outDir, // The out directory to put the build files in, defaults to dist
     outFile: undefined, // The name of the outputFile
