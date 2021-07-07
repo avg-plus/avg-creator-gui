@@ -8,7 +8,7 @@ import SemVer from "semver";
 import { Env } from "../env";
 import got, { Progress, CancelableRequest } from "got";
 import { Response } from "got/dist/source/core";
-import { LocalAppConfig } from "../local-app-config";
+import { LocalAppConfig } from "../remote-objects/remote-app-config";
 
 export interface UpdateItem {
   url: string;

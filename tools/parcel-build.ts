@@ -5,20 +5,52 @@ import * as ParcelBundler from "parcel-bundler";
 
 const outDir = "./dist";
 
+function enumFiles(directory: string, ext: string): string[] {
+  const filePaths: string[] = [];
+  const directories = [directory];
+  directories.forEach((curDir) => {
+    const names = fs.readdirSync(curDir);
+    names.forEach((name) => {
+      if (!ext || !name.endsWith(ext)) {
+        return;
+      }
+
+      filePaths.push(path.resolve(curDir, name));
+    });
+  });
+
+  return filePaths;
+}
+
 async function copyFiles() {
   fs.copySync("./static/icons", `${outDir}/static/icons`);
   fs.copyFileSync("./CHANGELOG.md", `${outDir}/CHANGELOG.md`);
 }
 
 async function compileParcel(options = {}) {
-  const entryFiles = [
-    path.join(__dirname, "../static/project-browser.index.html"),
-    path.join(__dirname, "../static/workspace.index.html"),
-    path.join(__dirname, "../static/index.html"),
+  const entryFiles: string[] = [];
+
+  // enum all static .html files
+  const htmlFiles = enumFiles("./static", ".html");
+
+  // Add to entries
+  htmlFiles.map((v) => {
+    entryFiles.push(v);
+  });
+
+  entryFiles.push(
     path.join(__dirname, "../src/main/preload.ts"),
-    path.join(__dirname, "../src/main/main.ts"),
-    path.join(__dirname, "../src/main/window-manager.ts")
-  ];
+    path.join(__dirname, "../src/main/remote/window-manager.ts"),
+    path.join(__dirname, "../src/main/remote/database/db-project.ts"),
+    path.join(__dirname, "../src/main/main.ts")
+  );
+
+  // Add to entries
+  // enumFiles("./src/main/remote", ".ts").map((v) => {
+  //   entryFiles.push(v);
+  // });
+
+  console.log("entryFiles", entryFiles);
 
   const bundlerOptions: ParcelBundler.ParcelOptions = {
     outDir, // The out directory to put the build files in, defaults to dist

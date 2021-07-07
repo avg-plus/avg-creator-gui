@@ -1,11 +1,8 @@
 import path from "path";
-import { Env } from "../env";
 import Datastore from "nedb-promises";
 
-import { remote } from "electron";
-import { logger } from "../lib/logger";
-
-const app = remote.app;
+import { logger } from "../../../common/lib/logger";
+import { app } from "electron";
 
 export class Database {
   datastore: Datastore;

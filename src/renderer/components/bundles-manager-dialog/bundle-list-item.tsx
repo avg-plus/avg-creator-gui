@@ -16,7 +16,7 @@ import { GUIToaster } from "../../common/toaster";
 import { useForceUpdate } from "../../hooks/use-forceupdate";
 
 import "./bundle-list-item.less";
-import { LocalAppConfig } from "../../../common/local-app-config";
+import { LocalAppConfig } from "../../../common/remote-objects/remote-app-config";
 import classNames from "classnames";
 
 export interface IBundleListItemProps {

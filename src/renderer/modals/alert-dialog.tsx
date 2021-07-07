@@ -66,7 +66,7 @@ const RenderAlertDialog = (props: IAlertDialogProps) => {
       onClose={props.onClose}
       style={{
         width: "86%",
-        height: "100%",
+        height: "auto",
         backgroundColor: "rgba(0,0,0,0,0) !important"
       }}
     >

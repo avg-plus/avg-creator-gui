@@ -1,0 +1,52 @@
+.bp3-dialog-container {
+  height: 100%;
+  overflow: hidden;
+}
+
+.close-button {
+  position: absolute;
+  z-index: 9999;
+  bottom: 1%;
+  left: 26%;
+}
+
+.project-wizard-container {
+  width: 100%;
+  height: 100%;
+  //   padding-top: 22px; // has title bar
+
+  .helper-text {
+    color: red;
+  }
+
+  .bp3-file-input {
+    width: 100%;
+  }
+
+  .bp3-dialog-header {
+    height: 100%;
+    width: 100%;
+    display: none;
+  }
+
+  .bp3-multistep-dialog-panels {
+    height: 100%;
+  }
+
+  .bp3-dialog-step-container {
+    .bp3-dialog-step-icon {
+      background-color: #8a9ba8;
+    }
+
+    &.bp3-active {
+      .bp3-dialog-step-icon {
+        background-color: #c62d24;
+      }
+    }
+  }
+
+  .panel-container {
+    padding: 60px;
+    height: 90%;
+  }
+}

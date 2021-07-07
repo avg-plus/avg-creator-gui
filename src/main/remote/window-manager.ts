@@ -1,5 +1,5 @@
 import { BrowserWindow } from "electron";
-import { WindowIDs } from "../common/window-ids";
+import { WindowIDs } from "../../common/window-ids";
 
 const KEY = "window_ids";
 
@@ -75,6 +75,21 @@ export class WindowsManager {
     }
 
     return;
+  }
+
+  async requestCloseWindow(
+    windowID: WindowIDs,
+    instanceID: string = "default",
+    destroy: boolean = true
+  ) {
+    const browserWindow = await this.getWindow(windowID, instanceID);
+    if (browserWindow) {
+      if (destroy) {
+        browserWindow.close();
+      } else {
+        browserWindow.hide();
+      }
+    }
   }
 }
 

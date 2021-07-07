@@ -3,14 +3,14 @@ import * as ReactDOM from "react-dom";
 import "../common/lib/logger";
 
 import "./project-browser-gui.index.less";
-import { GUIWindowApplication } from "../common/services/app-init";
-import { ProjectBrowserGUIView } from "./pages/project-browser-gui/project-browser-gui";
+import { RendererApplication } from "../common/services/renderer-application";
+import { ProjectBrowserPage } from "./pages/project-browser-gui/project-browser-page";
 import { ProjectBrowserWindow } from "./windows/project-browser-window";
 
-GUIWindowApplication.setWindow(ProjectBrowserWindow);
-GUIWindowApplication.start();
+RendererApplication.setWindow(ProjectBrowserWindow);
+RendererApplication.start();
 
 ReactDOM.render(
-  <ProjectBrowserGUIView />,
+  <ProjectBrowserPage />,
   document.getElementById("root") as HTMLElement
 );

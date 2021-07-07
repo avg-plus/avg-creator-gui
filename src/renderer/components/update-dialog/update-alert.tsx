@@ -18,16 +18,15 @@ import { Progress, CancelableRequest } from "got";
 import { formatBytes } from "../../../common/utils";
 import { spawnSync } from "child_process";
 import { Response, RequestError } from "got/dist/source/core";
-import { LocalAppConfig } from "../../../common/local-app-config";
+import { LocalAppConfig } from "../../../common/remote-objects/remote-app-config";
 import { Env } from "../../../common/env";
 
 export default () => {
   const { state, dispatch } = useContext(CreatorContext);
   const [downloadingStatus, setDownloadingStatus] = useState<Progress>();
   const [downloadedFile, setDownloadedFile] = useState<string>("");
-  const [currentDownloadRequest, setCurrentDownloadRequest] = useState<
-    CancelableRequest<Response<Buffer>>
-  >();
+  const [currentDownloadRequest, setCurrentDownloadRequest] =
+    useState<CancelableRequest<Response<Buffer>>>();
 
   let shouldUpdate = false;
   let imcommingVersion = "";

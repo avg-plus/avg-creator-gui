@@ -4,7 +4,7 @@ import fs from "fs-extra";
 import { NonIdealState, Button, Tag } from "@blueprintjs/core";
 import { useMount } from "react-use";
 import { BundlesManager } from "../../../common/services/bundles-manager/bundles-manager";
-import { LocalAppConfig } from "../../../common/local-app-config";
+import { LocalAppConfig } from "../../../common/remote-objects/remote-app-config";
 import { Env } from "../../../common/env";
 import { logger } from "../../../common/lib/logger";
 

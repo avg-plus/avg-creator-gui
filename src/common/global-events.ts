@@ -24,6 +24,16 @@ export enum GlobalEvents {
   ScrollToStoryItem = "ScrollToStoryItem",
 
   /**
+   * 窗口相关事件
+   */
+
+  OnWindowWillShow = "OnWindowWillShow",
+  OnWindowShow = "OnWindowShow",
+
+  // 项目浏览器窗口
+  ReloadProjectList = "ReloadProjectList",
+
+  /**
    * 工程文件相关
    */
 

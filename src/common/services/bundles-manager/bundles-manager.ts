@@ -18,8 +18,8 @@ import md5File from "md5-file";
 import AdmZip from "adm-zip";
 import { remote, shell } from "electron";
 import { EnginePlatform } from "../../models/engine-platform";
-import { LocalAppConfig } from "../../local-app-config";
 import { GUIToaster } from "../../../renderer/common/toaster";
+import { LocalAppConfig } from "../../local-app-config";
 
 export enum BundleType {
   Engine = "engine",

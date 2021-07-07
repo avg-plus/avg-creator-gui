@@ -7,7 +7,7 @@ import querystring from "querystring";
 import "./workspace.index.less";
 
 import { AVGWorkspace } from "./pages/workspace/avg-workspace";
-import { GUIWindowApplication } from "../common/services/app-init";
+import { RendererApplication } from "../common/services/renderer-application";
 import { WorkspaceWindow } from "./windows/workspace-window";
 import { remote } from "electron";
 
@@ -27,8 +27,8 @@ if (urlObject && urlObject.query?.length) {
 
     remote.getCurrentWindow().close();
   } else {
-    GUIWindowApplication.setWindow(WorkspaceWindow);
-    GUIWindowApplication.start();
+    RendererApplication.setWindow(WorkspaceWindow);
+    RendererApplication.start();
 
     ReactDOM.render(
       <AVGWorkspace />,

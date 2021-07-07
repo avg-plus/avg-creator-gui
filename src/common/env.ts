@@ -2,10 +2,13 @@ import os from "os";
 import fs from "fs-extra";
 import path from "path";
 
-import { remote } from "electron";
+import { remote, app as ElectronApp } from "electron";
 import { LocalAppConfig } from "./local-app-config";
 
-const app = remote.app;
+let app: Electron.App = ElectronApp;
+if (process.type === "renderer") {
+  app = remote.app;
+}
 
 class _Env {
   appDataDir: string;

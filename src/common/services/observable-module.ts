@@ -1,4 +1,4 @@
-import Rx, { PartialObserver, Subject } from "rxjs";
+import { Subject } from "rxjs";
 import { GlobalEvents } from "../global-events";
 
 interface SubscribeEvent {

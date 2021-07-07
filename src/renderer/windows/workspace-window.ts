@@ -8,7 +8,7 @@ interface GUIWorkspaceWindowParams {
   project_dir: string;
 }
 
-export class GUIWorkspaceWindow extends AVGWindow<GUIWorkspaceWindowParams> {
+export class GUIWorkspaceWindow extends AVGWindow {
   constructor() {
     super(WindowIDs.WorkspaceWindow, "workspace.index.html", {
       autoShow: true,

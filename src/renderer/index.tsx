@@ -1,8 +1,8 @@
 /** @format */
 
-import "../common/lib/logger";
+// import "../common/lib/logger";
 
-import { GUIWindowApplication } from "../common/services/app-init";
+import { RendererApplication } from "../common/services/renderer-application";
 
 import "./index.less";
 import { ProjectBrowserWindow } from "./windows/project-browser-window";

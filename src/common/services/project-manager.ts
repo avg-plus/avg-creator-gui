@@ -1,34 +1,18 @@
-import fs, { Stats } from "fs-extra";
-import fg from "fast-glob";
+import fs from "fs-extra";
 import path from "path";
-import { assert } from "../exception";
-import {
-  ProjectFileData,
-  ProjectFileReader
-} from "../services/file-reader/project-file-reader";
-import { ObservableContext } from "../services/observable-module";
-import { AVGTreeNode } from "../models/tree-node";
-import { ResourceTreeNodeTypes } from "../models/resource-tree-node-types";
-import { GlobalEvents } from "../global-events";
-import { StoryFileReader } from "../services/file-reader/story-file-reader";
-import { Nullable } from "../traits";
+import { DBProjects } from "../../renderer/common/remote-objects/remote-database";
+import { ProjectFileReader } from "./file-reader/project-file-reader";
 
+const PROJECT_FILE_NAME = "project.avg";
 interface VerifiedFile {
   name: string;
   required: boolean;
   type: "file" | "directory";
 }
 
-interface PathObject {
-  name: string;
-  stats: Stats;
-  path: string;
-  children: PathObject[];
-}
-
 const VerifyFileList = [
   {
-    name: "project.avg",
+    name: PROJECT_FILE_NAME,
     type: "file",
     required: true
   },
@@ -45,11 +29,49 @@ const VerifyFileList = [
 ] as VerifiedFile[];
 
 export class AVGProjectManager {
-  private projectRootDir: string;
-  projectData: ProjectFileData;
+  static async createEmptyProject(
+    dir: string,
+    project_name: string,
+    description: string
+  ) {
+    try {
+      const projectDir = path.join(dir, project_name);
+      const dataDir = path.join(projectDir, "data");
+      const storiesDir = path.join(projectDir, "stories");
+      const projectFile = path.join(projectDir, PROJECT_FILE_NAME);
+      await this.addProjectRecord(projectDir);
 
-  readProjectData(projectDir: string) {
-    if (!this.verifyProject(projectDir)) {
+      fs.mkdirpSync(projectDir);
+      fs.mkdirSync(dataDir);
+      fs.mkdirSync(storiesDir);
+
+      fs.writeJsonSync(projectFile, {
+        project_name,
+        description,
+        version: "1.0"
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async addProjectRecord(path: string) {
+    const project = await DBProjects.findOne({ path });
+    if (!project) {
+      // 尝试读取项目文件
+      await DBProjects.insert({
+        path: path
+      });
+    } else {
+      await DBProjects.update(
+        { _id: project._id },
+        { $set: { updatedAt: new Date() } }
+      );
+    }
+  }
+
+  static readProjectData(projectDir: string) {
+    if (!AVGProjectManager.verifyProject(projectDir)) {
       throw new Error("加载项目出错");
     }
 
@@ -61,89 +83,7 @@ export class AVGProjectManager {
     return projectReader.load();
   }
 
-  isLegalProjectDir(projectDir: string) {}
-
-  loadProject(dir: string) {
-    this.projectRootDir = dir;
-    this.projectData = this.readProjectData(this.projectRootDir);
-
-    const storiesDir = this.getDir("stories");
-
-    // 读取故事树
-    const fileTree = this.buildFileTree(storiesDir);
-    const convertPathObjectToTreeItem = (pathObjects: PathObject[]) => {
-      const items: AVGTreeNode[] = [];
-      pathObjects.forEach((obj) => {
-        const treeItem: Partial<AVGTreeNode> = {};
-        treeItem.title = obj.name;
-        if (obj.children?.length) {
-          treeItem.children = convertPathObjectToTreeItem(obj.children);
-        }
-
-        treeItem.data = {
-          nodeType: obj.stats.isDirectory()
-            ? ResourceTreeNodeTypes.Folder
-            : ResourceTreeNodeTypes.StoryNode,
-          MD5: "",
-          path: obj.path
-        };
-
-        items.push(treeItem as AVGTreeNode);
-      });
-
-      return items;
-    };
-
-    const treeItems: AVGTreeNode[] = convertPathObjectToTreeItem(fileTree);
-
-    ObservableContext.next(GlobalEvents.OnProjectLoaded, treeItems);
-  }
-
-  openStory(filename: string) {
-    const storyReader = new StoryFileReader(filename);
-    return storyReader.load();
-  }
-
-  saveStory(data: any) {}
-
-  private buildFileTree(dir: string, extensions = []) {
-    const files = fg.sync(`${dir}/**/*`, {
-      objectMode: true,
-      onlyFiles: false,
-      stats: true,
-      markDirectories: true,
-      dot: false
-    });
-
-    let result: PathObject[] = [];
-    let level = { result };
-
-    files.forEach((file) => {
-      const filePath = file.path;
-      const stats = file.stats!;
-      const relativePath = path.relative(dir, filePath);
-
-      relativePath.split("/").reduce((r: { result: PathObject[] }, name) => {
-        if (!r[name]) {
-          r[name] = { result: [] };
-          r.result.push({
-            name,
-            stats,
-            path: filePath,
-            children: r[name].result
-          });
-        }
-
-        return r[name];
-      }, level);
-    });
-
-    return result;
-  }
-
-  generateIndexes() {}
-
-  verifyProject(dir: string) {
+  static verifyProject(dir: string) {
     if (!fs.existsSync(dir)) {
       return false;
     }
@@ -171,15 +111,4 @@ export class AVGProjectManager {
 
     return true;
   }
-
-  getDir(dir: "stories" | "data") {
-    switch (dir) {
-      case "stories":
-        return path.join(this.projectRootDir, "stories");
-      case "data":
-        return path.join(this.projectRootDir, "data");
-    }
-  }
 }
-
-export default new AVGProjectManager();

@@ -4,8 +4,9 @@ import {
   BrowserWindow
 } from "electron";
 import { Env } from "../../common/env";
+import { logger } from "../../common/lib/logger";
 import { WindowIDs } from "../../common/window-ids";
-import { windowManager } from "./remote-windows-manager";
+import { windowManager } from "../common/remote-objects/remote-windows-manager";
 
 export interface AVGWindowOptions {
   browserWindowOptions: BrowserWindowConstructorOptions;
@@ -18,10 +19,14 @@ export interface AVGWindowOptions {
 
   // 是否自动显示
   autoShow?: boolean;
+
+  // 关闭窗口时是否销毁
+  destroyOnClosed?: boolean;
 }
 
-export class AVGWindow<T> {
+export abstract class AVGWindow {
   readonly id: WindowIDs;
+  uniqueID: number;
 
   htmlFile: string;
   options: AVGWindowOptions;
@@ -33,8 +38,15 @@ export class AVGWindow<T> {
     options.autoShow = options.autoShow ?? true;
     options.modal = options.autoShow ?? false;
     options.singleton = options.autoShow ?? true;
+    options.destroyOnClosed = options.destroyOnClosed ?? true;
 
     this.options = options;
+  }
+
+  async preload() {
+    // 预创建窗体，加载但不显示
+    this.options.autoShow = false;
+    (await this.open())?.hide();
   }
 
   private async createWindow(instanceID: string = "default") {
@@ -59,8 +71,13 @@ export class AVGWindow<T> {
 
     // 注册到窗口管理器
     await windowManager.registerWindow(this.id, browserWindow.id, instanceID);
+    this.uniqueID = browserWindow.id;
 
     return browserWindow;
+  }
+
+  async browserWindow(instanceID: string = "default") {
+    return await windowManager.getWindow(this.id, instanceID);
   }
 
   async setTitle(title: string, instanceID?: string) {
@@ -68,16 +85,24 @@ export class AVGWindow<T> {
     instance?.setTitle(title);
   }
 
-  async close(destroy: boolean = false, instanceID?: string) {
-    const instance = await this.getInstance(instanceID);
-
-    instance?.hide();
-    if (destroy) {
-      instance?.close();
-    }
+  async close(instanceID?: string) {
+    await windowManager.requestCloseWindow(
+      this.id,
+      instanceID,
+      this.options.destroyOnClosed
+    );
   }
 
-  async open(params?: T, instanceID?: string) {
+  async setParent(parent: AVGWindow) {
+    const parentWindow = await parent.browserWindow();
+    if (!parentWindow) {
+      return;
+    }
+
+    this.options.browserWindowOptions.parent = parentWindow;
+  }
+
+  async open<T extends object>(params?: T, instanceID?: string) {
     if (this.options.singleton) {
       instanceID = "default";
     }
@@ -90,25 +115,34 @@ export class AVGWindow<T> {
     let browserWindow: BrowserWindow;
     if (!existsWindow) {
       browserWindow = await this.createWindow();
+
+      browserWindow.webContents.once("dom-ready", () => {
+        if (Env.isDevelopment()) {
+          browserWindow.webContents.openDevTools();
+        }
+      });
+
+      browserWindow.on("ready-to-show", () => {
+        if (this.options.autoShow) {
+          browserWindow.show();
+        }
+      });
+
+      browserWindow.loadFile("./dist/static/" + this.htmlFile, {
+        query: params ?? {}
+      });
     } else {
       browserWindow = existsWindow;
     }
 
-    browserWindow.webContents.once("dom-ready", () => {
-      if (Env.isDevelopment()) {
-        browserWindow.webContents.openDevTools();
-      }
-    });
-
-    if (this.options.autoShow) {
-      browserWindow.once("ready-to-show", () => {
-        browserWindow.show();
-      });
+    if (!browserWindow) {
+      remote.dialog.showErrorBox("错误", "无法创建窗口。");
+      return;
     }
 
-    browserWindow.loadFile("./dist/static/" + this.htmlFile, {
-      query: params ?? {}
-    });
+    logger.info(`Window ${this.id} loaded.`);
+
+    return browserWindow;
   }
 
   private async getInstance(instanceID?: string) {

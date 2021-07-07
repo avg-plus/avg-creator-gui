@@ -7,12 +7,13 @@ import {
   ContextMenu,
   Intent,
   Menu,
-  Card
+  Card,
+  MenuItem
 } from "@blueprintjs/core";
 
 import classNames from "classnames";
 
-import "./project-browser-gui.less";
+import "./project-browser-page.less";
 
 import AntdIcon from "@ant-design/icons";
 import { Col, Row } from "antd/lib/grid";
@@ -22,16 +23,18 @@ import Typography from "antd/lib/typography";
 import projectIcon from "../../images/icons/project-title.svg";
 import { ProjectItemContextMenu } from "../../components/context-menus/project-item-menus";
 import {
-  ProjectBrowserGUI,
+  ProjectBrowserService,
   ProjectBrowserItem,
   ProjectBrowserItemType
-} from "./project-browser-gui.service";
+} from "./project-browser-page.service";
 import { useMount } from "react-use";
 import { GUIAlertDialog } from "../../modals/alert-dialog";
+import ipcObservableRenderer from "../../../common/ipc-observable/ipc-observable-renderer";
+import { GlobalEvents } from "../../../common/global-events";
 
 const { Title, Text } = Typography;
 
-export const ProjectBrowserGUIView = () => {
+export const ProjectBrowserPage = () => {
   const [activeMenuItem, setActiveMenuItem] =
     useState<ProjectBrowserItemType>("recently-project");
 
@@ -42,14 +45,23 @@ export const ProjectBrowserGUIView = () => {
   const [isRemoveAlertShow, setIsRemoveAlertShow] = useState(false);
 
   useMount(async () => {
-    // ProjectBrowserGUI.addProject(
-    //   "/Users/angrypowman/Workspace/Programming/Revisions/avg-plus/game-projects/v2.workspace.example"
-    // );
     await reloadProjectList();
+    await ProjectBrowserService.init();
+
+    ipcObservableRenderer.subscribe(
+      GlobalEvents.ReloadProjectList,
+      async () => {
+        setTimeout(async () => {
+          await reloadProjectList();
+        }, 1000);
+      }
+    );
   });
 
   const reloadProjectList = async () => {
-    const projectList = await ProjectBrowserGUI.loadProjectList();
+    const projectList = await ProjectBrowserService.loadProjectList();
+    console.log("reload project list", projectList);
+
     setProjectItems([
       {
         id: "add-new",
@@ -82,7 +94,7 @@ export const ProjectBrowserGUIView = () => {
   };
 
   const handleOpenLocalProject = async () => {
-    const result = await ProjectBrowserGUI.addLocalProject();
+    const result = await ProjectBrowserService.addLocalProject();
     if (result === "failed") {
       GUIAlertDialog.show({
         text: (
@@ -113,7 +125,7 @@ export const ProjectBrowserGUIView = () => {
   };
 
   const handleItemDbClick = (item: ProjectBrowserItem) => {
-    ProjectBrowserGUI.openProjectInWorkspace(item);
+    ProjectBrowserService.openProjectInWorkspace(item);
   };
 
   const handleContextMenu = (
@@ -127,7 +139,7 @@ export const ProjectBrowserGUIView = () => {
           setIsRemoveAlertShow(true);
         }}
         onExploreDir={() => {}}
-        onOpen={() => ProjectBrowserGUI.openProjectInWorkspace(item)}
+        onOpen={() => ProjectBrowserService.openProjectInWorkspace(item)}
       />,
       {
         left: event.clientX,
@@ -139,7 +151,7 @@ export const ProjectBrowserGUIView = () => {
   const handleDelete = async () => {
     // 等待菜单先隐藏
     if (selectedItem) {
-      await ProjectBrowserGUI.removeProject(selectedItem);
+      await ProjectBrowserService.removeProject(selectedItem);
       const items = projectItems.filter((v) => {
         return v.id !== selectedItem.id;
       });
@@ -175,14 +187,14 @@ export const ProjectBrowserGUIView = () => {
           <div key="side-menu">
             <div className="side-menu">
               <Menu>
-                <Menu.Item
+                <MenuItem
                   className={classNames({
                     selected: activeMenuItem === "recently-project"
                   })}
                   text="我的项目"
                   onMouseDown={() => handleMenuClick("recently-project")}
                 />
-                <Menu.Item
+                <MenuItem
                   className={classNames({
                     selected: activeMenuItem === "templates"
                   })}
@@ -225,29 +237,38 @@ export const ProjectBrowserGUIView = () => {
                       <List.Item>
                         <div
                           className="box-wrapper"
+                          onDoubleClick={(e) => {
+                            handleItemDbClick(item);
+                          }}
                           onMouseDown={(e) =>
                             handleItemClick(e, activeMenuItem, item)
                           }
                         >
-                          <div
-                            className={classNames("box", "add-new-box", {
-                              selected: item.id === selectedID
-                            })}
-                          >
-                            <Icon
-                              className="add-new-icon"
-                              color="#dcddde"
-                              icon="plus"
-                              iconSize={80}
-                            />
-                          </div>
-                          <div
-                            className={classNames("title", {
-                              selected: item.id === selectedID
-                            })}
-                          >
-                            {item.name}
-                          </div>
+                          <Col>
+                            <Row>
+                              <div
+                                className={classNames("box", "add-new-box", {
+                                  selected: item.id === selectedID
+                                })}
+                              >
+                                <Icon
+                                  className="add-new-icon"
+                                  color="#dcddde"
+                                  icon="plus"
+                                  iconSize={80}
+                                />
+                              </div>
+                            </Row>
+                            <Row justify={"center"}>
+                              <div
+                                className={classNames("title", {
+                                  selected: item.id === selectedID
+                                })}
+                              >
+                                {item.name}
+                              </div>
+                            </Row>
+                          </Col>
                         </div>
                       </List.Item>
                     );
@@ -264,35 +285,41 @@ export const ProjectBrowserGUIView = () => {
                             handleContextMenu(event, item)
                           }
                         >
-                          <div
-                            className={classNames("box", {
-                              selected: item.id === selectedID
-                            })}
-                          >
-                            <Row justify="center" align="middle">
-                              <Col>
-                                <AntdIcon
-                                  component={projectIcon}
-                                  style={{ fontSize: "24px" }}
-                                ></AntdIcon>
-                              </Col>
+                          <Col>
+                            <Row>
+                              <div
+                                className={classNames("box", {
+                                  selected: item.id === selectedID
+                                })}
+                              >
+                                <Row justify="center" align="middle">
+                                  <Col>
+                                    <AntdIcon
+                                      component={projectIcon}
+                                      style={{ fontSize: "24px" }}
+                                    ></AntdIcon>
+                                  </Col>
 
-                              <Col>
-                                <div className={"title"}>{item.name}</div>
-                              </Col>
+                                  <Col>
+                                    <div className={"title"}>{item.name}</div>
+                                  </Col>
+                                </Row>
+
+                                <div className={"description"}>
+                                  {item.description}
+                                </div>
+                              </div>
                             </Row>
-
-                            <div className={"description"}>
-                              {item.description}
-                            </div>
-                          </div>
-                          <div
-                            className={classNames("title", {
-                              selected: item.id === selectedID
-                            })}
-                          >
-                            {item.name}
-                          </div>
+                            <Row justify={"center"}>
+                              <div
+                                className={classNames("title", {
+                                  selected: item.id === selectedID
+                                })}
+                              >
+                                {item.name}
+                              </div>
+                            </Row>
+                          </Col>
                         </div>
                       </List.Item>
                     );

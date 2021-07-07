@@ -6,7 +6,7 @@ const HEIGHT = 640;
 
 interface GUIProjectBrowserWindowParams {}
 
-export class GUIProjectBrowserWindow extends AVGWindow<GUIProjectBrowserWindowParams> {
+export class GUIProjectBrowserWindow extends AVGWindow {
   constructor() {
     super(WindowIDs.ProjectBrowserWindow, "project-browser.index.html", {
       autoShow: true,

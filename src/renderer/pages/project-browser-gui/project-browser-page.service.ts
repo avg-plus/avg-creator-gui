@@ -1,10 +1,14 @@
 import { remote } from "electron";
 import fs from "fs-extra";
 
-import { DBProjects } from "../../../common/database/db-project";
-import ProjectManager from "../../../common/services/project-manager";
+import { GlobalEvents } from "../../../common/global-events";
+import { AVGProjectManager } from "../../../common/services/project-manager";
 import { ProjectBrowserWindow } from "../../windows/project-browser-window";
+import { ProjectWizardWindow } from "../../windows/project-wizard-window";
 import { WorkspaceWindow } from "../../windows/workspace-window";
+
+import ipcObservableRenderer from "../../../common/ipc-observable/ipc-observable-renderer";
+import { DBProjects } from "../../common/remote-objects/remote-database";
 
 export type ProjectBrowserItemType =
   | "recently-project"
@@ -19,11 +23,17 @@ export type ProjectBrowserItem = {
   description?: string;
 };
 
-export class ProjectBrowserGUI {
+export class ProjectBrowserService {
   // pass project path to main window
 
+  static async init() {
+    // 预先加载创建项目窗口
+    await ProjectWizardWindow.setParent(ProjectBrowserWindow);
+    await ProjectWizardWindow.preload();
+  }
+
   static async loadProjectList(): Promise<ProjectBrowserItem[]> {
-    const projects = await DBProjects.find({}).sort({ updatedAt: 1 });
+    const projects = await DBProjects.find({}).sort({ updatedAt: -1 });
     const list: ProjectBrowserItem[] = [];
 
     projects.forEach((v) => {
@@ -31,7 +41,7 @@ export class ProjectBrowserGUI {
 
       if (fs.existsSync(path)) {
         // 尝试读取项目文件
-        const data = ProjectManager.readProjectData(path);
+        const data = AVGProjectManager.readProjectData(path);
 
         list.push({
           id: v._id,
@@ -43,34 +53,13 @@ export class ProjectBrowserGUI {
       }
     });
 
+    console.log("load projects", projects);
+
     return list;
   }
 
   static async removeProject(projectBrowserItem: ProjectBrowserItem) {
-    // remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
-    //   title: "移除最近项目",
-    //   message: `要从最近项目中移除 [${projectBrowserItem.name}] 吗？`,
-    //   detail: "此操作不会实际删除您硬盘中的数据",
-    //   checkboxLabel: "以后不再提醒",
-    //   buttons: ["确认", "取消"]
-    // });
-
     await DBProjects.remove({ _id: projectBrowserItem.id }, { multi: true });
-  }
-
-  static async addProject(path: string) {
-    const project = await DBProjects.findOne({ path });
-    if (!project) {
-      // 尝试读取项目文件
-      await DBProjects.insert({
-        path: path
-      });
-    } else {
-      await DBProjects.update(
-        { _id: project._id },
-        { $set: { updatedAt: new Date() } }
-      );
-    }
   }
 
   static async addLocalProject() {
@@ -90,8 +79,8 @@ export class ProjectBrowserGUI {
     const dir = paths[0];
 
     // 读取项目
-    if (ProjectManager.verifyProject(dir)) {
-      await this.addProject(dir);
+    if (AVGProjectManager.verifyProject(dir)) {
+      await AVGProjectManager.addProjectRecord(dir);
       return "success";
     }
 
@@ -100,7 +89,15 @@ export class ProjectBrowserGUI {
 
   static async openProjectInWorkspace(projectBrowserItem: ProjectBrowserItem) {
     if (projectBrowserItem.itemType === "add-new") {
-      // add new project
+      (
+        await ProjectWizardWindow.open({
+          parent: {
+            windowID: ProjectBrowserWindow.id,
+            instance: "default"
+          }
+        })
+      )?.show();
+
       return;
     }
 
@@ -114,7 +111,7 @@ export class ProjectBrowserGUI {
       return false;
     }
 
-    await ProjectBrowserWindow.close();
+    // ProjectBrowserWindow.close();
     await WorkspaceWindow.open(
       { project_dir: projectBrowserItem.path },
       `${projectBrowserItem.id}`

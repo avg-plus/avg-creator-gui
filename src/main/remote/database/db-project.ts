@@ -7,7 +7,10 @@ class _DBProjects extends Database {
 }
 
 const db = new _DBProjects();
-export const DBProjects: Datastore & _DBProjects = Object.assign(
+const RemoteDBProjects: Datastore & _DBProjects = Object.assign(
   db.datastore,
   db
 );
+
+export type TDBProjects = Datastore & _DBProjects;
+export default RemoteDBProjects;

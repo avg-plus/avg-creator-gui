@@ -6,10 +6,8 @@ import {
   BundlesManager,
   BundleType
 } from "../../../common/services/bundles-manager/bundles-manager";
-import { ProjectFileData } from "../../../common/manager/project-manager.ts";
-import { DBProjects } from "../../../common/database/db-project";
 import { GUIToaster } from "../../common/toaster";
-import { useForceUpdate } from "../../hooks/use-forceupdate";
+import { DBProjects } from "../../common/remote-objects/remote-database";
 
 export const ProjectDetailContextMenu = () => {
   const { state, dispatch } = useContext(CreatorContext);
