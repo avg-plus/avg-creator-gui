@@ -140,6 +140,9 @@ export const ProjectBrowserPage = () => {
         }}
         onExploreDir={() => {}}
         onOpen={() => ProjectBrowserService.openProjectInWorkspace(item)}
+        onOpenRerource={() =>
+          ProjectBrowserService.openProjectResourceWorkspace(item)
+        }
       />,
       {
         left: event.clientX,

@@ -5,6 +5,7 @@ interface IProjectItemContextMenuProps {
   onDelete: () => void;
   onOpen: () => void;
   onExploreDir: () => void;
+  onOpenRerource: () => void;
 }
 
 export const ProjectItemContextMenu = (props: IProjectItemContextMenuProps) => {
@@ -12,6 +13,11 @@ export const ProjectItemContextMenu = (props: IProjectItemContextMenuProps) => {
     <>
       <Menu>
         <Menu.Item icon="code" onClick={props.onOpen} text="打开项目" />
+        <Menu.Item
+          icon="database"
+          onClick={props.onOpenRerource}
+          text="打开资源管理"
+        />
         <Menu.Divider />
         <Menu.Item
           icon="trash"

@@ -42,6 +42,8 @@ async function compileParcel(options = {}) {
     path.join(__dirname, "../src/main/preload.ts"),
     path.join(__dirname, "../src/main/remote/window-manager.ts"),
     path.join(__dirname, "../src/main/remote/database/db-project.ts"),
+    path.join(__dirname, "../src/main/remote/database/db-resource.ts"),
+    path.join(__dirname, "../src/main/remote/database/db-resourceType.ts"),
     path.join(__dirname, "../src/main/main.ts")
   );
 
