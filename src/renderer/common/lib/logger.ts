@@ -2,18 +2,11 @@ import util from "util";
 import winston from "winston";
 import { TransformableInfo } from "logform";
 
-import packageInfo from "../../../package.json";
-import { Env } from "../env";
+import packageInfo from "../../../../package.json";
+import { Env } from "../remote-objects/remote-env";
 
-const {
-  combine,
-  timestamp,
-  label,
-  ms,
-  prettyPrint,
-  colorize,
-  printf
-} = winston.format;
+const { combine, timestamp, label, ms, prettyPrint, colorize, printf } =
+  winston.format;
 
 enum FormatedMode {
   Console,

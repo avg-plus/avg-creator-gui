@@ -7,7 +7,6 @@ import { DialogueItem } from "../../renderer/components/story-items/dialogue/dia
 import { Story } from "../models/story";
 import { getRandomIntInclusive, randomIn } from "../utils";
 import { ISaveData, StoryItemType } from "../story-item-type";
-import { logger } from "../lib/logger";
 import { StoryItem } from "../../renderer/components/story-items/story-item";
 import { WaitItem } from "../../renderer/components/story-items/wait/wait-item";
 import { SceneItem } from "../../renderer/components/story-items/scene/scene-item";
@@ -19,6 +18,7 @@ import { SoundItem } from "../../renderer/components/story-items/sound/sound-ite
 import ProjectManager from "./project-manager";
 import { GUIToaster } from "../../renderer/common/toaster";
 import { Intent } from "@blueprintjs/core";
+import { logger } from "../../renderer/common/lib/logger";
 
 export class StoryManager {
   static currentStory: Story = new Story();

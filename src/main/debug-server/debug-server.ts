@@ -1,7 +1,7 @@
 import WebSocket from "ws";
 import { DebugCommands } from "./commands";
-import { logger } from "../../common/lib/logger";
 import getPort from "get-port";
+import { logger } from "../../renderer/common/lib/logger";
 
 interface DebugProcessClient {
   PID: string;

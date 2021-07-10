@@ -18,7 +18,7 @@ import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
 import { CreatorContext } from "../../hooks/context";
 import { GUIToaster } from "../../common/toaster";
 import { IconNames } from "@blueprintjs/icons";
-import { LocalAppConfig } from "../../../common/local-app-config";
+import { LocalAppConfig } from "../../../main/remote/local-app-config";
 import { remote } from "electron";
 
 export default () => {

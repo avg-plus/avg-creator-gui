@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import "../common/lib/logger";
 
 import "./project-browser-gui.index.less";
 import { RendererApplication } from "../common/services/renderer-application";

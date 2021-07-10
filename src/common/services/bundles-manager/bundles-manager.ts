@@ -1,4 +1,3 @@
-import { Env } from "../../env";
 import got, { Progress } from "got";
 import fs from "fs-extra";
 
@@ -12,14 +11,15 @@ import {
   apiGetManifest,
   apiGetElectronMirror
 } from "../APIs/bundles-update-api";
-import { logger } from "../../lib/logger";
 import glob from "glob";
 import md5File from "md5-file";
 import AdmZip from "adm-zip";
 import { remote, shell } from "electron";
 import { EnginePlatform } from "../../models/engine-platform";
 import { GUIToaster } from "../../../renderer/common/toaster";
-import { LocalAppConfig } from "../../local-app-config";
+import { LocalAppConfig } from "../../../main/remote/local-app-config";
+import { Env } from "../../../renderer/common/remote-objects/remote-env";
+import { logger } from "../../../renderer/common/lib/logger";
 
 export enum BundleType {
   Engine = "engine",

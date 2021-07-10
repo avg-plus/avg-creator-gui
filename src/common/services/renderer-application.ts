@@ -3,13 +3,11 @@ import os from "os";
 import { FocusStyleManager } from "@blueprintjs/core";
 import { Color, Titlebar } from "custom-electron-titlebar";
 
-import "../local-app-config";
-import { logger } from "../lib/logger";
 import { remote } from "electron";
-import { Env } from "../env";
-import "./version-compatibility";
 import { AVGWindow } from "../../renderer/windows/gui-window";
 import "../../common/ipc-observable/index";
+import { Env } from "../../renderer/common/remote-objects/remote-env";
+import { logger } from "../../renderer/common/lib/logger";
 
 export interface GUIWindowApplicationOptions {
   hasTitlebar: boolean;
@@ -23,8 +21,8 @@ export class RendererApplication {
       hasTitlebar: true
     };
 
-    logger.debug("App start: ", remote.app.getVersion(), os.platform());
-    logger.debug("appDataDir", Env.getAppDataDir());
+    // logger.debug("App start: ", remote.app.getVersion(), os.platform());
+    // logger.debug("appDataDir", Env.getAppDataDir());
 
     // Blueprint 焦点设置
     FocusStyleManager.onlyShowFocusOnTabs();

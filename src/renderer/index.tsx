@@ -1,7 +1,5 @@
 /** @format */
 
-// import "../common/lib/logger";
-
 import { RendererApplication } from "../common/services/renderer-application";
 
 import "./index.less";

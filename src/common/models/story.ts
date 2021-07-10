@@ -1,6 +1,5 @@
 import produce from "immer";
 import _ from "underscore";
-import { logger } from "../lib/logger";
 
 import {
   OverscanIndexRange,

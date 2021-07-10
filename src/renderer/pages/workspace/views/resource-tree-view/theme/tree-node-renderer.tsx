@@ -3,8 +3,6 @@ import classNames from "classnames";
 
 import { TreeRendererProps } from "react-sortable-tree";
 
-import { logger } from "../../../../../../common/lib/logger";
-
 import "./tree-node-renderer.less";
 import { NodeSelectedStatus } from "../select-status";
 

@@ -1,6 +1,6 @@
 import PubSub from "pubsub-js";
+import { logger } from "../../renderer/common/lib/logger";
 import { GlobalEvents } from "../global-events";
-import { logger } from "../lib/logger";
 
 interface IDebugComponentData {
   text: string;

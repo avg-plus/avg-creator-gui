@@ -1,6 +1,6 @@
-import { logger } from "../lib/logger";
-import { ProjectFileData } from "../manager/project-manager.ts";
+import { logger } from "../../renderer/common/lib/logger";
 import { BundlesManager } from "./bundles-manager/bundles-manager";
+import { ProjectFileData } from "./file-reader/project-file-reader";
 
 export class Workspace {
   private static project: ProjectFileData;

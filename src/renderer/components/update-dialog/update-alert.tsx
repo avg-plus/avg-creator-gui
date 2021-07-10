@@ -4,7 +4,6 @@ import { Alert, Intent, Tag, ProgressBar } from "@blueprintjs/core";
 import { CreatorContext } from "../../hooks/context";
 import SemVer from "semver";
 import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
-import { logger } from "../../../common/lib/logger";
 import {
   UpdateItem,
   AutoUpdater,
@@ -19,7 +18,8 @@ import { formatBytes } from "../../../common/utils";
 import { spawnSync } from "child_process";
 import { Response, RequestError } from "got/dist/source/core";
 import { LocalAppConfig } from "../../../common/remote-objects/remote-app-config";
-import { Env } from "../../../common/env";
+import { Env } from "../../../main/remote/env";
+import { logger } from "../../common/lib/logger";
 
 export default () => {
   const { state, dispatch } = useContext(CreatorContext);

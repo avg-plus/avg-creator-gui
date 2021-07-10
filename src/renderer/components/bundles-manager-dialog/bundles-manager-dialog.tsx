@@ -22,7 +22,7 @@ import {
   NonIdealState
 } from "@blueprintjs/core";
 import { CreatorContext } from "../../hooks/context";
-import { LocalAppConfig } from "../../../common/local-app-config";
+import { LocalAppConfig } from "../../../main/remote/local-app-config";
 import { AVGCreatorActionType } from "../../redux/actions/avg-creator-actions";
 import { GUIToaster } from "../../common/toaster";
 import { BundleDesktopPage } from "./bundle-desktop-page";

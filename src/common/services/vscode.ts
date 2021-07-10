@@ -1,7 +1,7 @@
 import fs from "fs-extra";
 import { execFile, execSync } from "child_process";
-import { Env } from "../env";
 import commandExists from "command-exists";
+import { Env } from "../../renderer/common/remote-objects/remote-env";
 export class VSCode {
   static async run(projectDir: string) {
     const parameters = [projectDir];

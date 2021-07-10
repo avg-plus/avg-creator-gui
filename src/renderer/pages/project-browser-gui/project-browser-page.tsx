@@ -29,9 +29,8 @@ import {
 } from "./project-browser-page.service";
 import { useMount } from "react-use";
 import { GUIAlertDialog } from "../../modals/alert-dialog";
-import ipcObservableRenderer from "../../../common/ipc-observable/ipc-observable-renderer";
 import { GlobalEvents } from "../../../common/global-events";
-
+import ipcObservableRenderer from "../../../common/ipc-observable/ipc-observable-renderer";
 const { Title, Text } = Typography;
 
 export const ProjectBrowserPage = () => {
@@ -47,13 +46,12 @@ export const ProjectBrowserPage = () => {
   useMount(async () => {
     await reloadProjectList();
     await ProjectBrowserService.init();
-
     ipcObservableRenderer.subscribe(
       GlobalEvents.ReloadProjectList,
       async () => {
         setTimeout(async () => {
           await reloadProjectList();
-        }, 1000);
+        }, 500);
       }
     );
   });
@@ -61,7 +59,6 @@ export const ProjectBrowserPage = () => {
   const reloadProjectList = async () => {
     const projectList = await ProjectBrowserService.loadProjectList();
     console.log("reload project list", projectList);
-
     setProjectItems([
       {
         id: "add-new",

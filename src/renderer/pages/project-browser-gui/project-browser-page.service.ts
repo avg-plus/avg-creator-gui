@@ -1,13 +1,11 @@
 import { remote } from "electron";
 import fs from "fs-extra";
 
-import { GlobalEvents } from "../../../common/global-events";
 import { AVGProjectManager } from "../../../common/services/project-manager";
 import { ProjectBrowserWindow } from "../../windows/project-browser-window";
 import { ProjectWizardWindow } from "../../windows/project-wizard-window";
 import { WorkspaceWindow } from "../../windows/workspace-window";
 
-import ipcObservableRenderer from "../../../common/ipc-observable/ipc-observable-renderer";
 import { DBProjects } from "../../common/remote-objects/remote-database";
 
 export type ProjectBrowserItemType =

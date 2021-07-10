@@ -5,11 +5,16 @@ import isDev from "electron-is-dev";
 process.env.NODE_ENV = isDev ? "development" : "production";
 
 import path from "path";
+import "./remote/env";
+
+import { MainApplication } from "./main-application";
 import "../common/ipc-observable";
 
 app.commandLine.appendSwitch("in-process-gpu");
 
 app.on("ready", async () => {
+  MainApplication.init();
+
   const mainWindow = new BrowserWindow({
     show: false,
     webPreferences: {

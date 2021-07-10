@@ -4,9 +4,8 @@ import fs from "fs-extra";
 import { NonIdealState, Button, Tag } from "@blueprintjs/core";
 import { useMount } from "react-use";
 import { BundlesManager } from "../../../common/services/bundles-manager/bundles-manager";
-import { LocalAppConfig } from "../../../common/remote-objects/remote-app-config";
-import { Env } from "../../../common/env";
-import { logger } from "../../../common/lib/logger";
+import { Env } from "../../../main/remote/env";
+import { LocalAppConfig } from "../../common/remote-objects/remote-app-config";
 
 export const BundleDesktopPage = () => {
   const [electronMirrors, setElectronMirrors] = useState<any>();

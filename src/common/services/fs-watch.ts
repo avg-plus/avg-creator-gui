@@ -1,7 +1,7 @@
 import chokidar from "chokidar";
 import { DebugServer } from "../../main/debug-server/debug-server";
 import { DebugCommands } from "../../main/debug-server/commands";
-import { logger } from "../lib/logger";
+import { logger } from "../../renderer/common/lib/logger";
 
 export class AVGScriptHotReload {
   static watch(dir: string) {

@@ -3,9 +3,9 @@ import {
   BrowserWindowConstructorOptions,
   BrowserWindow
 } from "electron";
-import { Env } from "../../common/env";
-import { logger } from "../../common/lib/logger";
+
 import { WindowIDs } from "../../common/window-ids";
+import { logger } from "../common/lib/logger";
 import { windowManager } from "../common/remote-objects/remote-windows-manager";
 
 export interface AVGWindowOptions {
@@ -117,9 +117,9 @@ export abstract class AVGWindow {
       browserWindow = await this.createWindow();
 
       browserWindow.webContents.once("dom-ready", () => {
-        if (Env.isDevelopment()) {
-          browserWindow.webContents.openDevTools();
-        }
+        // if (Env.isDevelopment()) {
+        browserWindow.webContents.openDevTools();
+        // }
       });
 
       browserWindow.on("ready-to-show", () => {
