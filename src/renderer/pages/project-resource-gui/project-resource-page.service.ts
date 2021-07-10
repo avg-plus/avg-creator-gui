@@ -51,12 +51,10 @@ export class ProjectResourceService {
         { name: "未分类", icon: "grid", type: "unclassified" },
         { name: "临时分类", icon: "add-to-folder", type: "unclassified" }
       ]);
-      console.log(insert);
       resourceType = await DBResourceType.find({});
     }
 
     resourceType.forEach((v) => {
-      console.log(v);
       if (v["type"] === "classified") {
         classified.push({
           id: v._id,
@@ -96,5 +94,15 @@ export class ProjectResourceService {
     this.cur.path = path;
     await ProjectResourceWindow.open({ project_dir: path }, `${id}`);
     await ProjectResourceWindow.setTitle(`${name} - 资源管理`);
+  }
+
+  static async insertResourceType(name: string, isClassified: string) {
+    const insert = await DBResourceType.insert({
+      name: name,
+      icon: "folder-open",
+      type: isClassified
+    });
+    console.log(insert);
+    return insert;
   }
 }
