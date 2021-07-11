@@ -11,7 +11,13 @@ import {
   AnchorButton,
   Classes,
   Dialog,
-  InputGroup
+  InputGroup,
+  ContextMenu,
+  Alert,
+  Intent,
+  Toaster,
+  Position,
+  NumericInput
 } from "@blueprintjs/core";
 import "./project-resource-page.less";
 import {
@@ -21,15 +27,64 @@ import {
 } from "./project-resource-page.service";
 import { useMount } from "react-use";
 import classNames from "classnames";
+import { ResourceTypeContextMenu } from "../../components/context-menus/resource-type-menus";
 
 export const ProjectResourcePage = () => {
+  /**
+   * 活动分类id
+   */
   const [activeMenuItem, setActiveMenuItem] = useState<string>("");
-  const [resourceItems, setResourceItems] = useState<ResourceItem[]>([]);
+  /**
+   * 资源集
+   */
+  const [resourcItems, setReseourceItems] = useState<ResourceItem[]>([]);
+  /**
+   * 已分类 上方
+   */
   const [classified, setClassified] = useState<ProjectResourceType[]>([]);
+  /**
+   * 未分类 下方
+   */
   const [unclassified, setUnclassified] = useState<ProjectResourceType[]>([]);
+  /**
+   * 打开 添加窗口
+   */
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [addTypeName, setAddTempName] = useState<string>("");
-  const [isClassified, setIsclassified] = useState<string>("");
+  /**
+   * 打开 删除窗口
+   */
+  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
+  // /**
+  //  * 需要添加的分类名（临时、编辑也用）
+  //  */
+  // const [addTypeName, setAddTempName] = useState<string>("");
+  // /**
+  //  * 添加的是否分类状态
+  //  */
+  // const [isClassified, setIsclassified] = useState<string>("");
+  /**
+   * 当前选中的分类
+   */
+  const [selectType, setSelectType] = useState<ProjectResourceType>({
+    id: "",
+    name: "",
+    icon: "",
+    type: "",
+    index: -1
+  });
+  /**
+   * 重置 selectType
+   */
+  const resetSelectType = () => {
+    setSelectType({
+      id: "",
+      name: "",
+      icon: "",
+      type: "",
+      index: -1
+    });
+  };
+
   useMount(async () => {
     await reloadResourceTypeList();
   });
@@ -37,17 +92,40 @@ export const ProjectResourcePage = () => {
   const renderType = (list: ProjectResourceType[]) => {
     return list.map((item) => {
       return (
-        <MenuItem
-          className={classNames({
-            selected: activeMenuItem === item.id
-          })}
-          id={item.id}
-          text={item.name}
-          icon={item.icon as IconName | MaybeElement}
-          onMouseDown={() => setActiveMenuItem(item.id)}
-        />
+        <div onContextMenu={(event) => handleContextMenu(event, item)}>
+          <MenuItem
+            className={classNames({
+              selected: activeMenuItem === item.id
+            })}
+            id={item.id}
+            text={item.name}
+            icon={item.icon as IconName | MaybeElement}
+            onMouseDown={() => setActiveMenuItem(item.id)}
+          />
+        </div>
       );
     });
+  };
+
+  const handleContextMenu = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    item: ProjectResourceType
+  ) => {
+    ContextMenu.show(
+      <ResourceTypeContextMenu
+        onEdit={() => {
+          setSelectType(item);
+        }}
+        onDelete={() => {
+          setSelectType(item);
+          setIsDeleteOpen(true);
+        }}
+      />,
+      {
+        left: event.clientX,
+        top: event.clientY
+      }
+    );
   };
 
   const reloadResourceTypeList = async () => {
@@ -58,42 +136,32 @@ export const ProjectResourcePage = () => {
   };
 
   const openAddTypeDialog = (isClassified: string) => {
-    setIsclassified(isClassified);
+    let temp = selectType;
+    temp.type = isClassified;
+    setSelectType(temp);
     setIsOpen(true);
   };
 
   const submitTypeName = () => {
-    if (addTypeName === "") {
+    if (selectType.name === "") {
       return;
     }
-    if (isClassified === "") {
+    if (selectType.type === "") {
       return;
     }
-    ProjectResourceService.insertResourceType(addTypeName, isClassified).then(
-      (temp) => {
-        if (temp["type"] === "classified") {
-          setClassified([
-            ...classified,
-            {
-              id: temp["_id"],
-              name: temp["name"],
-              icon: temp["icon"],
-              type: "classified"
-            }
-          ]);
-        } else {
-          setClassified([
-            ...unclassified,
-            {
-              id: temp["_id"],
-              name: temp["name"],
-              icon: temp["icon"],
-              type: "unclassified"
-            }
-          ]);
-        }
-      }
-    );
+    ProjectResourceService.insertResourceType(
+      selectType.name,
+      selectType.type,
+      selectType.index
+    ).then(() => {
+      reloadResourceTypeList();
+      setIsOpen(false);
+      resetSelectType();
+      Toaster.create({
+        className: "recipe-toaster",
+        position: Position.TOP
+      }).show({ message: "添加成功~" });
+    });
   };
 
   return (
@@ -133,7 +201,8 @@ export const ProjectResourcePage = () => {
       <Col flex={"79%"}>
         <div>asdasd</div>
       </Col>
-
+      {/* 以下为弹出框 */}
+      {/* 添加弹出框 */}
       <Dialog
         icon="add"
         title="添加"
@@ -145,11 +214,28 @@ export const ProjectResourcePage = () => {
             asyncControl={true}
             large
             leftIcon="filter"
+            fill
             onChange={(v) => {
-              setAddTempName(v.target.value);
+              let temp = selectType;
+              temp.name = v.target.value;
+              setSelectType(temp);
             }}
             placeholder="请输入分类名"
             value=""
+          />
+          <div style={{ width: "100%", height: "10px" }}></div>
+          <NumericInput
+            asyncControl={true}
+            large
+            leftIcon="changes"
+            fill
+            onValueChange={(v) => {
+              let temp = selectType;
+              temp.index = v;
+              console.log(v);
+              setSelectType(temp);
+            }}
+            placeholder="请输入序号，越小顺序越靠前~"
           />
         </div>
         <div className={Classes.DIALOG_FOOTER}>
@@ -158,6 +244,34 @@ export const ProjectResourcePage = () => {
           </div>
         </div>
       </Dialog>
+      {/* 删除分类提示 */}
+      <Alert
+        cancelButtonText="取消"
+        confirmButtonText="确认删除"
+        icon="trash"
+        intent={Intent.DANGER}
+        isOpen={isDeleteOpen}
+        onCancel={() => setIsDeleteOpen(false)}
+        onConfirm={() => {
+          ProjectResourceService.deleteResourceType(selectType.id).then(
+            (num) => {
+              if (num > 0) {
+                setIsDeleteOpen(false);
+                resetSelectType();
+                Toaster.create({
+                  className: "recipe-toaster",
+                  position: Position.TOP
+                }).show({ message: "删除成功~" });
+                reloadResourceTypeList();
+              }
+            }
+          );
+        }}
+      >
+        <p>
+          是否删除 <b>{selectType?.name}</b> 分类?
+        </p>
+      </Alert>
     </Row>
   );
 };

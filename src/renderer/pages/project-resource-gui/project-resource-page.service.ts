@@ -8,7 +8,9 @@ export type ProjectResourceType = {
   id: string;
   name: string;
   icon: string;
-  type: "classified" | "unclassified";
+  // type: "classified" | "unclassified";
+  type: string;
+  index: number;
 };
 // 资源
 export type ResourceItem = {
@@ -39,17 +41,27 @@ export class ProjectResourceService {
   }> {
     const classified: ProjectResourceType[] = [];
     const unclassified: ProjectResourceType[] = [];
-    let resourceType = await DBResourceType.find({});
+    let resourceType = await DBResourceType.find({}).sort({ index: 1 });
     // 如果没有分类则 添加默认分类
     if (resourceType.length === 0) {
       const insert = await DBResourceType.insert([
-        { name: "立绘", icon: "people", type: "classified" },
-        { name: "场景", icon: "map-marker", type: "classified" },
-        { name: "音频", icon: "music", type: "classified" },
-        { name: "UI", icon: "underline", type: "classified" },
-        { name: "图片", icon: "image-rotate-right", type: "classified" },
-        { name: "未分类", icon: "grid", type: "unclassified" },
-        { name: "临时分类", icon: "add-to-folder", type: "unclassified" }
+        { name: "立绘", icon: "people", type: "classified", index: 0 },
+        { name: "场景", icon: "map-marker", type: "classified", index: 1 },
+        { name: "音频", icon: "music", type: "classified", index: 2 },
+        { name: "UI", icon: "underline", type: "classified", index: 3 },
+        {
+          name: "图片",
+          icon: "image-rotate-right",
+          type: "classified",
+          index: 4
+        },
+        { name: "未分类", icon: "grid", type: "unclassified", index: 1 },
+        {
+          name: "临时分类",
+          icon: "add-to-folder",
+          type: "unclassified",
+          index: 0
+        }
       ]);
       resourceType = await DBResourceType.find({});
     }
@@ -60,14 +72,16 @@ export class ProjectResourceService {
           id: v._id,
           name: v["name"],
           icon: v["icon"],
-          type: "classified"
+          type: "classified",
+          index: v["index"]
         });
       } else {
         unclassified.push({
           id: v._id,
           name: v["name"],
           icon: v["icon"],
-          type: "unclassified"
+          type: "unclassified",
+          index: v["index"]
         });
       }
     });
@@ -96,13 +110,22 @@ export class ProjectResourceService {
     await ProjectResourceWindow.setTitle(`${name} - 资源管理`);
   }
 
-  static async insertResourceType(name: string, isClassified: string) {
+  static async insertResourceType(
+    name: string,
+    isClassified: string,
+    index: number
+  ) {
     const insert = await DBResourceType.insert({
       name: name,
       icon: "folder-open",
-      type: isClassified
+      type: isClassified,
+      index: index
     });
-    console.log(insert);
     return insert;
+  }
+
+  static async deleteResourceType(id: string) {
+    const remove = await DBResourceType.remove({ _id: id }, {});
+    return remove;
   }
 }
