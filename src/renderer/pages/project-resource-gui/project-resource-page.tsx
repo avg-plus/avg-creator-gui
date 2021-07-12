@@ -54,6 +54,8 @@ export const ProjectResourcePage = () => {
    * 打开 删除窗口
    */
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
+
+  const [editOrAdd, setEditOrAdd] = useState<string>("编辑");
   // /**
   //  * 需要添加的分类名（临时、编辑也用）
   //  */
@@ -114,6 +116,8 @@ export const ProjectResourcePage = () => {
     ContextMenu.show(
       <ResourceTypeContextMenu
         onEdit={() => {
+          setEditOrAdd("编辑");
+          setIsOpen(true);
           setSelectType(item);
         }}
         onDelete={() => {
@@ -149,19 +153,31 @@ export const ProjectResourcePage = () => {
     if (selectType.type === "") {
       return;
     }
-    ProjectResourceService.insertResourceType(
-      selectType.name,
-      selectType.type,
-      selectType.index
-    ).then(() => {
-      reloadResourceTypeList();
-      setIsOpen(false);
-      resetSelectType();
-      Toaster.create({
-        className: "recipe-toaster",
-        position: Position.TOP
-      }).show({ message: "添加成功~" });
-    });
+    if (editOrAdd === "添加") {
+      ProjectResourceService.insertResourceType(
+        selectType.name,
+        selectType.type,
+        selectType.index
+      ).then(() => {
+        reloadResourceTypeList();
+        setIsOpen(false);
+        resetSelectType();
+        Toaster.create({
+          className: "recipe-toaster",
+          position: Position.TOP
+        }).show({ message: "添加成功~" });
+      });
+    } else if (editOrAdd === "编辑") {
+      ProjectResourceService.updateResourceType(selectType).then(() => {
+        reloadResourceTypeList();
+        setIsOpen(false);
+        resetSelectType();
+        Toaster.create({
+          className: "recipe-toaster",
+          position: Position.TOP
+        }).show({ message: "修改成功~" });
+      })
+    }
   };
 
   return (
@@ -177,7 +193,7 @@ export const ProjectResourcePage = () => {
                 alignText="left"
                 minimal
                 fill
-                onClick={() => openAddTypeDialog("classified")}
+                onClick={() => { openAddTypeDialog("classified"); setEditOrAdd("添加") }}
               />
               {renderType(classified)}
               <Button
@@ -189,7 +205,7 @@ export const ProjectResourcePage = () => {
                 rightIcon="add"
                 text="智能分类"
                 alignText="left"
-                onClick={() => openAddTypeDialog("unclassified")}
+                onClick={() => { openAddTypeDialog("unclassified"); setEditOrAdd("添加") }}
                 minimal
                 fill
               />{" "}
@@ -205,9 +221,9 @@ export const ProjectResourcePage = () => {
       {/* 添加弹出框 */}
       <Dialog
         icon="add"
-        title="添加"
+        title={editOrAdd}
         isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
+        onClose={() => { setIsOpen(false); resetSelectType() }}
       >
         <div className={Classes.DIALOG_BODY}>
           <InputGroup
@@ -221,7 +237,7 @@ export const ProjectResourcePage = () => {
               setSelectType(temp);
             }}
             placeholder="请输入分类名"
-            value=""
+            value={selectType.name}
           />
           <div style={{ width: "100%", height: "10px" }}></div>
           <NumericInput
@@ -232,10 +248,10 @@ export const ProjectResourcePage = () => {
             onValueChange={(v) => {
               let temp = selectType;
               temp.index = v;
-              console.log(v);
               setSelectType(temp);
             }}
             placeholder="请输入序号，越小顺序越靠前~"
+            value={selectType.index}
           />
         </div>
         <div className={Classes.DIALOG_FOOTER}>
@@ -251,7 +267,7 @@ export const ProjectResourcePage = () => {
         icon="trash"
         intent={Intent.DANGER}
         isOpen={isDeleteOpen}
-        onCancel={() => setIsDeleteOpen(false)}
+        onCancel={() => { setIsDeleteOpen(false); resetSelectType(); }}
         onConfirm={() => {
           ProjectResourceService.deleteResourceType(selectType.id).then(
             (num) => {
@@ -272,6 +288,6 @@ export const ProjectResourcePage = () => {
           是否删除 <b>{selectType?.name}</b> 分类?
         </p>
       </Alert>
-    </Row>
+    </Row >
   );
 };

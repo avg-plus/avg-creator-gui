@@ -128,4 +128,15 @@ export class ProjectResourceService {
     const remove = await DBResourceType.remove({ _id: id }, {});
     return remove;
   }
+
+  static async updateResourceType(item: ProjectResourceType) {
+    const update = await DBResourceType.update({ _id: item.id }, {
+      $set: {
+        name: item.name,
+        index: item.index
+      }
+    });
+    console.log(update);
+    return update;
+  }
 }
