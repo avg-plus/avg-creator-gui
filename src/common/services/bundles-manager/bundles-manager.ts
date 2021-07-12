@@ -17,9 +17,10 @@ import AdmZip from "adm-zip";
 import { remote, shell } from "electron";
 import { EnginePlatform } from "../../models/engine-platform";
 import { GUIToaster } from "../../../renderer/common/toaster";
-import { LocalAppConfig } from "../../../main/remote/local-app-config";
+
 import { Env } from "../../../renderer/common/remote-objects/remote-env";
 import { logger } from "../../../renderer/common/lib/logger";
+import { LocalAppConfig } from "../../../renderer/common/remote-objects/remote-app-config";
 
 export enum BundleType {
   Engine = "engine",

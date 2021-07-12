@@ -11,7 +11,7 @@ import GoldenLayout from "golden-layout";
 
 import { PropertyView } from "../../renderer/pages/workspace/views/property-view";
 import { ResourceTreeView } from "../../renderer/pages/workspace/views/resource-tree-view/resource-tree-view";
-import { _DevelopmentDebugView } from "../../renderer/pages/workspace/views/_debug-view";
+// import { _DevelopmentDebugView } from "../../renderer/pages/workspace/views/_debug-view";
 import _ from "underscore";
 import { StoryboardView } from "../../renderer/pages/workspace/views/storyboard-view/storyboard-view";
 
@@ -19,8 +19,8 @@ export class WorkspaceLayout {
   static views = {
     storyboardView: <StoryboardView></StoryboardView>,
     propertyView: <PropertyView></PropertyView>,
-    resourceTreeView: <ResourceTreeView></ResourceTreeView>,
-    _debugView: <_DevelopmentDebugView></_DevelopmentDebugView>
+    resourceTreeView: <ResourceTreeView></ResourceTreeView>
+    // _debugView: <_DevelopmentDebugView></_DevelopmentDebugView>
   };
 
   static launchWindow(projectDir: string) {
@@ -86,13 +86,13 @@ export class WorkspaceLayout {
                 title: "故事管理",
                 width: 20
               },
-              {
-                type: "react-component",
-                component: "_debugView",
-                isClosable: false,
-                title: "* 调试面板",
-                width: 20
-              },
+              // {
+              //   type: "react-component",
+              //   component: "_debugView",
+              //   isClosable: false,
+              //   title: "* 调试面板",
+              //   width: 20
+              // },
               {
                 type: "column",
                 content: [
