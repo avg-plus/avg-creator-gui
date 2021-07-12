@@ -135,8 +135,11 @@ export const ProjectBrowserPage = () => {
           ContextMenu.hide();
           setIsRemoveAlertShow(true);
         }}
-        onExploreDir={() => {}}
+        onExploreDir={() => { }}
         onOpen={() => ProjectBrowserService.openProjectInWorkspace(item)}
+        onOpenResource={() =>
+          ProjectBrowserService.openProjectResourceWorkspace(item)
+        }
       />,
       {
         left: event.clientX,

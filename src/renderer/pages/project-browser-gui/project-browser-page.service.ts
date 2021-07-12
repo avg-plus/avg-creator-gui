@@ -4,6 +4,7 @@ import fs from "fs-extra";
 import { AVGProjectManager } from "../../../common/services/project-manager";
 import { ProjectBrowserWindow } from "../../windows/project-browser-window";
 import { ProjectWizardWindow } from "../../windows/project-wizard-window";
+import { ProjectResourceService } from "../project-resource-gui/project-resource-page.service";
 import { WorkspaceWindow } from "../../windows/workspace-window";
 
 import { DBProjects } from "../../common/remote-objects/remote-database";
@@ -98,7 +99,6 @@ export class ProjectBrowserService {
 
       return;
     }
-
     if (!projectBrowserItem.path || !fs.existsSync(projectBrowserItem.path)) {
       remote.dialog.showMessageBox({
         type: "error",
@@ -120,5 +120,16 @@ export class ProjectBrowserService {
     );
 
     return true;
+  }
+
+  static async openProjectResourceWorkspace(
+    projectBrowserItem: ProjectBrowserItem
+  ) {
+    ProjectResourceService.openProjectResourceWorkspace(
+      projectBrowserItem.id,
+      projectBrowserItem.path,
+      projectBrowserItem.name
+    );
+    console.log(projectBrowserItem);
   }
 }
