@@ -9,6 +9,6 @@
     "editor.defaultFormatter": "vscode.typescript-language-features"
   },
   "[less]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "HookyQR.beautify"
   }
 }

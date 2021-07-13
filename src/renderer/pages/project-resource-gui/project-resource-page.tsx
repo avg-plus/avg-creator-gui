@@ -28,12 +28,19 @@ import {
 import { useMount } from "react-use";
 import classNames from "classnames";
 import { ResourceTypeContextMenu } from "../../components/context-menus/resource-type-menus";
+import { ResourceItemList } from "./views/resourceItem-list"
 
 export const ProjectResourcePage = () => {
   /**
    * 活动分类id
    */
-  const [activeMenuItem, setActiveMenuItem] = useState<string>("");
+  const [activeMenuItem, setActiveMenuItem] = useState<ProjectResourceType>({
+    id: "",
+    name: "",
+    icon: "",
+    type: "",
+    index: -1
+  });
   /**
    * 资源集
    */
@@ -97,12 +104,12 @@ export const ProjectResourcePage = () => {
         <div onContextMenu={(event) => handleContextMenu(event, item)}>
           <MenuItem
             className={classNames({
-              selected: activeMenuItem === item.id
+              selected: activeMenuItem?.id === item.id
             })}
             id={item.id}
             text={item.name}
             icon={item.icon as IconName | MaybeElement}
-            onMouseDown={() => setActiveMenuItem(item.id)}
+            onMouseDown={() => setActiveMenuItem(item)}
           />
         </div>
       );
@@ -134,7 +141,7 @@ export const ProjectResourcePage = () => {
 
   const reloadResourceTypeList = async () => {
     const typeList = await ProjectResourceService.loadProjectMenuList();
-    setActiveMenuItem(typeList.classified[0].id);
+    setActiveMenuItem(typeList.classified[0]);
     setClassified([...typeList.classified]);
     setUnclassified([...typeList.unclassified]);
   };
@@ -214,8 +221,8 @@ export const ProjectResourcePage = () => {
           </div>
         </div>
       </Col>
-      <Col flex={"79%"}>
-        <div>asdasd</div>
+      <Col flex={"80%"}>
+        <ResourceItemList list={resourcItems} resourceType={activeMenuItem} />
       </Col>
       {/* 以下为弹出框 */}
       {/* 添加弹出框 */}
