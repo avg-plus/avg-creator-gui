@@ -1785,6 +1785,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.9.2":
+  version "7.14.6"
+  resolved "https://registry.nlark.com/@babel/runtime/download/@babel/runtime-7.14.6.tgz#535203bc0892efc7dec60bdc27b2ecf6e409062d"
+  integrity sha1-U1IDvAiS78fexgvcJ7Ls9uQJBi0=
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/template@^7.10.4":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.10.4.tgz#3251996c4200ebc71d1a8fc405fba940f36ba278"
@@ -5182,7 +5189,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@2.x, classnames@^2.2.1, classnames@^2.2.3:
+classnames@2.x, classnames@^2.2.1, classnames@^2.2.3, classnames@^2.3.1:
   version "2.3.1"
   resolved "https://registry.npm.taobao.org/classnames/download/classnames-2.3.1.tgz?cache=0&sync_timestamp=1617401788995&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fclassnames%2Fdownload%2Fclassnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
   integrity sha1-38+jiR4wbsHa0QXQ6I9EF7hTXo4=
@@ -6400,6 +6407,15 @@ dmg-builder@22.6.0:
     js-yaml "^3.13.1"
     sanitize-filename "^1.6.3"
 
+dnd-core@14.0.0:
+  version "14.0.0"
+  resolved "https://registry.npm.taobao.org/dnd-core/download/dnd-core-14.0.0.tgz#973ab3470d0a9ac5a0fa9021c4feba93ad12347d"
+  integrity sha1-lzqzRw0KmsWg+pAhxP66k60SNH0=
+  dependencies:
+    "@react-dnd/asap" "^4.0.0"
+    "@react-dnd/invariant" "^2.0.0"
+    redux "^4.0.5"
+
 dnd-core@^11.1.3:
   version "11.1.3"
   resolved "https://registry.yarnpkg.com/dnd-core/-/dnd-core-11.1.3.tgz#f92099ba7245e49729d2433157031a6267afcc98"
@@ -6429,6 +6445,11 @@ dnd-core@^9.5.1:
     asap "^2.0.6"
     invariant "^2.2.4"
     redux "^4.0.4"
+
+dnd-multi-backend@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.npm.taobao.org/dnd-multi-backend/download/dnd-multi-backend-6.0.0.tgz#4ed68229a3f6f1fb9e9bc45b4034e8330005280d"
+  integrity sha1-TtaCKaP28fuem8RbQDToMwAFKA0=
 
 doctrine@1.5.0:
   version "1.5.0"
@@ -7497,6 +7518,11 @@ fast-deep-equal@^3.1.1:
   version "3.1.1"
   resolved "https://registry.npm.taobao.org/fast-deep-equal/download/fast-deep-equal-3.1.1.tgz#545145077c501491e33b15ec408c294376e94ae4"
   integrity sha1-VFFFB3xQFJHjOxXsQIwpQ3bpSuQ=
+
+fast-deep-equal@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.npm.taobao.org/fast-deep-equal/download/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
+  integrity sha1-On1WtVnWy8PrUSMlJE5hmmXGxSU=
 
 fast-glob@^2.2.2:
   version "2.2.7"
@@ -8574,6 +8600,11 @@ immer@^7.0.9:
   version "7.0.9"
   resolved "https://registry.yarnpkg.com/immer/-/immer-7.0.9.tgz#28e7552c21d39dd76feccd2b800b7bc86ee4a62e"
   integrity sha512-Vs/gxoM4DqNAYR7pugIxi0Xc8XAun/uy7AQu4fLLqaTBHxjOP9pJ266Q9MWA/ly4z6rAFZbvViOtihxUZ7O28A==
+
+immutability-helper@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.npm.taobao.org/immutability-helper/download/immutability-helper-3.1.1.tgz#2b86b2286ed3b1241c9e23b7b21e0444f52f77b7"
+  integrity sha1-K4ayKG7TsSQcniO3sh4ERPUvd7c=
 
 import-fresh@^2.0.0:
   version "2.0.0"
@@ -12921,6 +12952,29 @@ react-dnd-html5-backend@^11.1.3:
   dependencies:
     dnd-core "^11.1.3"
 
+react-dnd-html5-backend@^14.0.0:
+  version "14.0.0"
+  resolved "https://registry.npm.taobao.org/react-dnd-html5-backend/download/react-dnd-html5-backend-14.0.0.tgz#28d660a2ad1e07447c34a65cd25f7de8f1657194"
+  integrity sha1-KNZgoq0eB0R8NKZc0l996PFlcZQ=
+  dependencies:
+    dnd-core "14.0.0"
+
+react-dnd-multi-backend@^6.0.2:
+  version "6.0.2"
+  resolved "https://registry.npm.taobao.org/react-dnd-multi-backend/download/react-dnd-multi-backend-6.0.2.tgz#485878014dfbac46fcc898961871be6e5277c3f2"
+  integrity sha1-SFh4AU37rEb8yJiWGHG+blJ3w/I=
+  dependencies:
+    dnd-multi-backend "^6.0.0"
+    prop-types "^15.7.2"
+    react-dnd-preview "^6.0.2"
+
+react-dnd-preview@^6.0.2:
+  version "6.0.2"
+  resolved "https://registry.nlark.com/react-dnd-preview/download/react-dnd-preview-6.0.2.tgz#dd34931c270853c80438e1275e6c9e77174f8afe"
+  integrity sha1-3TSTHCcIU8gEOOEnXmyedxdPiv4=
+  dependencies:
+    prop-types "^15.7.2"
+
 react-dnd-scrollzone@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/react-dnd-scrollzone/-/react-dnd-scrollzone-4.0.0.tgz#d707170c0cd3b7ab3d991dd6a8cc0b3712454139"
@@ -12931,6 +12985,14 @@ react-dnd-scrollzone@^4.0.0:
     prop-types "^15.5.9"
     raf "^3.2.0"
     react-display-name "^0.2.0"
+
+react-dnd-touch-backend@^14.0.0:
+  version "14.0.0"
+  resolved "https://registry.npm.taobao.org/react-dnd-touch-backend/download/react-dnd-touch-backend-14.0.0.tgz#f7f144ca4af17946e20cdfd06a766ebadd170d4d"
+  integrity sha1-9/FEykrxeUbiDN/QanZuut0XDU0=
+  dependencies:
+    "@react-dnd/invariant" "^2.0.0"
+    dnd-core "14.0.0"
 
 react-dnd@2.5.4:
   version "2.5.4"
@@ -12953,6 +13015,17 @@ react-dnd@^11.1.3:
     "@types/hoist-non-react-statics" "^3.3.1"
     dnd-core "^11.1.3"
     hoist-non-react-statics "^3.3.0"
+
+react-dnd@^14.0.2:
+  version "14.0.2"
+  resolved "https://registry.npm.taobao.org/react-dnd/download/react-dnd-14.0.2.tgz#57266baec92b887301f81fa3b77f87168d159733"
+  integrity sha1-VyZrrskriHMB+B+jt3+HFo0VlzM=
+  dependencies:
+    "@react-dnd/invariant" "^2.0.0"
+    "@react-dnd/shallowequal" "^2.0.0"
+    dnd-core "14.0.0"
+    fast-deep-equal "^3.1.3"
+    hoist-non-react-statics "^3.3.2"
 
 react-dnd@^9.3.1:
   version "9.5.1"
@@ -13012,6 +13085,21 @@ react-markdown@^4.3.1:
     unified "^6.1.5"
     unist-util-visit "^1.3.0"
     xtend "^4.0.1"
+
+react-mosaic-component@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.nlark.com/react-mosaic-component/download/react-mosaic-component-5.0.0.tgz#ecc34f4aabddcfda5f6136ab85c1850d73bce41d"
+  integrity sha1-7MNPSqvdz9pfYTarhcGFDXO85B0=
+  dependencies:
+    classnames "^2.3.1"
+    immutability-helper "^3.1.1"
+    lodash "^4.17.21"
+    prop-types "^15.7.2"
+    react-dnd "^14.0.2"
+    react-dnd-html5-backend "^14.0.0"
+    react-dnd-multi-backend "^6.0.2"
+    react-dnd-touch-backend "^14.0.0"
+    uuid "^3.4.0"
 
 react-popper@^1.3.7:
   version "1.3.7"
@@ -13344,6 +13432,13 @@ redux@^4.0.4:
   dependencies:
     loose-envify "^1.4.0"
     symbol-observable "^1.2.0"
+
+redux@^4.0.5:
+  version "4.1.0"
+  resolved "https://registry.nlark.com/redux/download/redux-4.1.0.tgz?cache=0&sync_timestamp=1619287188632&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fredux%2Fdownload%2Fredux-4.1.0.tgz#eb049679f2f523c379f1aff345c8612f294c88d4"
+  integrity sha1-6wSWefL1I8N58a/zRchhLylMiNQ=
+  dependencies:
+    "@babel/runtime" "^7.9.2"
 
 regenerate-unicode-properties@^8.2.0:
   version "8.2.0"
@@ -15639,7 +15734,7 @@ utils-merge@1.0.1:
   resolved "https://registry.npm.taobao.org/utils-merge/download/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
 
-uuid@^3.0.0, uuid@^3.3.2:
+uuid@^3.0.0, uuid@^3.3.2, uuid@^3.4.0:
   version "3.4.0"
   resolved "https://registry.npm.taobao.org/uuid/download/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha1-sj5DWK+oogL+ehAK8fX4g/AgB+4=

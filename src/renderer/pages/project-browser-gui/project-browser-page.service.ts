@@ -109,7 +109,6 @@ export class ProjectBrowserService {
       return false;
     }
 
-    // ProjectBrowserWindow.close();
     await WorkspaceWindow.open(
       { project_dir: projectBrowserItem.path },
       `${projectBrowserItem.id}`

@@ -44,5 +44,11 @@ export enum GlobalEvents {
    * 通用
    */
 
-  GUIAlertDialogVisibility = "GUIAlertDialogVisibility"
+  GUIAlertDialogVisibility = "GUIAlertDialogVisibility",
+
+  /**
+   * 菜单相关
+   */
+
+  Menu_OnResourceManager = "Menu_OnResourceManager",
 }
