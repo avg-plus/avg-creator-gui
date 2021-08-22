@@ -10,6 +10,7 @@ import { AVGWorkspace } from "./pages/workspace/avg-workspace";
 import { RendererApplication } from "../common/services/renderer-application";
 import { WorkspaceWindow } from "./windows/workspace-window";
 import { remote } from "electron";
+import { GUIWorkspaceService } from "./pages/workspace/avg-workspace.service";
 
 const URL = remote.getCurrentWindow().webContents.getURL();
 
@@ -27,14 +28,14 @@ if (urlObject && urlObject.query?.length) {
 
     remote.getCurrentWindow().close();
   } else {
-    RendererApplication.setWindow(WorkspaceWindow);
-    RendererApplication.start();
-
     ReactDOM.render(
       <AVGWorkspace />,
       document.getElementById("root") as HTMLElement
     );
 
-    remote.getCurrentWindow().show();
+    RendererApplication.setWindow(WorkspaceWindow);
+    RendererApplication.start();
+
+    GUIWorkspaceService.setProject(projectDir);
   }
 }

@@ -21,9 +21,6 @@ export class RendererApplication {
       hasTitlebar: true
     };
 
-    // logger.debug("App start: ", remote.app.getVersion(), os.platform());
-    // logger.debug("appDataDir", Env.getAppDataDir());
-
     // Blueprint 焦点设置
     FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -41,5 +38,9 @@ export class RendererApplication {
 
   static setWindow(window: AVGWindow) {
     this.currentWindow = window;
+  }
+
+  static updateTitle(title: string) {
+    this.titlebar.updateTitle(title);
   }
 }

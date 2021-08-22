@@ -117,9 +117,11 @@ export abstract class AVGWindow {
       browserWindow = await this.createWindow();
 
       browserWindow.webContents.once("dom-ready", () => {
-        // if (Env.isDevelopment()) {
         browserWindow.webContents.openDevTools();
-        // }
+      });
+
+      browserWindow.on("page-title-updated", (evt) => {
+        evt.preventDefault();
       });
 
       browserWindow.on("ready-to-show", () => {

@@ -10,7 +10,6 @@ export class MainApplication {
     const appDataDir = Env.getAppDataDir();
     fs.ensureDirSync(appDataDir);
 
-    ApplicationMenu.update()
-
+    // ApplicationMenu.update()
   }
 }

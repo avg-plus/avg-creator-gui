@@ -41,7 +41,6 @@ async function compileParcel(options = {}) {
   entryFiles.push(
     path.join(__dirname, "../src/main/preload.ts"),
     path.join(__dirname, "../src/main/remote/env.ts"),
-    // path.join(__dirname, "../src/main/remote/logger.ts"),
     path.join(__dirname, "../src/main/remote/window-manager.ts"),
     path.join(__dirname, "../src/main/remote/local-app-config.ts"),
     path.join(__dirname, "../src/main/remote/database/db-project.ts"),

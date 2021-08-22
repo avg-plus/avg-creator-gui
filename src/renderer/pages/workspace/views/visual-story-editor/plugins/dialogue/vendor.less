@@ -1,0 +1,86 @@
+// @import (less) "../../../../../../../../node_modules/draft-js/dist/Draft.css";
+
+.dialogue-container {
+  width: 100%;
+  border-bottom: 1px dashed #ececec;
+
+  .left-bar {
+    // position: absolute;
+    // background-color: #649eff;
+    // width: 2px;
+    // height: 90%;
+    // float: left;
+
+    position: absolute;
+    border-left: 2px dashed #4c4c4c;
+
+    // 开始对话节点，下方带连接线
+    &.head-dialogue-node {
+      height: calc(100%);
+      top: unset;
+      bottom: 0 !important;
+    }
+
+    // 中间对华加节点，上线都带连接线
+    &.middle-dialogue-node {
+      top: 0;
+      height: 100% !important;
+      bottom: unset;
+    }
+
+    // 如果是结束对话节点，上方带连接线
+    &.end-dialogue-node {
+      height: calc(100% / 2);
+      bottom: unset;
+    }
+  }
+
+  .dialogue-text {
+    padding-left: 10px;
+
+    font-size: 16px;
+    font-weight: 200;
+  }
+
+  .context-line {
+    position: absolute;
+    border-left: 0.5px dashed #4c4c4c;
+
+    // 开始对话节点，下方带连接线
+    &.head-dialogue-node {
+      height: calc(100% / 2);
+      top: unset;
+      bottom: 0 !important;
+    }
+
+    // 中间对华加节点，上线都带连接线
+    &.middle-dialogue-node {
+      top: 0;
+      height: 100% !important;
+      bottom: unset;
+    }
+
+    // 如果是结束对话节点，上方带连接线
+    &.end-dialogue-node {
+      height: calc(100% / 2);
+      bottom: unset;
+    }
+  }
+}
+
+.indicator-point {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #4e4e4e;
+  top: 52%;
+  transform: translate(-4px, -50%);
+
+  &.end-dialogue {
+    background: #d0021b;
+    width: 10px;
+    height: 10px;
+    transform: translate(31px, -50%);
+  }
+}
