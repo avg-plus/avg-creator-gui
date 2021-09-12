@@ -9,5 +9,9 @@ export const VisualStoryEditor = () => {
     GUIVisualStoryEditorService.init();
   });
 
-  return <div id="editorjs"></div>;
+  return (
+    <>
+      <div id="editorjs"></div>
+    </>
+  );
 };

@@ -1,13 +1,13 @@
 import { BlockToolConstructorOptions } from "@editorjs/editorjs";
-import { key } from "nconf";
 import { CEPlugin } from "../ce-plugin";
-import EL from "./vendor";
+import { APIDialogueRenderer } from "./dialogue-renderer";
 
 interface APIDialogueData {
   content: string;
 }
 
 export class APIDialogueTool extends CEPlugin<APIDialogueData> {
+  private renderer = new APIDialogueRenderer();
   constructor(options: BlockToolConstructorOptions<APIDialogueData>) {
     super(options);
 
@@ -24,56 +24,55 @@ export class APIDialogueTool extends CEPlugin<APIDialogueData> {
   }
 
   render() {
-    return EL.render("", {
+    return this.renderer.render("", {
       target: this,
       events: {
-        onKeyUp: this.onKeyUp,
         onKeyDown: this.onKeyDown
       }
     });
   }
 
   onKeyDown(e: KeyboardEvent): void {
-    if (e.metaKey && e.key === "a") {
+    if (e.shiftKey && e.key === "Enter") {
       e.preventDefault();
-
-      EL.selectAll();
+      // document.execCommand("insertHTML", false, "<div><br></br></div>");
+      this.renderer.insertSoftNewline();
       return;
     }
 
-    if (e.key === "ArrowUp") {
-      e.preventDefault();
-      this.options.api.caret.setToPreviousBlock("default");
-    } else if (e.key === "ArrowDown") {
-      e.preventDefault();
-      this.options.api.caret.setToNextBlock("default");
-    }
+    switch (e.key) {
+      case "ArrowUp":
+        e.preventDefault();
+        this.options.api.caret.setToPreviousBlock("default");
+        break;
+      case "ArrowDown":
+        e.preventDefault();
+        this.options.api.caret.setToNextBlock("default");
+        break;
+      case "Enter":
+        e.preventDefault();
+        const currentBlockIndex =
+          this.options.api.blocks.getCurrentBlockIndex();
 
-    // 增加软换行
-    if (e.shiftKey && e.key === "Enter") {
-      e.preventDefault();
-      document.execCommand("insertHTML", false, "<div><br></br></div>");
-    } else if (e.key === "Enter") {
-      // 对文本插件手动处理回车事件
-      e.preventDefault();
-      const currentBlockIndex = this.options.api.blocks.getCurrentBlockIndex();
-
-      // 焦点移到下一行
-      this.options.api.blocks.insert("dialogue");
-      this.options.api.caret.setToBlock(currentBlockIndex + 1, "default");
+        // 焦点移到下一行
+        this.options.api.blocks.insert("dialogue");
+        this.options.api.caret.setToBlock(currentBlockIndex + 1, "default");
+        break;
+      default:
+        break;
     }
   }
 
   onKeyUp(e: KeyboardEvent) {}
 
   get data() {
-    this._data.content = EL.getContent() ?? "";
+    // this._data.content = EL.getContent() ?? "";
     return this._data;
   }
 
   set data(data) {
-    this._data = data || {};
-    EL.setContent(this._data.content || "");
+    // this._data = data || {};
+    // EL.setContent(this._data.content || "");
   }
 
   static get enableLineBreaks() {
@@ -82,7 +81,7 @@ export class APIDialogueTool extends CEPlugin<APIDialogueData> {
 
   save(blockContent) {
     return {
-      url: blockContent.value
+      // url: blockContent.value
     };
   }
 }

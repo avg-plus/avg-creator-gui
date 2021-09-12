@@ -1,6 +1,6 @@
 import EditorJS from "@editorjs/editorjs";
+import { APICharacterTool } from "./plugins/character/character";
 import { APIDialogueTool } from "./plugins/dialogue/dialogue";
-import { APISceneTool } from "./plugins/scene/scene";
 
 export class GUIVisualStoryEditorService {
   private static editor: EditorJS;
@@ -11,8 +11,9 @@ export class GUIVisualStoryEditorService {
       autofocus: true,
       defaultBlock: "dialogue",
       tools: {
+        paragraph: APIDialogueTool,
         dialogue: APIDialogueTool,
-        scene: APISceneTool
+        character: APICharacterTool
       }
     });
   }

@@ -1,8 +1,8 @@
 import { BlockToolConstructorOptions } from "@editorjs/editorjs";
 
 export type EditorPluginEventMap = {
-  target: ThisType<CEPlugin<any>>;
-  events: {
+  target?: ThisType<CEPlugin<any>>;
+  events?: {
     onKeyDown?: (e: KeyboardEvent) => void;
     onKeyUp?: (e: KeyboardEvent) => void;
   };
