@@ -6,6 +6,7 @@ export type LayoutPanelID =
   | "StoryTree"
   | "StoryBoard"
   | "Preview"
+  | "DebugView"
   | "PropertyView";
 
 export class GUIWorkspaceService {
@@ -13,7 +14,8 @@ export class GUIWorkspaceService {
     StoryTree: { title: "故事管理" },
     StoryBoard: { title: "剧本编辑器" },
     Preview: { title: "预览" },
-    PropertyView: { title: "属性" }
+    PropertyView: { title: "属性" },
+    DebugView: { title: "调试" }
   };
 
   static async setProject(projectDir: string) {

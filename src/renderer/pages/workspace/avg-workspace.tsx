@@ -12,6 +12,7 @@ import { Mosaic, MosaicWindow } from "react-mosaic-component";
 import { ResourceTreeView } from "./views/resource-tree-view/resource-tree-view";
 import { RendererApplication } from "../../../common/services/renderer-application";
 import { VisualStoryEditor } from "./views/visual-story-editor/visual-story-editor";
+import { _DevelopmentDebugView } from "./views/_debug-view";
 
 export const AVGWorkspace = () => {
   useMount(() => {
@@ -30,6 +31,9 @@ export const AVGWorkspace = () => {
       }
       case "StoryBoard": {
         return <VisualStoryEditor></VisualStoryEditor>;
+      }
+      case "DebugView": {
+        return <_DevelopmentDebugView></_DevelopmentDebugView>;
       }
     }
 
@@ -54,10 +58,17 @@ export const AVGWorkspace = () => {
           direction: "row",
           first: "StoryTree",
           second: {
-            direction: "column",
-            first: "StoryBoard",
-            second: "PropertyView"
-          }
+            // direction: "column",
+            direction: "row",
+            first: "DebugView",
+            second: {
+              direction: "column",
+              first: "StoryBoard",
+              second: "PropertyView"
+            },
+            splitPercentage: 10
+          },
+          splitPercentage: 24
         }}
       />
     </div>

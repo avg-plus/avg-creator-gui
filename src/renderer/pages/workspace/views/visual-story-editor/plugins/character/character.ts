@@ -1,10 +1,10 @@
 import { BlockToolConstructorOptions } from "@editorjs/editorjs";
-import { CEPlugin } from "../ce-plugin";
+import { CETool } from "../ce-plugin";
 import EL from "./vendor";
 
 interface APICharacterData {}
 
-export class APICharacterTool extends CEPlugin<APICharacterData> {
+export class APICharacterTool extends CETool<APICharacterData> {
   constructor(options: BlockToolConstructorOptions<APICharacterData>) {
     super(options);
 

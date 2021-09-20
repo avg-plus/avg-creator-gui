@@ -1,18 +1,46 @@
 import { BlockToolConstructorOptions } from "@editorjs/editorjs";
+import { EditorBlockManager } from "../editor-block-manager";
+import { CEBlockService } from "./ce-block-service";
 
 export type EditorPluginEventMap = {
-  target?: ThisType<CEPlugin<any>>;
+  target?: ThisType<CETool>;
   events?: {
     onKeyDown?: (e: KeyboardEvent) => void;
     onKeyUp?: (e: KeyboardEvent) => void;
   };
 };
 
-export abstract class CEPlugin<T extends object> {
-  protected options: BlockToolConstructorOptions<T>;
-  protected _data: T;
-  constructor(options: BlockToolConstructorOptions<T>) {
+type CEBlockServiceConstructType = { new (id: string): CEBlockService };
+export abstract class CETool<
+  TData extends object = object,
+  TService extends CEBlockService = CEBlockService
+> {
+  protected options: BlockToolConstructorOptions<TData>;
+  protected serviceType: CEBlockServiceConstructType;
+  protected service: TService;
+  protected _data: TData;
+
+  constructor(
+    options: BlockToolConstructorOptions<TData>,
+    serviceType: CEBlockServiceConstructType
+  ) {
     this.options = options;
+    this.serviceType = serviceType;
+  }
+
+  // 实现 editor.js 的 lifecycle 渲染方法
+  rendered() {
+    // 注册到 block 管理器
+    if (this.options.block?.id) {
+      this.service = new this.serviceType(this.options.block.id) as TService;
+      EditorBlockManager.registerBlock(this.options.block.id, this.service);
+    }
+  }
+
+  removed(): void {
+    if (this.options.block?.id) {
+      EditorBlockManager.unregisterBlock(this.options.block.id);
+    }
   }
 
   abstract onKeyDown(e: KeyboardEvent): void;
