@@ -12,6 +12,7 @@ export class GUIVisualStoryEditorService {
       holder: "editorjs",
       autofocus: true,
       defaultBlock: "dialogue",
+      tunes: [],
       tools: {
         // paragraph: APIDialogueTool,
         dialogue: APIDialogueTool,

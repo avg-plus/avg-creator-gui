@@ -1,53 +1,82 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { useMount } from "react-use";
 import { BlockToolConstructorOptions } from "@editorjs/editorjs";
-import { DraftHandleValue, Editor, EditorState, RichUtils } from "draft-js";
+
+import {
+  ContentState,
+  DraftEditorCommand,
+  DraftHandleValue,
+  Editor,
+  EditorState,
+  getDefaultKeyBinding,
+  KeyBindingUtil,
+  RichUtils
+} from "draft-js";
+
+const { isSoftNewlineEvent, hasCommandModifier } = KeyBindingUtil;
+
 import { CETool, EditorPluginEventMap } from "../ce-plugin";
 
 import "./dialogue.tool.less";
 import { APIDialogueBlockService } from "./dialogue.service";
 
-type APIDialogueRendererContext = {
-  onEnter?: (e: React.KeyboardEvent<{}>) => void;
-  onTextChanged?: (text: string) => void;
-  insertSoftNewline?: () => void;
-  getText?: () => string;
-  setText?: (value: string) => void;
-};
-
 interface DialogueTextEditorProps {
-  // context: APIDialogueRendererContext;
+  context: APIDialogueTool;
 }
+
+type DialogueToolKeyCommand = DraftEditorCommand | "soft-newline" | null;
 
 export const DialogueTextEditor = (props: DialogueTextEditorProps) => {
   const [editorState, setEditorState] = useState(() =>
-    EditorState.createEmpty()
+    EditorState.createWithContent(ContentState.createFromText(""))
   );
 
   useMount(() => {
-    // props.context.insertSoftNewline = () => {
-    //   const newEditorState = RichUtils.insertSoftNewline(editorState);
-    //   setEditorState(newEditorState);
-    // };
-    // props.context.getText = () => {
-    //   return editorState.getCurrentContent().getPlainText();
-    // };
+    props.context.service.bindingRendererStates({
+      editor: { editorState, setEditorState }
+    });
   });
+
+  useEffect(() => {
+    // 更新上下文状态
+    props.context.service.bindingRendererStates({
+      editor: { editorState, setEditorState }
+    });
+  }, [editorState]);
 
   const handleReturn = (
     e: React.KeyboardEvent<{}>,
     editorState: EditorState
   ): DraftHandleValue => {
-    // props.context.onEnter && props.context.onEnter(e);
+    if (isSoftNewlineEvent(e)) {
+      props.context.service.insertSoftNewline();
+      return "handled";
+    }
+
     return "handled";
+  };
+
+  const handleKeyCommand = (
+    command: DraftEditorCommand,
+    editorState: EditorState,
+    eventTimeStamp: number
+  ): DraftHandleValue => {
+    const keyCommand = command as DialogueToolKeyCommand;
+
+    return "handled";
+  };
+
+  const keyBindingFn = (e: React.KeyboardEvent<{}>): DialogueToolKeyCommand => {
+    return getDefaultKeyBinding(e);
   };
 
   const handleOnChange = (state: EditorState) => {
     setEditorState(state);
 
-    // props.context.onTextChanged &&
-    //   props.context.onTextChanged(state.getCurrentContent().getPlainText());
+    const service = props.context.service;
+
+    service.onTextChanged(state.getCurrentContent().getPlainText());
   };
 
   return (
@@ -56,72 +85,11 @@ export const DialogueTextEditor = (props: DialogueTextEditorProps) => {
       editorState={editorState}
       onChange={handleOnChange}
       handleReturn={handleReturn}
+      // keyBindingFn={keyBindingFn}
+      // handleKeyCommand={handleKeyCommand}
     />
   );
 };
-
-// class APIDialogueRenderer {
-//   context: APIDialogueRendererContext;
-
-//   render(text: string, eventData: EditorPluginEventMap): HTMLElement {
-//     this.context = {
-//       onEnter: eventData.events?.onKeyDown?.bind(eventData.target)
-//     };
-
-//     const root = document.createElement("div");
-//     ReactDOM.render(
-//       <div className={"vendor-container"}>
-//         <div className={"left-bar"}></div>
-//         <div className={"underline"}></div>
-//         <div></div>
-//         <div className={"dialogue-text"}>
-//           <DialogueTextEditor context={this.context} />
-//         </div>
-//       </div>,
-//       root,
-//       () => {}
-//     ) as unknown as HTMLElement;
-
-//     return root;
-//   }
-
-//   insertSoftNewline() {
-//     if (this.context.insertSoftNewline) {
-//       this.context.insertSoftNewline();
-//     }
-//   }
-
-//   getContent() {
-//     if (this.context.getText) {
-//       return this.context.getText();
-//     }
-
-//     return null;
-//   }
-
-//   setContent(content: string) {
-//     // if (this.elements.contentElement) {
-//     //   this.elements.contentElement.innerHTML = content;
-//     // }
-//   }
-
-//   selectAll() {
-//     // this.elements.contentElement!.focus();
-//     // document.execCommand("selectAll", true);
-//   }
-
-//   insertTo(text: string, index?: number) {
-//     // if (index === undefined) {
-//     //   if (selection) {
-//     //     const cursorPosition = selection.anchorOffset;
-//     //     var sel = documentselection.createRange();
-//     //     sel.text = text;
-//     //   }
-//     // }
-//     // const selection = document.getSelection();
-//     // document.execCommand("insertText", false, "banana");
-//   }
-// }
 
 interface APIDialogueData {
   content: string;
@@ -131,10 +99,8 @@ export class APIDialogueTool extends CETool<
   APIDialogueData,
   APIDialogueBlockService
 > {
-  // private renderer = new APIDialogueRenderer();
-
   constructor(options: BlockToolConstructorOptions<APIDialogueData>) {
-    super(options, APIDialogueBlockService);
+    super(options, new APIDialogueBlockService(options.block!.id));
 
     this._data = {
       content: ""
@@ -158,20 +124,38 @@ export class APIDialogueTool extends CETool<
         <div className={"underline"}></div>
         <div></div>
         <div className={"dialogue-text"}>
-          <DialogueTextEditor />
+          <DialogueTextEditor context={this} />
         </div>
       </div>,
       root,
       () => {}
     ) as unknown as HTMLElement;
 
+    root.onkeydown = this.onKeyDown.bind(this);
+
     return root;
   }
 
   onKeyDown(e: KeyboardEvent): void {
+    console.log("on key down", e.key);
+    if (e.key === "Backspace") {
+      e.stopPropagation();
+
+      if (this.service.getText().length === 0) {
+        if (!this.service.getMarkAsDelete()) {
+          this.service.markAsDelete();
+        } else {
+          const currentIndex = this.options.api.blocks.getCurrentBlockIndex();
+          this.options.api.blocks.delete(currentIndex);
+        }
+      }
+
+      return;
+    }
+
     if (e.shiftKey && e.key === "Enter") {
       e.preventDefault();
-      // this.renderer.insertSoftNewline();
+      this.service.insertSoftNewline();
       return;
     }
 
@@ -203,4 +187,8 @@ export class APIDialogueTool extends CETool<
   }
 
   onKeyUp(e: KeyboardEvent) {}
+
+  save() {
+    return this.service.getData();
+  }
 }

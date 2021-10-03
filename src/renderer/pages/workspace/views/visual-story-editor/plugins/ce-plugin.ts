@@ -17,15 +17,12 @@ export abstract class CETool<
 > {
   protected options: BlockToolConstructorOptions<TData>;
   protected serviceType: CEBlockServiceConstructType;
-  protected service: TService;
+  public service: TService;
   protected _data: TData;
 
-  constructor(
-    options: BlockToolConstructorOptions<TData>,
-    serviceType: CEBlockServiceConstructType
-  ) {
+  constructor(options: BlockToolConstructorOptions<TData>, service: TService) {
     this.options = options;
-    this.serviceType = serviceType;
+    this.service = service;
   }
 
   // 实现 editor.js 的 lifecycle 渲染方法
