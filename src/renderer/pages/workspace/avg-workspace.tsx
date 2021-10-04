@@ -5,7 +5,6 @@ import { delayExecution } from "../../../common/utils";
 
 import "./avg-workspace.less";
 
-import { StoryManager } from "../../../common/services/story-manager";
 import { Codegen } from "../../../common/services/storyboard/codegen";
 import { GUIWorkspaceService, LayoutPanelID } from "./avg-workspace.service";
 import { Mosaic, MosaicWindow } from "react-mosaic-component";
@@ -17,7 +16,6 @@ import { _DevelopmentDebugView } from "./views/_debug-view";
 export const AVGWorkspace = () => {
   useMount(() => {
     delayExecution(() => {
-      StoryManager.init();
       Codegen.init();
     }, 0);
   });

@@ -1,32 +1,26 @@
+@import "../plugin.less";
+
 // 文本左侧间距
 @LEFT_SPACING: 20px;
 
-// 最左侧上下文状态间距
-@LEFT_STATUS_BAR_SPACING: 22px;
-
-.vendor-container {
+.underline {
+  position: absolute;
+  bottom: 0;
   width: 100%;
-  margin-left: @LEFT_STATUS_BAR_SPACING;
+  margin-left: @LEFT_SPACING;
+  border-bottom: 1px dashed #979797;
+}
 
-  .underline {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    margin-left: @LEFT_SPACING;
-    border-bottom: 1px dashed #979797;
-  }
+.left-bar {
+  position: absolute;
+  border-left: 4px solid #e3836c;
+  height: calc(100%);
+  top: unset;
+  bottom: 0 !important;
+}
 
-  .left-bar {
-    position: absolute;
-    border-left: 4px solid #e3836c;
-    height: calc(100%);
-    top: unset;
-    bottom: 0 !important;
-  }
-
-  .dialogue-text {
-    padding-left: @LEFT_SPACING;
-    font-size: 18px;
-    font-weight: 200;
-  }
+.dialogue-text {
+  padding-left: @LEFT_SPACING;
+  font-size: 18px;
+  font-weight: 200;
 }

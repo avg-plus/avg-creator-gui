@@ -1,7 +1,7 @@
 import EditorJS, { BlockAPI, LogLevels } from "@editorjs/editorjs";
 import { WorkspaceDebugUI } from "../../../../../common/services/workspace-debug-ui";
 import { EditorBlockManager } from "./editor-block-manager";
-import { APICharacterTool } from "./plugins/character/character";
+import { APICharacterTool } from "./plugins/character/character.tool";
 import { APIDialogueTool } from "./plugins/dialogue/dialogue.tool";
 
 export class GUIVisualStoryEditorService {

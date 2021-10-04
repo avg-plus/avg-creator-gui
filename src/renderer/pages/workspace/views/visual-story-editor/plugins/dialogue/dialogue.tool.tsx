@@ -17,9 +17,9 @@ import {
 const { isSoftNewlineEvent, hasCommandModifier } = KeyBindingUtil;
 
 import { CETool, EditorPluginEventMap } from "../ce-plugin";
+import { APIDialogueBlockService } from "./dialogue.service";
 
 import "./dialogue.tool.less";
-import { APIDialogueBlockService } from "./dialogue.service";
 
 interface DialogueTextEditorProps {
   context: APIDialogueTool;
@@ -119,7 +119,7 @@ export class APIDialogueTool extends CETool<
   render() {
     const root = document.createElement("div");
     ReactDOM.render(
-      <div className={"vendor-container"}>
+      <div className={"plugin-container"}>
         <div className={"left-bar"}></div>
         <div className={"underline"}></div>
         <div></div>
