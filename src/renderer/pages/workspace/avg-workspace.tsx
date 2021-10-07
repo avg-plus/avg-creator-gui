@@ -64,9 +64,9 @@ export const AVGWorkspace = () => {
               first: "StoryBoard",
               second: "PropertyView"
             },
-            splitPercentage: 10
+            splitPercentage: 20
           },
-          splitPercentage: 24
+          splitPercentage: 10
         }}
       />
     </div>

@@ -65,7 +65,10 @@ export class AVGProject {
     return storyReader.load();
   }
 
-  saveStory(data: any) {}
+  saveStory(filename: string, data: any) {
+    const storyReader = new StoryFileReader(filename);
+    storyReader.save(data);
+  }
 
   generateIndexes() {}
 

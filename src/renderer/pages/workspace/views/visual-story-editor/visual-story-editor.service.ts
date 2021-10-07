@@ -1,6 +1,6 @@
 import EditorJS, { BlockAPI, LogLevels } from "@editorjs/editorjs";
 import { WorkspaceDebugUI } from "../../../../../common/services/workspace-debug-ui";
-import { EditorBlockManager } from "./editor-block-manager";
+import { EditorBlockDocument } from "./editor-block-manager";
 import { APICharacterTool } from "./plugins/character/character.tool";
 import { APIDialogueTool } from "./plugins/dialogue/dialogue.tool";
 
@@ -22,9 +22,13 @@ export class GUIVisualStoryEditorService {
 
     WorkspaceDebugUI.registerButton("获取块 - 0", () => {
       const api = this.editor.blocks.getBlockByIndex(0) as BlockAPI;
-      const block = EditorBlockManager.get(api.id);
+      const block = EditorBlockDocument.get(api.id);
       // const tool = block.config as APIDialogueTool;
       console.log("data: ", block);
     });
+  }
+
+  static getEditor() {
+    return this.editor;
   }
 }

@@ -15,5 +15,5 @@ export abstract class AVGFileReader<T> {
   }
 
   abstract load(): T;
-  abstract save(): boolean;
+  abstract save(data: T): boolean;
 }

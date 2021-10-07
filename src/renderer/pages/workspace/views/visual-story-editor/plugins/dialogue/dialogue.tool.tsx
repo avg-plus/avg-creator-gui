@@ -20,6 +20,7 @@ import { CETool, EditorPluginEventMap } from "../ce-plugin";
 import { APIDialogueBlockService } from "./dialogue.service";
 
 import "./dialogue.tool.less";
+import { PluginBaseWrapperComponent } from "../plugin-base-wrapper";
 
 interface DialogueTextEditorProps {
   context: APIDialogueTool;
@@ -27,7 +28,7 @@ interface DialogueTextEditorProps {
 
 type DialogueToolKeyCommand = DraftEditorCommand | "soft-newline" | null;
 
-export const DialogueTextEditor = (props: DialogueTextEditorProps) => {
+export const DialogueTextEditorView = (props: DialogueTextEditorProps) => {
   const [editorState, setEditorState] = useState(() =>
     EditorState.createWithContent(ContentState.createFromText(""))
   );
@@ -101,6 +102,7 @@ export class APIDialogueTool extends CETool<
 > {
   constructor(options: BlockToolConstructorOptions<APIDialogueData>) {
     super(options, new APIDialogueBlockService(options.block!.id));
+    this.service.registerToolView(this);
 
     this._data = {
       content: ""
@@ -112,21 +114,21 @@ export class APIDialogueTool extends CETool<
   static get toolbox() {
     return {
       title: "文本对话",
-      icon: '<svg width="17" height="15" viewBox="0 0 336 276" xmlns="http://www.w3.org/2000/svg"><path d="M291 150V79c0-19-15-34-34-34H79c-19 0-34 15-34 34v42l67-44 81 72 56-29 42 30zm0 52l-43-30-56 30-81-67-66 39v23c0 19 15 34 34 34h178c17 0 31-13 34-29zM79 0h178c44 0 79 35 79 79v118c0 44-35 79-79 79H79c-44 0-79-35-79-79V79C0 35 35 0 79 0z"/></svg>'
+      icon: '<svg t="1633577686901" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2648" width="200" height="200"><path d="M307.2 163.84m81.92 0l552.96 0q81.92 0 81.92 81.92l0 696.32q0 81.92-81.92 81.92l-552.96 0q-81.92 0-81.92-81.92l0-696.32q0-81.92 81.92-81.92Z" fill="#E36130" p-id="2649"></path><path d="M512 399.36a30.72 30.72 0 0 1 30.72-30.72h348.16a30.72 30.72 0 1 1 0 61.44H542.72a30.72 30.72 0 0 1-30.72-30.72z m0 194.56a30.72 30.72 0 0 1 30.72-30.72h348.16a30.72 30.72 0 1 1 0 61.44H542.72a30.72 30.72 0 0 1-30.72-30.72z m30.72 163.84a30.72 30.72 0 1 0 0 61.44h348.16a30.72 30.72 0 1 0 0-61.44H542.72z" fill="#FFA17E" p-id="2650"></path><path d="M51.2 0m81.92 0l573.44 0q81.92 0 81.92 81.92l0 696.32q0 81.92-81.92 81.92l-573.44 0q-81.92 0-81.92-81.92l0-696.32q0-81.92 81.92-81.92Z" fill="#FF7744" p-id="2651"></path><path d="M215.04 266.24a30.72 30.72 0 0 1 30.72-30.72h348.16a30.72 30.72 0 1 1 0 61.44H245.76a30.72 30.72 0 0 1-30.72-30.72z m0 194.56a30.72 30.72 0 0 1 30.72-30.72h348.16a30.72 30.72 0 1 1 0 61.44H245.76a30.72 30.72 0 0 1-30.72-30.72z m30.72 163.84a30.72 30.72 0 1 0 0 61.44h348.16a30.72 30.72 0 1 0 0-61.44H245.76z" fill="#FFA17E" p-id="2652"></path></svg>'
     };
   }
 
   render() {
     const root = document.createElement("div");
     ReactDOM.render(
-      <div className={"plugin-container"}>
+      <PluginBaseWrapperComponent blockID={this.service.getBlockID()}>
         <div className={"left-bar"}></div>
         <div className={"underline"}></div>
         <div></div>
         <div className={"dialogue-text"}>
-          <DialogueTextEditor context={this} />
+          <DialogueTextEditorView context={this} />
         </div>
-      </div>,
+      </PluginBaseWrapperComponent>,
       root,
       () => {}
     ) as unknown as HTMLElement;

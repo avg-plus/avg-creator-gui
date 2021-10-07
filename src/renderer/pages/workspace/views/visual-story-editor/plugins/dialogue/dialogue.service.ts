@@ -20,6 +20,8 @@ export class APIDialogueBlockService extends CEBlockService {
   // 默认文本都为空，所以理应都是待删除状态
   _shouldDelete: boolean = true;
 
+  onBlockInit(): void {}
+
   // 把编辑器视图的 state 绑定到 service 层，方便直接操作视图
   bindingRendererStates(states: {
     editor: {

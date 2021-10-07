@@ -2,10 +2,11 @@ import fs from "fs-extra";
 import { assert } from "../../exception";
 import { AVGFileReader } from "./file-reader";
 
-interface StoryFileData {
+export interface StoryFileData {
   meta: { [key: string]: any };
   stories: Array<{
-    type: number;
+    id: string;
+    type: string;
     data: { [key: string]: any };
   }>;
 }
@@ -30,8 +31,8 @@ export class StoryFileReader extends AVGFileReader<StoryFileData> {
     };
   }
 
-  save() {
-    fs.writeJsonSync(this.filename, this.data);
+  save(data: StoryFileData) {
+    fs.writeJsonSync(this.filename, data);
 
     return true;
   }

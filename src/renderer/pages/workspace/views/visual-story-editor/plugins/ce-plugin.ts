@@ -1,5 +1,5 @@
 import { BlockToolConstructorOptions } from "@editorjs/editorjs";
-import { EditorBlockManager } from "../editor-block-manager";
+import { EditorBlockDocument } from "../editor-block-manager";
 import { CEBlockService } from "./ce-block-service";
 
 export type EditorPluginEventMap = {
@@ -28,16 +28,18 @@ export abstract class CETool<
   rendered() {
     // 注册到 block 管理器
     if (this.options.block?.id) {
-      EditorBlockManager.registerBlock(this.options.block.id, this.service);
+      EditorBlockDocument.registerBlock(this.options.block.id, this.service);
     }
   }
 
   removed(): void {
     if (this.options.block?.id) {
-      EditorBlockManager.unregisterBlock(this.options.block.id);
+      EditorBlockDocument.unregisterBlock(this.options.block.id);
     }
   }
 
   abstract onKeyDown(e: KeyboardEvent): void;
   abstract onKeyUp(e: KeyboardEvent): void;
+
+  abstract render(): HTMLDivElement;
 }
