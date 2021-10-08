@@ -16,6 +16,7 @@ export const PluginBaseWrapperComponent = (
       className={"plugin-container"}
       onClick={() => {
         EditorBlockDocument.setFocusBlock(props.blockID);
+        EditorBlockDocument.get(props.blockID)?.onBlockClicked();
       }}
     >
       {props.children}

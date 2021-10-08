@@ -12,8 +12,12 @@ type EditorStateContext = {
   editorState: EditorState;
   setEditorState: React.Dispatch<React.SetStateAction<EditorState>>;
 };
-export class APIDialogueBlockService extends CEBlockService {
-  _text: string = "";
+
+export interface APIDialogueData {
+  text: string;
+}
+
+export class APIDialogueBlockService extends CEBlockService<APIDialogueData> {
   _editorStateContext: EditorStateContext;
 
   // 处理删除时使用，在 block 的文本已经被删除时，不会马上移除该block, 先标记，在下次处理删除时正式删除
@@ -21,6 +25,7 @@ export class APIDialogueBlockService extends CEBlockService {
   _shouldDelete: boolean = true;
 
   onBlockInit(): void {}
+  onBlockClicked() {}
 
   // 把编辑器视图的 state 绑定到 service 层，方便直接操作视图
   bindingRendererStates(states: {
@@ -39,21 +44,21 @@ export class APIDialogueBlockService extends CEBlockService {
   }
 
   onTextChanged(text: string) {
-    this._text = text;
-    if (this._text.length > 0) {
+    this.options.data.text = text;
+    if (this.options.data.text.length > 0) {
       this._shouldDelete = false;
     }
   }
 
   getText() {
-    return this._text;
+    return this.options.data.text;
   }
 
   setText(value: string) {
-    this._text = value;
+    this.options.data.text = value;
 
     // 构造新的编辑器上下文对象
-    const content = ContentState.createFromText(this._text);
+    const content = ContentState.createFromText(this.options.data.text);
     const newState = EditorState.createWithContent(content);
 
     this._editorStateContext.setEditorState(newState);
@@ -69,7 +74,7 @@ export class APIDialogueBlockService extends CEBlockService {
 
   getData() {
     return {
-      text: this._text
+      text: this.options.data.text
     };
   }
 }

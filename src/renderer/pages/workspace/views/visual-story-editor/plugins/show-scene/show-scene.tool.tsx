@@ -4,23 +4,19 @@ import ReactDOM from "react-dom";
 import { CETool } from "../ce-plugin";
 
 import "./dialogue.tool.less";
-import { APIShowSceneBlockService as APIShowSceneBlockService } from "./show-scene.service";
+import {
+  APIShowSceneBlockService,
+  APIShowSceneData
+} from "./show-scene.service";
 import { BlockToolConstructorOptions } from "@editorjs/editorjs";
-
-interface APIShowSceneData {}
 
 export class APIShowSceneTool extends CETool<
   APIShowSceneData,
   APIShowSceneBlockService
 > {
   constructor(options: BlockToolConstructorOptions<APIShowSceneData>) {
-    super(options, new APIShowSceneBlockService(options.block!.id));
-
-    this._data = {
-      content: ""
-    };
-
-    options.config = this;
+    super(options, new APIShowSceneBlockService(options));
+    this.service.registerToolView(this);
   }
 
   static get toolbox() {

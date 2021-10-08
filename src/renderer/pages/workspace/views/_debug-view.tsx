@@ -10,7 +10,7 @@ import { WorkspaceDebugUI } from "../../../../common/services/workspace-debug-ui
 import "./_debug-view.less";
 import { useMount } from "react-use";
 import { GUIVisualStoryEditorService } from "./visual-story-editor/visual-story-editor.service";
-import { BlockAPI } from "@editorjs/editorjs";
+import { BlockAPI, OutputData } from "@editorjs/editorjs";
 import { EditorBlockDocument } from "./visual-story-editor/editor-block-manager";
 import { APICharacterBlockService } from "./visual-story-editor/plugins/character/character.service";
 import { CharacterData } from "../../../../common/models/character";
@@ -40,7 +40,15 @@ export const _DevelopmentDebugView = () => {
         const editor = GUIVisualStoryEditorService.getEditor();
         editor.clear();
 
-        editor.blocks.insert(data.stories[0].type, data.stories[0].data);
+        // editor.blocks.insert(data.stories[0].type, data.stories[0].data);
+
+        const stories = {
+          version: data.meta.version,
+          time: data.meta.time,
+          blocks: data.stories
+        } as OutputData;
+
+        GUIVisualStoryEditorService.load(stories);
       },
       保存: async () => {
         const project = new AVGProject();

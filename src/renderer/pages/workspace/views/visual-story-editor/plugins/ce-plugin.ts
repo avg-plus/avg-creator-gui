@@ -10,21 +10,23 @@ export type EditorPluginEventMap = {
   };
 };
 
-type CEBlockServiceConstructType = { new (id: string): CEBlockService };
 export abstract class CETool<
   TData extends object = object,
-  TService extends CEBlockService = CEBlockService
+  TService extends CEBlockService<TData> = CEBlockService<TData>
 > {
-  protected options: BlockToolConstructorOptions<TData>;
+  public options: BlockToolConstructorOptions<TData>;
   public service: TService;
-  protected _data: TData;
 
   constructor(options: BlockToolConstructorOptions<TData>, service: TService) {
     this.options = options;
     this.service = service;
+
+    this.options.config = this;
+
+    service.setData(this.options.data);
   }
 
-  // 实现 editor.js 的 lifecycle 渲染方法
+  // 实现 editor 的 lifecycle 渲染方法
   rendered() {
     // 注册到 block 管理器
     if (this.options.block?.id) {

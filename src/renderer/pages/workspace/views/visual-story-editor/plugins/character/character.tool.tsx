@@ -5,14 +5,14 @@ import className from "classnames";
 import { CETool } from "../ce-plugin";
 
 import "./character.tool.less";
-import { APICharacterBlockService } from "./character.service";
+import {
+  APICharacterBlockService,
+  APICharacterData
+} from "./character.service";
 import { BlockToolConstructorOptions } from "@editorjs/editorjs";
 import { useMount } from "react-use";
 import { PluginBaseWrapperComponent } from "../plugin-base-wrapper";
-
-interface APICharacterData {
-  content: string;
-}
+import { EditorBlockDocument } from "../../editor-block-manager";
 
 interface CharacterViewProps {
   context: APICharacterTool;
@@ -21,34 +21,27 @@ interface CharacterViewProps {
 const CharacterView = (props: CharacterViewProps) => {
   const [avatarThumbnail, setAvatarThumbnail] = useState("");
   const [characterName, setCharacterName] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
+  const [isSelected, setIsSelected] = useState(
+    props.context.service.isSelected()
+  );
 
   useMount(() => {
     props.context.service.bindingRendererStates({
       avatarThumbnail: { value: avatarThumbnail, setValue: setAvatarThumbnail },
-      characterName: { value: characterName, setValue: setCharacterName }
+      characterName: { value: characterName, setValue: setCharacterName },
+      isSelected: { value: isSelected, setValue: setIsSelected }
     });
 
     props.context.service.onBlockInit();
   });
 
-  const handleFocus = (value = false) => {
-    console.log("focus", value);
-
-    setIsFocused(value);
-  };
-
   return (
-    <div
-      className={"character-tool-container"}
-      onFocus={() => {
-        handleFocus(true);
-      }}
-      onBlur={() => {
-        handleFocus(false);
-      }}
-    >
-      <div className={className("card", { selected: isFocused })}>
+    <div className={"character-tool-container"}>
+      <div
+        className={className("card", {
+          selected: isSelected
+        })}
+      >
         <img className={"avatar-thumbnail"} src={avatarThumbnail}></img>
         <span className="title">{characterName}</span>
       </div>
@@ -61,14 +54,8 @@ export class APICharacterTool extends CETool<
   APICharacterBlockService
 > {
   constructor(options: BlockToolConstructorOptions<APICharacterData>) {
-    super(options, new APICharacterBlockService(options.block!.id));
+    super(options, new APICharacterBlockService(options));
     this.service.registerToolView(this);
-
-    this._data = {
-      content: ""
-    };
-
-    options.config = this;
   }
 
   static get toolbox() {

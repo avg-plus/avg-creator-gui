@@ -17,7 +17,7 @@ import {
 const { isSoftNewlineEvent, hasCommandModifier } = KeyBindingUtil;
 
 import { CETool, EditorPluginEventMap } from "../ce-plugin";
-import { APIDialogueBlockService } from "./dialogue.service";
+import { APIDialogueBlockService, APIDialogueData } from "./dialogue.service";
 
 import "./dialogue.tool.less";
 import { PluginBaseWrapperComponent } from "../plugin-base-wrapper";
@@ -29,8 +29,12 @@ interface DialogueTextEditorProps {
 type DialogueToolKeyCommand = DraftEditorCommand | "soft-newline" | null;
 
 export const DialogueTextEditorView = (props: DialogueTextEditorProps) => {
+  const initialData = props.context.service.getData();
+
   const [editorState, setEditorState] = useState(() =>
-    EditorState.createWithContent(ContentState.createFromText(""))
+    EditorState.createWithContent(
+      ContentState.createFromText(initialData.text ?? "")
+    )
   );
 
   useMount(() => {
@@ -86,29 +90,17 @@ export const DialogueTextEditorView = (props: DialogueTextEditorProps) => {
       editorState={editorState}
       onChange={handleOnChange}
       handleReturn={handleReturn}
-      // keyBindingFn={keyBindingFn}
-      // handleKeyCommand={handleKeyCommand}
     />
   );
 };
-
-interface APIDialogueData {
-  content: string;
-}
 
 export class APIDialogueTool extends CETool<
   APIDialogueData,
   APIDialogueBlockService
 > {
   constructor(options: BlockToolConstructorOptions<APIDialogueData>) {
-    super(options, new APIDialogueBlockService(options.block!.id));
+    super(options, new APIDialogueBlockService(options));
     this.service.registerToolView(this);
-
-    this._data = {
-      content: ""
-    };
-
-    options.config = this;
   }
 
   static get toolbox() {

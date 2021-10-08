@@ -1,3 +1,4 @@
+import { BlockToolConstructorOptions } from "@editorjs/editorjs";
 import { CETool } from "./ce-plugin";
 
 export type ServiceStateContext<T> = {
@@ -5,16 +6,24 @@ export type ServiceStateContext<T> = {
   setValue: React.Dispatch<React.SetStateAction<T>>;
 };
 
-export abstract class CEBlockService {
-  private _blockID: string;
+export abstract class CEBlockService<TData extends object = object> {
   private _toolView: CETool;
+  options: BlockToolConstructorOptions<TData>;
 
-  constructor(id: string) {
-    this._blockID = id;
+  constructor(options: BlockToolConstructorOptions<TData>) {
+    this.options = options;
+  }
+
+  getData() {
+    return this.options.data;
+  }
+
+  setData(data: TData) {
+    this.options.data = data;
   }
 
   getBlockID() {
-    return this._blockID;
+    return this.options.block!.id!;
   }
 
   registerToolView(toolView: CETool) {
@@ -26,4 +35,5 @@ export abstract class CEBlockService {
   }
 
   abstract onBlockInit(): void;
+  abstract onBlockClicked(): void;
 }

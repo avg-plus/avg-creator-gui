@@ -4,14 +4,15 @@ import { CharacterData } from "../../../../../../../common/models/character";
 import { EditorBlockDocument } from "../../editor-block-manager";
 import { CEBlockService, ServiceStateContext } from "../ce-block-service";
 
-export class APICharacterBlockService extends CEBlockService {
+export interface APICharacterData {
+  character_id: string;
+}
+
+export class APICharacterBlockService extends CEBlockService<APICharacterData> {
   private _characterData: CharacterData;
   private _avatarThumbnail: ServiceStateContext<string>;
   private _charaterName: ServiceStateContext<string>;
-
-  constructor(id: string) {
-    super(id);
-  }
+  private _isSelected: ServiceStateContext<boolean>;
 
   onBlockInit() {
     const debugCharacterCached = localStorage.getItem("debug_cached_avatar");
@@ -28,13 +29,26 @@ export class APICharacterBlockService extends CEBlockService {
     }
   }
 
+  onBlockClicked() {
+    this._isSelected.setValue(true);
+  }
+
   // 把编辑器视图的 state 绑定到 service 层，方便直接操作视图
   bindingRendererStates(states: {
     avatarThumbnail: ServiceStateContext<string>;
     characterName: ServiceStateContext<string>;
+    isSelected: ServiceStateContext<boolean>;
   }) {
     this._avatarThumbnail = states.avatarThumbnail;
     this._charaterName = states.characterName;
+    this._isSelected = states.isSelected;
+  }
+
+  isSelected() {
+    return (
+      EditorBlockDocument.getCurrentFocusBlock()?.getBlockID() ===
+      this.getBlockID()
+    );
   }
 
   setCharacterData(data: CharacterData) {
@@ -43,7 +57,7 @@ export class APICharacterBlockService extends CEBlockService {
     this._charaterName.setValue(data.name);
   }
 
-  getData() {
+  getData(): APICharacterData {
     return {
       character_id: this._characterData.id
     };
