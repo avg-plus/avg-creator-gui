@@ -5,14 +5,12 @@ import className from "classnames";
 import { CETool } from "../ce-plugin";
 
 import "./character.tool.less";
-import {
-  APICharacterBlockService,
-  APICharacterData
-} from "./character.service";
+import { APICharacterBlockService } from "./character.service";
 import { BlockToolConstructorOptions } from "@editorjs/editorjs";
 import { useMount } from "react-use";
 import { PluginBaseWrapperComponent } from "../plugin-base-wrapper";
-import { EditorBlockDocument } from "../../editor-block-manager";
+import { EditorBlockDocument } from "../../editor-block-document";
+import { APICharacterData } from "../../../../../../../common/models/character";
 
 interface CharacterViewProps {
   context: APICharacterTool;

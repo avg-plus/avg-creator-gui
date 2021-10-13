@@ -11,11 +11,12 @@ import "./_debug-view.less";
 import { useMount } from "react-use";
 import { GUIVisualStoryEditorService } from "./visual-story-editor/visual-story-editor.service";
 import { BlockAPI, OutputData } from "@editorjs/editorjs";
-import { EditorBlockDocument } from "./visual-story-editor/editor-block-manager";
+import { EditorBlockDocument } from "./visual-story-editor/editor-block-document";
 import { APICharacterBlockService } from "./visual-story-editor/plugins/character/character.service";
-import { CharacterData } from "../../../../common/models/character";
 import { AVGProject } from "../../../../common/services/project";
 import { StoryFileData } from "../../../../common/services/file-reader/story-file-reader";
+import { Codegen } from "../../../modules/compilers/codegen";
+import { APICharacterData } from "../../../../common/models/character";
 
 export const _DevelopmentDebugView = () => {
   const [components, setComponents] = useState(WorkspaceDebugUI.components);
@@ -80,13 +81,33 @@ export const _DevelopmentDebugView = () => {
     storyDebugFolder.add(storyData, "文件路径");
     storyDebugFolder.add(storyData, "读取");
     storyDebugFolder.add(storyData, "保存");
+    storyDebugFolder.open();
 
     const editorDebugFolder = gui.addFolder("编辑器调试");
 
-    var folder1 = gui.addFolder("角色相关工具");
-    folder1.domElement.appendChild(
+    var characterDebugFolder = gui.addFolder("角色相关工具");
+    characterDebugFolder.domElement.appendChild(
       document.getElementById("character-crop-preview")!
     );
+    characterDebugFolder.open();
+
+    /**
+     * 引擎调试
+     */
+
+    const engineDebug = {
+      编译: async () => {
+        await Codegen.run();
+      },
+      打印当前脚本: () => {},
+      运行游戏: () => {}
+    };
+
+    const runtimeFolder = gui.addFolder("引擎调试");
+    runtimeFolder.add(engineDebug, "编译");
+    runtimeFolder.add(engineDebug, "打印当前脚本");
+    runtimeFolder.add(engineDebug, "运行游戏");
+    runtimeFolder.open();
 
     document.getElementById("dat-gui")!.appendChild(gui.domElement);
 
@@ -109,8 +130,11 @@ export const _DevelopmentDebugView = () => {
         const block =
           EditorBlockDocument.getCurrentFocusBlock() as APICharacterBlockService;
         if (block && block.setCharacterData) {
-          const data = new CharacterData();
+          const data = new APICharacterData();
+          data.character_id = "test-id-" + Date.now();
           data.thumbnailData = dataURL;
+          data.avatarPath =
+            "/Users/angrypowman/Workspace/Programming/Revisions/avg-plus/game-projects/马猴烧酒/resources/characters/1.png";
           data.name = "林牧风";
 
           block.setCharacterData(data);

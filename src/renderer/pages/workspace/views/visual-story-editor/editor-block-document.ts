@@ -1,4 +1,3 @@
-import { BlockAPI } from "@editorjs/editorjs";
 import { logger } from "../../../../common/lib/logger";
 import { CEBlockService } from "./plugins/ce-block-service";
 import { GUIVisualStoryEditorService } from "./visual-story-editor.service";
@@ -15,7 +14,22 @@ export class EditorBlockDocument {
     return this.blockServices.get(id);
   }
 
-  static getBlockList() {}
+  static async getBlockList() {
+    const editor = GUIVisualStoryEditorService.getEditor();
+    const output = await editor.save();
+
+    const blocks: CEBlockService[] = [];
+    for (let i = 0; i < output.blocks.length; i++) {
+      const element = output.blocks[i];
+
+      const block = this.get(element.id!);
+      if (block) {
+        blocks.push(block);
+      }
+    }
+
+    return blocks;
+  }
 
   static setFocusBlock(id: string) {
     this.focusBlock = this.blockServices.get(id);

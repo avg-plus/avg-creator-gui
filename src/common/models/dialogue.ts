@@ -1,3 +1,3 @@
-export class DialogueData {
+export class APIDialogueData {
   text: string;
 }

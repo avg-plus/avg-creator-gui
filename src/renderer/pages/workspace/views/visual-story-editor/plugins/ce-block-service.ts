@@ -1,4 +1,5 @@
 import { BlockToolConstructorOptions } from "@editorjs/editorjs";
+import { CodegenContext } from "../../../../../modules/compilers/codegen-context";
 import { CETool } from "./ce-plugin";
 
 export type ServiceStateContext<T> = {
@@ -36,4 +37,5 @@ export abstract class CEBlockService<TData extends object = object> {
 
   abstract onBlockInit(): void;
   abstract onBlockClicked(): void;
+  abstract onCodegenProcess(context: CodegenContext, data: TData): string;
 }

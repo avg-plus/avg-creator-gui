@@ -1,5 +1,5 @@
 import React from "react";
-import { EditorBlockDocument } from "../editor-block-manager";
+import { EditorBlockDocument } from "../editor-block-document";
 
 import "./plugin.less";
 

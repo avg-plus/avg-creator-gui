@@ -1,5 +1,5 @@
 import { BlockToolConstructorOptions } from "@editorjs/editorjs";
-import { EditorBlockDocument } from "../editor-block-manager";
+import { EditorBlockDocument } from "../editor-block-document";
 import { CEBlockService } from "./ce-block-service";
 
 export type EditorPluginEventMap = {

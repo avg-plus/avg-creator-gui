@@ -5,17 +5,16 @@ import {
   RichUtils,
   SelectionState
 } from "draft-js";
+import { APIDialogueData } from "../../../../../../../common/models/dialogue";
 import { logger } from "../../../../../../common/lib/logger";
+import { CodegenContext } from "../../../../../../modules/compilers/codegen-context";
 import { CEBlockService } from "../ce-block-service";
+import gen from "./dialogue.codegen";
 
 type EditorStateContext = {
   editorState: EditorState;
   setEditorState: React.Dispatch<React.SetStateAction<EditorState>>;
 };
-
-export interface APIDialogueData {
-  text: string;
-}
 
 export class APIDialogueBlockService extends CEBlockService<APIDialogueData> {
   _editorStateContext: EditorStateContext;
@@ -76,5 +75,9 @@ export class APIDialogueBlockService extends CEBlockService<APIDialogueData> {
     return {
       text: this.options.data.text
     };
+  }
+
+  onCodegenProcess(context: CodegenContext, data: APIDialogueData): string {
+    return gen(context, data);
   }
 }

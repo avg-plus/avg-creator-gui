@@ -1,15 +1,12 @@
 import Cropper from "cropperjs";
-
-import { CharacterData } from "../../../../../../../common/models/character";
-import { EditorBlockDocument } from "../../editor-block-manager";
+import { APICharacterData } from "../../../../../../../common/models/character";
+import { CodegenContext } from "../../../../../../modules/compilers/codegen-context";
+import { EditorBlockDocument } from "../../editor-block-document";
 import { CEBlockService, ServiceStateContext } from "../ce-block-service";
-
-export interface APICharacterData {
-  character_id: string;
-}
+import gen from "./character.codegen";
 
 export class APICharacterBlockService extends CEBlockService<APICharacterData> {
-  private _characterData: CharacterData;
+  private _characterData: APICharacterData;
   private _avatarThumbnail: ServiceStateContext<string>;
   private _charaterName: ServiceStateContext<string>;
   private _isSelected: ServiceStateContext<boolean>;
@@ -20,8 +17,9 @@ export class APICharacterBlockService extends CEBlockService<APICharacterData> {
     if (debugCharacterCached) {
       const parsedDebugCharacterCached = JSON.parse(debugCharacterCached);
 
-      const data = new CharacterData();
-      data.id = "test-id-" + Date.now();
+      const data = new APICharacterData();
+      data.character_id = parsedDebugCharacterCached.character_id;
+      data.avatarPath = parsedDebugCharacterCached.avatarPath;
       data.thumbnailData = parsedDebugCharacterCached.thumbnailData;
       data.name = parsedDebugCharacterCached.name;
 
@@ -51,15 +49,19 @@ export class APICharacterBlockService extends CEBlockService<APICharacterData> {
     );
   }
 
-  setCharacterData(data: CharacterData) {
+  setCharacterData(data: APICharacterData) {
     this._characterData = data;
     this._avatarThumbnail.setValue(data.thumbnailData);
     this._charaterName.setValue(data.name);
   }
 
-  getData(): APICharacterData {
+  onCodegenProcess(context: CodegenContext, data: APICharacterData): string {
+    return gen(context, data);
+  }
+
+  getData(): any {
     return {
-      character_id: this._characterData.id
+      character_id: this._characterData.character_id
     };
   }
 }
