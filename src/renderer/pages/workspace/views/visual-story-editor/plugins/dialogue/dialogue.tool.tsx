@@ -17,10 +17,11 @@ import {
 const { isSoftNewlineEvent, hasCommandModifier } = KeyBindingUtil;
 
 import { CETool, EditorPluginEventMap } from "../ce-plugin";
-import { APIDialogueBlockService, APIDialogueData } from "./dialogue.service";
+import { APIDialogueBlockService } from "./dialogue.service";
 
 import "./dialogue.tool.less";
 import { PluginBaseWrapperComponent } from "../plugin-base-wrapper";
+import { APIDialogueData } from "../../../../../../../common/models/dialogue";
 
 interface DialogueTextEditorProps {
   context: APIDialogueTool;
