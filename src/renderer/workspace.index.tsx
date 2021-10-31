@@ -28,14 +28,14 @@ if (urlObject && urlObject.query?.length) {
 
     remote.getCurrentWindow().close();
   } else {
+    RendererApplication.setWindow(WorkspaceWindow);
+    RendererApplication.start();
+
+    GUIWorkspaceService.loadProject(projectDir);
+
     ReactDOM.render(
       <AVGWorkspace />,
       document.getElementById("root") as HTMLElement
     );
-
-    RendererApplication.setWindow(WorkspaceWindow);
-    RendererApplication.start();
-
-    GUIWorkspaceService.setProject(projectDir);
   }
 }

@@ -3,11 +3,8 @@ import os from "os";
 import { FocusStyleManager } from "@blueprintjs/core";
 import { Color, Titlebar } from "custom-electron-titlebar";
 
-import { remote } from "electron";
 import { AVGWindow } from "../../renderer/windows/gui-window";
 import "../../common/ipc-observable/index";
-import { Env } from "../../renderer/common/remote-objects/remote-env";
-import { logger } from "../../renderer/common/lib/logger";
 
 export interface GUIWindowApplicationOptions {
   hasTitlebar: boolean;
