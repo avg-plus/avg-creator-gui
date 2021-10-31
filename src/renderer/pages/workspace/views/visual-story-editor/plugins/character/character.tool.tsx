@@ -53,7 +53,6 @@ export class APICharacterTool extends CETool<
 > {
   constructor(options: BlockToolConstructorOptions<APICharacterData>) {
     super(options, new APICharacterBlockService(options));
-    // this.service.registerToolView(this);
   }
 
   static get toolbox() {
@@ -75,29 +74,31 @@ export class APICharacterTool extends CETool<
     // trick: 为了让这个 tool 可以在 contentediable 状态下捕获按键消息，同时也不显示光标
     element.contentEditable = "true";
     element.style.cursor = "default";
-    element.style.caretColor = "transparent";
+    // element.style.caretColor = "transparent";
 
     return element;
   }
 
   onKeyDown(e: KeyboardEvent): void {
-    e.preventDefault();
-
     if (e.key === "Enter") {
       // 把光标移到最后，防止把子元素内容回车换到下一行
       // 因为实际上该 tool 是 contentediable 元素
-      let sel = window.getSelection();
+      const sel = window.getSelection();
       if (sel) {
         sel.selectAllChildren(this.rootElement);
         sel.collapseToEnd();
+        e.preventDefault();
       }
-      e.preventDefault();
+
       return;
     }
 
     // 按键删除
     if (e.key === "Delete" || e.key === "Backspace") {
       this.service.delete();
+      e.preventDefault();
+      e.stopPropagation();
+      return;
     }
   }
 
