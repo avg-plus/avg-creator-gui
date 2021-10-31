@@ -31,25 +31,14 @@ export class EditorBlockDocument {
     return blocks;
   }
 
-  static setFocusBlock(id: string) {
+  static async setFocusBlock(id: string) {
+    // 取消所有 block 的焦点
     this.focusBlock = this.blockServices.get(id);
-
     console.log("this.focusBlock", this.focusBlock);
   }
 
   static getCurrentFocusBlock() {
     return this.focusBlock;
-    // const editor = GUIVisualStoryEditorService.getEditor();
-    // if (editor && editor.blocks) {
-    //   const index = editor.blocks.getCurrentBlockIndex();
-    //   const api = editor.blocks.getBlockByIndex(index) as BlockAPI;
-
-    //   if (api && api.id) {
-    //     return EditorBlockDocument.get(api.id);
-    //   }
-    // }
-
-    // return null;
   }
 
   static registerBlock(id: string, service: CEBlockService) {

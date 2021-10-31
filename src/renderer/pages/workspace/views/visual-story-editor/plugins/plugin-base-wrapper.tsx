@@ -14,9 +14,18 @@ export const PluginBaseWrapperComponent = (
   return (
     <div
       className={"plugin-container"}
-      onClick={() => {
-        EditorBlockDocument.setFocusBlock(props.blockID);
-        EditorBlockDocument.get(props.blockID)?.onBlockClicked();
+      onClick={async () => {
+        const currentFocus = EditorBlockDocument.getCurrentFocusBlock();
+        currentFocus?.onBlockBlur && currentFocus?.onBlockBlur();
+
+        await EditorBlockDocument.setFocusBlock(props.blockID);
+
+        // 触发点击和焦点事件
+        const block = EditorBlockDocument.get(props.blockID);
+        if (block) {
+          block.onBlockClicked && block.onBlockClicked();
+          block.onBlockFocus && block.onBlockFocus();
+        }
       }}
     >
       {props.children}

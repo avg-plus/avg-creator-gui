@@ -37,5 +37,7 @@ export abstract class CEBlockService<TData extends object = object> {
 
   abstract onBlockInit(): void;
   abstract onBlockClicked(): void;
+  abstract onBlockFocus(): void;
+  abstract onBlockBlur(): void;
   abstract onCodegenProcess(context: CodegenContext, data: TData): string;
 }

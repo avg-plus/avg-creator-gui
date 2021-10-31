@@ -27,8 +27,14 @@ export class APICharacterBlockService extends CEBlockService<APICharacterData> {
     }
   }
 
-  onBlockClicked() {
+  onBlockClicked() {}
+
+  onBlockFocus() {
     this._isSelected.setValue(true);
+  }
+
+  onBlockBlur() {
+    this._isSelected.setValue(false);
   }
 
   // 把编辑器视图的 state 绑定到 service 层，方便直接操作视图

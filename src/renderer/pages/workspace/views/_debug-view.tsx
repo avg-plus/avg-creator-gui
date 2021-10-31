@@ -133,8 +133,7 @@ export const _DevelopmentDebugView = () => {
           const data = new APICharacterData();
           data.character_id = "test-id-" + Date.now();
           data.thumbnailData = dataURL;
-          data.avatarPath =
-            "/Users/angrypowman/Workspace/Programming/Revisions/avg-plus/game-projects/马猴烧酒/resources/characters/1.png";
+          data.avatarPath = `${GUIWorkspaceService.getProjectDir()}\\resources\\characters\\1.png`;
           data.name = "林牧风";
 
           block.setCharacterData(data);
@@ -154,9 +153,7 @@ export const _DevelopmentDebugView = () => {
           display: "block",
           maxWidth: "100%"
         }}
-        src={
-          "/Users/angrypowman/Workspace/Programming/Revisions/avg-plus/game-projects/马猴烧酒/resources/characters/1.png"
-        }
+        src={`${GUIWorkspaceService.getProjectDir()}\\resources\\characters\\1.png`}
       ></img>
 
       {/* {components.map((v) => {
