@@ -16,7 +16,7 @@ import {
 
 const { isSoftNewlineEvent, hasCommandModifier } = KeyBindingUtil;
 
-import { CETool, EditorPluginEventMap } from "../ce-plugin";
+import { CETool } from "../ce-tool";
 import { APIDialogueBlockService } from "./dialogue.service";
 
 import "./dialogue.tool.less";
@@ -101,7 +101,6 @@ export class APIDialogueTool extends CETool<
 > {
   constructor(options: BlockToolConstructorOptions<APIDialogueData>) {
     super(options, new APIDialogueBlockService(options));
-    this.service.registerToolView(this);
   }
 
   static get toolbox() {
@@ -112,27 +111,19 @@ export class APIDialogueTool extends CETool<
   }
 
   render() {
-    const root = document.createElement("div");
-    ReactDOM.render(
-      <PluginBaseWrapperComponent blockID={this.service.getBlockID()}>
+    return super.renderView(
+      <PluginBaseWrapperComponent tool={this}>
         <div className={"left-bar"}></div>
         <div className={"underline"}></div>
-        <div></div>
         <div className={"dialogue-text"}>
           <DialogueTextEditorView context={this} />
         </div>
       </PluginBaseWrapperComponent>,
-      root,
-      () => {}
-    ) as unknown as HTMLElement;
-
-    root.onkeydown = this.onKeyDown.bind(this);
-
-    return root;
+      this
+    );
   }
 
   onKeyDown(e: KeyboardEvent): void {
-    console.log("on key down", e.key);
     if (e.key === "Backspace") {
       e.stopPropagation();
 
@@ -172,10 +163,6 @@ export class APIDialogueTool extends CETool<
       //   this.options.api.blocks.insert("dialogue");
       //   this.options.api.caret.setToBlock(currentBlockIndex + 1, "default");
       //   break;
-      case "Backspace": {
-        e.preventDefault();
-        break;
-      }
       default:
         break;
     }

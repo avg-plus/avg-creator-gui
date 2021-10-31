@@ -23,7 +23,8 @@ export class GUIVisualStoryEditorService {
         // paragraph: APIDialogueTool,
         dialogue: APIDialogueTool,
         character: APICharacterTool
-      }
+      },
+      onReady: () => {}
     });
   }
 

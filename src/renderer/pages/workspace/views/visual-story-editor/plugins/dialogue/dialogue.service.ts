@@ -77,6 +77,9 @@ export class APIDialogueBlockService extends CEBlockService<APIDialogueData> {
     };
   }
 
+  onBlockFocus(): void {}
+  onBlockBlur(): void {}
+
   onCodegenProcess(context: CodegenContext, data: APIDialogueData): string {
     return gen(context, data);
   }

@@ -88,7 +88,9 @@ module.exports = {
 // 复制文件
 copyFiles();
 
-if (require.main === module) {
-  const watch = process.argv.includes("--watch");
-  compileParcel({ watch });
-}
+try {
+  if (require.main === module) {
+    const watch = process.argv.includes("--watch");
+    compileParcel({ watch });
+  }
+} catch (error) {}

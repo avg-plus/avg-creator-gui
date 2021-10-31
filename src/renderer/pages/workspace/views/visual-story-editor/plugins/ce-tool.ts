@@ -1,14 +1,7 @@
 import { BlockToolConstructorOptions } from "@editorjs/editorjs";
+import ReactDOM from "react-dom";
 import { EditorBlockDocument } from "../editor-block-document";
 import { CEBlockService } from "./ce-block-service";
-
-export type EditorPluginEventMap = {
-  target?: ThisType<CETool>;
-  events?: {
-    onKeyDown?: (e: KeyboardEvent) => void;
-    onKeyUp?: (e: KeyboardEvent) => void;
-  };
-};
 
 export abstract class CETool<
   TData extends object = object,
@@ -16,14 +9,37 @@ export abstract class CETool<
 > {
   public options: BlockToolConstructorOptions<TData>;
   public service: TService;
+  protected rootElement: HTMLDivElement;
+  private eventMaps = {};
 
   constructor(options: BlockToolConstructorOptions<TData>, service: TService) {
     this.options = options;
     this.service = service;
-
     this.options.config = this;
 
     service.setData(this.options.data);
+    this.service.registerToolView(this);
+
+    this.eventMaps = {
+      onkeydown: this.onKeyDown.bind(this),
+      onkeyup: this.onKeyUp.bind(this)
+    };
+  }
+
+  protected renderView(element: JSX.Element, target: CETool) {
+    this.rootElement = document.createElement("div");
+    ReactDOM.render(
+      element,
+      this.rootElement,
+      () => {}
+    ) as unknown as HTMLElement;
+
+    // 注册键盘消息
+    Object.keys(this.eventMaps).forEach((v) => {
+      this.rootElement[v] = this.eventMaps[v].bind(target);
+    });
+
+    return this.rootElement;
   }
 
   // 实现 editor 的 lifecycle 渲染方法

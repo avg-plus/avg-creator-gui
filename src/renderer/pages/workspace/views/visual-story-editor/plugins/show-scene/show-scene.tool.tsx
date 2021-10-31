@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import { CETool } from "../ce-plugin";
+import { CETool } from "../ce-tool";
 
 import "./dialogue.tool.less";
 import {
@@ -33,8 +33,6 @@ export class APIShowSceneTool extends CETool<
       root,
       () => {}
     ) as unknown as HTMLElement;
-
-    root.onkeydown = this.onKeyDown.bind(this);
 
     return root;
   }

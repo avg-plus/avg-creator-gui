@@ -34,7 +34,6 @@ export class EditorBlockDocument {
   static async setFocusBlock(id: string) {
     // 取消所有 block 的焦点
     this.focusBlock = this.blockServices.get(id);
-    console.log("this.focusBlock", this.focusBlock);
   }
 
   static getCurrentFocusBlock() {
