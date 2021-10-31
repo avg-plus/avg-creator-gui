@@ -17,6 +17,7 @@ import { AVGProject } from "../../../../common/services/project";
 import { StoryFileData } from "../../../../common/services/file-reader/story-file-reader";
 import { Codegen } from "../../../modules/compilers/codegen";
 import { APICharacterData } from "../../../../common/models/character";
+import { GUIWorkspaceService } from "../avg-workspace.service";
 
 export const _DevelopmentDebugView = () => {
   const [components, setComponents] = useState(WorkspaceDebugUI.components);
@@ -32,8 +33,7 @@ export const _DevelopmentDebugView = () => {
 
   useMount(() => {
     const storyData = {
-      文件路径:
-        "/Users/angrypowman/Workspace/Programming/Revisions/avg-plus/game-projects/马猴烧酒/stories/start.story",
+      文件路径: `${GUIWorkspaceService.getProjectDir()}\\stories\\start.story`,
       读取: () => {
         const project = new AVGProject();
         const data = project.openStory(storyData.文件路径);

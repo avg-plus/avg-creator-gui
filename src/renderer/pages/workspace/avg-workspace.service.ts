@@ -10,6 +10,7 @@ export type LayoutPanelID =
   | "PropertyView";
 
 export class GUIWorkspaceService {
+  static projectDir: string;
   static layout: Record<LayoutPanelID, { title: string }> = {
     StoryTree: { title: "故事管理" },
     StoryBoard: { title: "剧本编辑器" },
@@ -18,8 +19,14 @@ export class GUIWorkspaceService {
     DebugView: { title: "调试" }
   };
 
-  static async setProject(projectDir: string) {
+  public static async loadProject(projectDir: string) {
     const data = AVGProjectManager.readProjectData(projectDir);
     RendererApplication.updateTitle(`${data.project_name} — AVG Creator`);
+
+    this.projectDir = projectDir;
+  }
+
+  public static getProjectDir() {
+    return this.projectDir;
   }
 }
