@@ -33,7 +33,7 @@ export const _DevelopmentDebugView = () => {
 
   useMount(() => {
     const storyData = {
-      文件路径: `${GUIWorkspaceService.getProjectDir()}\\stories\\start.story`,
+      文件路径: `${GUIWorkspaceService.getProjectDir()}/stories/start.story`,
       读取: () => {
         const project = new AVGProject();
         const data = project.openStory(storyData.文件路径);
