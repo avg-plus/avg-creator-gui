@@ -1,5 +1,4 @@
 import { BlockToolConstructorOptions } from "@editorjs/editorjs";
-import { CodegenContext } from "../../../../../modules/compilers/codegen-context";
 import { CETool } from "./ce-tool";
 
 export type ServiceStateContext<T> = {

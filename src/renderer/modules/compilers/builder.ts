@@ -6,7 +6,7 @@ import fs from "fs-extra";
 import path from "path";
 import { logger } from "../../common/lib/logger";
 import { WorkspaceContext } from "../context/workspace-context";
-import { Codegen } from "./codegen";
+import { Codegen, CodegenContext } from "./codegen";
 
 export class AVGProjectBuilder {
   static hiddenGeneratedProjectDir: string = "";
@@ -38,23 +38,27 @@ export class AVGProjectBuilder {
 
     // 3. 编译游戏脚本
     const scriptsDir = path.join(this.hiddenGeneratedProjectDir, "scripts");
-
     const trees = project.getStoryTrees();
-    trees.forEach((v) => {
-      const data = project.openStory(v.data.path);
-      data.stories.forEach((storyItem) => {});
-    });
+    for (let i = 0; i < trees.length; i++) {
+      const file = trees[i];
+      const data = project.openStory(file.data.path);
 
-    await Codegen.run();
+      const context = new CodegenContext();
+      const generator = new Codegen(context);
+      const content = await generator.run(data);
 
-    logger.info("story trees = ", trees);
+      fs.writeFileSync(
+        path.join(scriptsDir, path.basename(file.data.path, ".story") + ".avs"),
+        content
+      );
+    }
   }
 
   private static createConfig() {
     return {
       screen: {
-        width: 800,
-        height: 600,
+        width: 1920,
+        height: 1080,
         fullscreen: false
       },
       game: {

@@ -17,9 +17,9 @@ import { StoryFileData } from "../../../../common/services/file-reader/story-fil
 import { Codegen } from "../../../modules/compilers/codegen";
 import { APICharacterData } from "../../../../common/models/character";
 import { GUIWorkspaceService } from "../avg-workspace.service";
-import { WorkspaceContext } from "../../../modules/context/workspace-context";
 import { AVGProjectBuilder } from "../../../modules/compilers/builder";
 import { AVGProject } from "../../../modules/context/project";
+import { WorkspaceContext } from "../../../modules/context/workspace-context";
 
 export const _DevelopmentDebugView = () => {
   const [components, setComponents] = useState(WorkspaceDebugUI.components);
