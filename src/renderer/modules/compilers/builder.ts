@@ -37,7 +37,6 @@ export class AVGProjectBuilder {
     );
 
     // 3. 编译游戏脚本
-    const scriptsDir = path.join(this.hiddenGeneratedProjectDir, "scripts");
     const trees = project.getStoryTrees();
     for (let i = 0; i < trees.length; i++) {
       const file = trees[i];
@@ -48,7 +47,7 @@ export class AVGProjectBuilder {
       const content = await generator.run(data);
 
       fs.writeFileSync(
-        path.join(scriptsDir, path.basename(file.data.path, ".story") + ".avs"),
+        path.join(SCRIPT_DIR, path.basename(file.data.path, ".story") + ".avs"),
         content
       );
     }
