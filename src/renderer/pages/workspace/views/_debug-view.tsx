@@ -13,12 +13,13 @@ import { GUIVisualStoryEditorService } from "./visual-story-editor/visual-story-
 import { BlockAPI, OutputData } from "@editorjs/editorjs";
 import { EditorBlockDocument } from "./visual-story-editor/editor-block-document";
 import { APICharacterBlockService } from "./visual-story-editor/plugins/character/character.service";
-import { AVGProject } from "../../../modules/context/project";
 import { StoryFileData } from "../../../../common/services/file-reader/story-file-reader";
 import { Codegen } from "../../../modules/compilers/codegen";
 import { APICharacterData } from "../../../../common/models/character";
 import { GUIWorkspaceService } from "../avg-workspace.service";
 import { WorkspaceContext } from "../../../modules/context/workspace-context";
+import { AVGProjectBuilder } from "../../../modules/compilers/builder";
+import { AVGProject } from "../../../modules/context/project";
 
 export const _DevelopmentDebugView = () => {
   const [components, setComponents] = useState(WorkspaceDebugUI.components);
@@ -100,7 +101,8 @@ export const _DevelopmentDebugView = () => {
 
     const engineDebug = {
       编译: async () => {
-        await Codegen.run();
+        // await Codegen.run();
+        AVGProjectBuilder.build();
       },
       打印当前脚本: () => {},
       运行游戏: () => {}

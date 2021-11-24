@@ -1,5 +1,5 @@
-import { APIDialogueData } from "../../../../../../../common/models/dialogue";
-import { CodegenContext } from "../../../../../../modules/compilers/codegen-context";
+import { APIDialogueData } from "../../../../common/models/dialogue";
+import { CodegenContext } from "../codegen-context";
 
 export default (context: CodegenContext, data: APIDialogueData) => {
   let name = "";

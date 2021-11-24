@@ -15,6 +15,10 @@ export abstract class CEBlockService<TData extends object = object> {
     this.options = options;
   }
 
+  getType() {
+    return this.options;
+  }
+
   getData() {
     return this.options.data;
   }
@@ -53,5 +57,4 @@ export abstract class CEBlockService<TData extends object = object> {
   abstract onBlockClicked(): void;
   abstract onBlockFocus(): void;
   abstract onBlockBlur(): void;
-  abstract onCodegenProcess(context: CodegenContext, data: TData): string;
 }

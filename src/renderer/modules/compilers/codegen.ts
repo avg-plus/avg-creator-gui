@@ -7,9 +7,21 @@ export class Codegen {
     const blocks = await EditorBlockDocument.getBlockList();
 
     const codeLines = blocks.map((v) => {
-      return v.onCodegenProcess(context, v.getData()) ?? "";
+      console.log("get type = ", v.getType());
+
+      return this.onCodegenProcess(context, v.getData()) ?? "";
     });
 
     console.log(codeLines);
+  }
+
+  private static onCodegenProcess(
+    context: CodegenContext,
+    data: object
+  ): string {
+    console.log("code", data);
+
+    return "";
+    // return gen(context, data);
   }
 }

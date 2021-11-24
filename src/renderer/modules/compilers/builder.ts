@@ -2,13 +2,56 @@
  * 该模块用于生成底层的 AVGPlus 项目
  */
 
+import fs from "fs-extra";
+import path from "path";
+import { logger } from "../../common/lib/logger";
+import { WorkspaceContext } from "../context/workspace-context";
+import { Codegen } from "./codegen";
+
 export class AVGProjectBuilder {
-  init(projectRoot: string) {
-    // 判断目录是否存在
+  static hiddenGeneratedProjectDir: string = "";
+
+  static build() {
+    this.createProjectStructure();
+  }
+
+  private static async createProjectStructure() {
+    const project = WorkspaceContext.getCurrentProject();
+    const projectRoot = project.getDir("root");
+    this.hiddenGeneratedProjectDir = path.join(projectRoot, ".avg-project");
+
+    const SCRIPT_DIR = path.join(this.hiddenGeneratedProjectDir, "scripts");
+    const GRAPHICS_DIR = path.join(this.hiddenGeneratedProjectDir, "graphics");
+    const AUDIO_DIR = path.join(this.hiddenGeneratedProjectDir, "audio");
+
+    // 1. 生成底层项目目录结构
+    [SCRIPT_DIR, GRAPHICS_DIR, AUDIO_DIR].forEach((v) => {
+      fs.mkdirpSync(v);
+    });
+
+    // 2. 生成基础游戏配置
+    const config = this.createConfig();
+    fs.writeFileSync(
+      path.join(this.hiddenGeneratedProjectDir, "game.json"),
+      config
+    );
+
+    // 3. 编译游戏脚本
+    const scriptsDir = path.join(this.hiddenGeneratedProjectDir, "scripts");
+
+    const trees = project.getStoryTrees();
+    trees.forEach((v) => {
+      const data = project.openStory(v.data.path);
+      data.stories.forEach((storyItem) => {});
+    });
+
+    await Codegen.run();
+
+    logger.info("story trees = ", trees);
   }
 
   private static createConfig() {
-    const DEFAULT_GAME_CONFIG = {
+    return {
       screen: {
         width: 800,
         height: 600,

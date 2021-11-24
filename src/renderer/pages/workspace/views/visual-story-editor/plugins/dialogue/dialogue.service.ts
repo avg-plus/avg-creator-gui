@@ -9,7 +9,7 @@ import { APIDialogueData } from "../../../../../../../common/models/dialogue";
 import { logger } from "../../../../../../common/lib/logger";
 import { CodegenContext } from "../../../../../../modules/compilers/codegen-context";
 import { CEBlockService } from "../ce-block-service";
-import gen from "./dialogue.codegen";
+import gen from "../../../../../../modules/compilers/codegen/dialogue.codegen";
 
 type EditorStateContext = {
   editorState: EditorState;
