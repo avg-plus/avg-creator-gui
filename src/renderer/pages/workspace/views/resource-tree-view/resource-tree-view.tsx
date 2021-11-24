@@ -186,19 +186,19 @@ export const ResourceTreeView = () => {
                           id: 0,
                           hasCaret: true,
                           icon: "folder-close",
-                          label: <>111</>
+                          label: <>序章</>
                         },
                         {
                           id: 1,
                           icon: "folder-close",
                           isExpanded: true,
-                          label: <>111</>,
+                          label: <>酒馆回忆</>,
                           childNodes: [
                             {
                               id: 2,
                               icon: "document",
-                              label: "Item 0",
-                              secondaryLabel: <>222</>
+                              label: "C.1 往事",
+                              secondaryLabel: <>故事</>
                             },
                             {
                               id: 3,
@@ -209,8 +209,7 @@ export const ResourceTreeView = () => {
                                   className={Classes.TREE_NODE_ICON}
                                 />
                               ),
-                              label:
-                                "Organic meditation gluten-free, sriracha VHS drinking vinegar beard man."
+                              label: "自定义快照"
                             }
                           ]
                         },
