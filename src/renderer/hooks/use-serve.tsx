@@ -3,7 +3,7 @@ import { GameRunner } from "../../common/services/game-runner";
 import { GUIToaster } from "../common/toaster";
 import { Intent } from "@blueprintjs/core";
 import { AVGCreatorActionType } from "../redux/actions/avg-creator-actions";
-import { ProjectFileData } from "../../common/manager/project-manager.ts";
+import { ProjectFileData } from "../../common/services/file-reader/project-file-reader";
 
 export async function useServe(
   project: ProjectFileData,

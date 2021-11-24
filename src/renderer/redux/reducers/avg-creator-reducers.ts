@@ -2,8 +2,8 @@ import {
   AVGCreatorActionType,
   AVGCreatorAction
 } from "./../actions/avg-creator-actions";
-import { ProjectFileData } from "../../../common/manager/project-manager.ts";
 import { UpdateItem } from "../../../common/services/autoupdater";
+import { ProjectFileData } from "../../../common/services/file-reader/project-file-reader";
 
 export interface IAVGServer {
   serveProject: ProjectFileData | null;

@@ -2,15 +2,15 @@ import { Stats } from "fs";
 import path from "path";
 import fg from "fast-glob";
 
-import { GlobalEvents } from "../global-events";
-import { ResourceTreeNodeTypes } from "../models/resource-tree-node-types";
-import { AVGTreeNode } from "../models/tree-node";
+import { GlobalEvents } from "../../../common/global-events";
+import { ResourceTreeNodeTypes } from "../../../common/models/resource-tree-node-types";
+import { AVGTreeNode } from "../../../common/models/tree-node";
 import {
   ProjectFileData,
   ProjectFileReader
-} from "./file-reader/project-file-reader";
-import { StoryFileReader } from "./file-reader/story-file-reader";
-import { ObservableContext } from "./observable-module";
+} from "../../../common/services/file-reader/project-file-reader";
+import { StoryFileReader } from "../../../common/services/file-reader/story-file-reader";
+import { ObservableContext } from "../../../common/services/observable-module";
 import { AVGProjectManager } from "./project-manager";
 
 interface PathObject {
@@ -72,8 +72,10 @@ export class AVGProject {
 
   generateIndexes() {}
 
-  getDir(dir: "stories" | "data") {
+  getDir(dir: "root" | "stories" | "data") {
     switch (dir) {
+      case "root":
+        return this.projectRootDir;
       case "stories":
         return path.join(this.projectRootDir, "stories");
       case "data":

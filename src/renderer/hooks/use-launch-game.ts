@@ -1,5 +1,5 @@
+import { ProjectFileData } from "../../common/services/file-reader/project-file-reader";
 import { GameRunner } from "../../common/services/game-runner";
-import { ProjectFileData } from "../../common/manager/project-manager.ts";
 import { DebugServer } from "../../main/debug-server/debug-server";
 
 export async function useLaunchGame(project: ProjectFileData) {

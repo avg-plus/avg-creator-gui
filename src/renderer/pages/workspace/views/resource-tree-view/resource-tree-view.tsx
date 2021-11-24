@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { ContextMenu, Tab, Tabs } from "@blueprintjs/core";
+import {
+  Classes,
+  ContextMenu,
+  Icon,
+  Intent,
+  Tab,
+  Tabs,
+  Tree
+} from "@blueprintjs/core";
 
 import SortableTree, {
   ExtendedNodeData,
@@ -159,7 +167,7 @@ export const ResourceTreeView = () => {
                     universal={true}
                     autoHideTimeout={1000}
                   >
-                    <SortableTree
+                    {/* <SortableTree
                       className={"tree"}
                       maxDepth={5}
                       rowHeight={renderRowHeight}
@@ -170,7 +178,55 @@ export const ResourceTreeView = () => {
                       theme={theme}
                       shouldCopyOnOutsideDrop={true}
                       isVirtualized={true}
-                    ></SortableTree>
+                    ></SortableTree> */}
+
+                    <Tree
+                      contents={[
+                        {
+                          id: 0,
+                          hasCaret: true,
+                          icon: "folder-close",
+                          label: <>111</>
+                        },
+                        {
+                          id: 1,
+                          icon: "folder-close",
+                          isExpanded: true,
+                          label: <>111</>,
+                          childNodes: [
+                            {
+                              id: 2,
+                              icon: "document",
+                              label: "Item 0",
+                              secondaryLabel: <>222</>
+                            },
+                            {
+                              id: 3,
+                              icon: (
+                                <Icon
+                                  icon="tag"
+                                  intent={Intent.PRIMARY}
+                                  className={Classes.TREE_NODE_ICON}
+                                />
+                              ),
+                              label:
+                                "Organic meditation gluten-free, sriracha VHS drinking vinegar beard man."
+                            }
+                          ]
+                        },
+                        {
+                          id: 2,
+                          hasCaret: true,
+                          icon: "folder-close",
+                          label: "Super secret files",
+                          disabled: true
+                        }
+                      ]}
+                      // onNodeClick={handleNodeClick}
+                      // onNodeCollapse={handleNodeCollapse}
+                      // onNodeExpand={handleNodeExpand}
+                      className={Classes.ELEVATION_0}
+                    />
                   </Scrollbars>
                 </div>
               </>

@@ -13,11 +13,12 @@ import { GUIVisualStoryEditorService } from "./visual-story-editor/visual-story-
 import { BlockAPI, OutputData } from "@editorjs/editorjs";
 import { EditorBlockDocument } from "./visual-story-editor/editor-block-document";
 import { APICharacterBlockService } from "./visual-story-editor/plugins/character/character.service";
-import { AVGProject } from "../../../../common/services/project";
+import { AVGProject } from "../../../modules/context/project";
 import { StoryFileData } from "../../../../common/services/file-reader/story-file-reader";
 import { Codegen } from "../../../modules/compilers/codegen";
 import { APICharacterData } from "../../../../common/models/character";
 import { GUIWorkspaceService } from "../avg-workspace.service";
+import { WorkspaceContext } from "../../../modules/context/workspace-context";
 
 export const _DevelopmentDebugView = () => {
   const [components, setComponents] = useState(WorkspaceDebugUI.components);
@@ -32,8 +33,10 @@ export const _DevelopmentDebugView = () => {
   });
 
   useMount(() => {
+    const currentProject = WorkspaceContext.getCurrentProject();
+
     const storyData = {
-      文件路径: `${GUIWorkspaceService.getProjectDir()}/stories/start.story`,
+      文件路径: `${currentProject.getDir("stories")}/start.story`,
       读取: () => {
         const project = new AVGProject();
         const data = project.openStory(storyData.文件路径);
@@ -133,7 +136,9 @@ export const _DevelopmentDebugView = () => {
           const data = new APICharacterData();
           data.character_id = "test-id-" + Date.now();
           data.thumbnailData = dataURL;
-          data.avatarPath = `${GUIWorkspaceService.getProjectDir()}\\resources\\characters\\1.png`;
+          data.avatarPath = `${currentProject.getDir(
+            "root"
+          )}\\resources\\characters\\1.png`;
           data.name = "林牧风";
 
           block.setCharacterData(data);
@@ -153,7 +158,6 @@ export const _DevelopmentDebugView = () => {
           display: "block",
           maxWidth: "100%"
         }}
-        src={`${GUIWorkspaceService.getProjectDir()}\\resources\\characters\\1.png`}
       ></img>
 
       {/* {components.map((v) => {

@@ -1,7 +1,7 @@
 import fs from "fs-extra";
 import path from "path";
-import { DBProjects } from "../../renderer/common/remote-objects/remote-database";
-import { ProjectFileReader } from "./file-reader/project-file-reader";
+import { DBProjects } from "../../common/remote-objects/remote-database";
+import { ProjectFileReader } from "../../../common/services/file-reader/project-file-reader";
 
 const PROJECT_FILE_NAME = "project.avg";
 interface VerifiedFile {
