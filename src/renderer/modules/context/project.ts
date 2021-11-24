@@ -23,6 +23,7 @@ interface PathObject {
 export class AVGProject {
   private projectRootDir: string;
   projectData: ProjectFileData;
+  private treeItems: AVGTreeNode[] = [];
 
   loadProject(dir: string) {
     this.projectRootDir = dir;
@@ -55,9 +56,15 @@ export class AVGProject {
       return items;
     };
 
-    const treeItems: AVGTreeNode[] = convertPathObjectToTreeItem(fileTree);
+    this.treeItems = convertPathObjectToTreeItem(fileTree);
 
-    ObservableContext.next(GlobalEvents.OnProjectLoaded, treeItems);
+    ObservableContext.next(GlobalEvents.OnProjectLoaded, this.treeItems);
+
+    return this.treeItems;
+  }
+
+  getStoryTrees() {
+    return this.treeItems;
   }
 
   openStory(filename: string) {

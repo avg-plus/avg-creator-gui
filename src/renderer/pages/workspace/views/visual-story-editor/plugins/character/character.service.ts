@@ -1,9 +1,8 @@
 import Cropper from "cropperjs";
 import { APICharacterData } from "../../../../../../../common/models/character";
-import { CodegenContext } from "../../../../../../modules/compilers/codegen-context";
 import { EditorBlockDocument } from "../../editor-block-document";
 import { CEBlockService, ServiceStateContext } from "../ce-block-service";
-import gen from "./character.codegen";
+import gen from "../../../../../../modules/compilers/codegen/character.codegen";
 
 export class APICharacterBlockService extends CEBlockService<APICharacterData> {
   private _characterData: APICharacterData;
@@ -59,10 +58,6 @@ export class APICharacterBlockService extends CEBlockService<APICharacterData> {
     this._characterData = data;
     this._avatarThumbnail.setValue(data.thumbnailData);
     this._charaterName.setValue(data.name);
-  }
-
-  onCodegenProcess(context: CodegenContext, data: APICharacterData): string {
-    return gen(context, data);
   }
 
   getData(): any {

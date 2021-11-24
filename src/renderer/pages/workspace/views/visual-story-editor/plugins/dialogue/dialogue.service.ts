@@ -1,15 +1,6 @@
-import {
-  ContentState,
-  EditorState,
-  Modifier,
-  RichUtils,
-  SelectionState
-} from "draft-js";
+import { ContentState, EditorState, RichUtils } from "draft-js";
 import { APIDialogueData } from "../../../../../../../common/models/dialogue";
-import { logger } from "../../../../../../common/lib/logger";
-import { CodegenContext } from "../../../../../../modules/compilers/codegen-context";
 import { CEBlockService } from "../ce-block-service";
-import gen from "./dialogue.codegen";
 
 type EditorStateContext = {
   editorState: EditorState;
@@ -79,8 +70,4 @@ export class APIDialogueBlockService extends CEBlockService<APIDialogueData> {
 
   onBlockFocus(): void {}
   onBlockBlur(): void {}
-
-  onCodegenProcess(context: CodegenContext, data: APIDialogueData): string {
-    return gen(context, data);
-  }
 }

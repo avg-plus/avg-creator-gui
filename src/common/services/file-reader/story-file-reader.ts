@@ -2,13 +2,14 @@ import fs from "fs-extra";
 import { assert } from "../../exception";
 import { AVGFileReader } from "./file-reader";
 
+export interface StoryItem {
+  id: string;
+  type: "dialogue" | "character";
+  data: { [key: string]: any };
+}
 export interface StoryFileData {
   meta: { [key: string]: any };
-  stories: Array<{
-    id: string;
-    type: string;
-    data: { [key: string]: any };
-  }>;
+  stories: Array<StoryItem>;
 }
 
 export class StoryFileReader extends AVGFileReader<StoryFileData> {
