@@ -18,7 +18,11 @@ export class AVGProjectBuilder {
   private static async createProjectStructure() {
     const project = WorkspaceContext.getCurrentProject();
     const projectRoot = project.getDir("root");
-    this.hiddenGeneratedProjectDir = path.join(projectRoot, ".avg-project");
+    this.hiddenGeneratedProjectDir = path.join(
+      projectRoot,
+      ".builds",
+      ".avg-project"
+    );
 
     const SCRIPT_DIR = path.join(this.hiddenGeneratedProjectDir, "scripts");
     const GRAPHICS_DIR = path.join(this.hiddenGeneratedProjectDir, "graphics");
@@ -54,7 +58,7 @@ export class AVGProjectBuilder {
   }
 
   private static createConfig() {
-    return {
+    return JSON.stringify({
       screen: {
         width: 1920,
         height: 1080,
@@ -70,6 +74,6 @@ export class AVGProjectBuilder {
           voice: 100
         }
       }
-    };
+    });
   }
 }
