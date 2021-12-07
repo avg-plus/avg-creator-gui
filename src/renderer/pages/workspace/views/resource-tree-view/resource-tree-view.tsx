@@ -33,10 +33,12 @@ export const ResourceTreeView = () => {
   const [treeData, setTreeData] = useState<AVGTreeNode[]>([]);
 
   useMount(() => {
-    ObservableContext.subscribe<TreeItem[]>(
-      GlobalEvents.OnProjectLoaded,
-      onProjectLoaded
-    );
+    // ObservableContext.subscribe<TreeItem[]>(
+    //   GlobalEvents.OnProjectLoaded,
+    //   onProjectLoaded
+    // );
+
+    setTreeData([{ title: "test", subtitle: "test sub", expanded: true }]);
   });
 
   const onProjectLoaded = (treeItems: AVGTreeNode[]) => {
@@ -56,7 +58,7 @@ export const ResourceTreeView = () => {
       [ResourceTreeNodeTypes.ScriptNode, 24]
     ]);
 
-    return heightInfos.get(nodeType) ?? 0;
+    return heightInfos.get(nodeType) ?? 10;
   };
 
   const handleSelectNode = (
@@ -167,7 +169,7 @@ export const ResourceTreeView = () => {
                     universal={true}
                     autoHideTimeout={1000}
                   >
-                    {/* <SortableTree
+                    <SortableTree
                       className={"tree"}
                       maxDepth={5}
                       rowHeight={renderRowHeight}
@@ -178,9 +180,9 @@ export const ResourceTreeView = () => {
                       theme={theme}
                       shouldCopyOnOutsideDrop={true}
                       isVirtualized={true}
-                    ></SortableTree> */}
+                    ></SortableTree>
 
-                    <Tree
+                    {/* <Tree
                       contents={[
                         {
                           id: 0,
@@ -225,7 +227,7 @@ export const ResourceTreeView = () => {
                       // onNodeCollapse={handleNodeCollapse}
                       // onNodeExpand={handleNodeExpand}
                       className={Classes.ELEVATION_0}
-                    />
+                    /> */}
                   </Scrollbars>
                 </div>
               </>
