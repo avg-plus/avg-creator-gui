@@ -1,7 +1,6 @@
 import { RendererApplication } from "../../../common/services/renderer-application";
 import { AVGProjectManager } from "../../modules/context/project-manager";
 import { WorkspaceContext } from "../../modules/context/workspace-context";
-import { WorkspaceWindow } from "../../windows/workspace-window";
 
 export type LayoutPanelID =
   | "StoryTree"

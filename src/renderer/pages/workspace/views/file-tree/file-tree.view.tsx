@@ -8,6 +8,7 @@ import { AVGTreeNodeModel } from "../../../../../common/models/tree-node-item";
 import { ResourceTreeNodeTypes } from "../../../../../common/models/resource-tree-node-types";
 
 import "./file-tree.view.less";
+import { Button, ButtonGroup, Divider } from "@blueprintjs/core";
 
 export const FileTreeView = () => {
   const [treeData, setTreeData] = useState<AVGTreeNodeModel[]>([
@@ -77,34 +78,43 @@ export const FileTreeView = () => {
     setTreeData(newTreeData);
 
   return (
-    <StylesProvider injectFirst>
-      <ThemeProvider theme={theme}>
-        <div className={"tree-container"}>
-          <Tree
-            tree={treeData}
-            rootId={0}
-            onDrop={handleDrop}
-            render={(node, { depth, isOpen, onToggle }) => (
-              <AVGTreeNodeView
-                node={node}
-                depth={depth}
-                isOpen={isOpen}
-                isSelected={node.id === selectedNode?.id}
-                onToggle={onToggle}
-                onSelect={handleSelect}
-              />
-            )}
-            // dragPreviewRender={(
-            //   monitorProps: DragLayerMonitorProps<AVGTreeNode>
-            // ) => <CustomDragPreview monitorProps={monitorProps} />}
-            classes={{
-              root: "treeRoot",
-              draggingSource: "draggingSource",
-              dropTarget: "dropTarget"
-            }}
-          />
-        </div>
-      </ThemeProvider>
-    </StylesProvider>
+    <div className="container">
+      <div className={"toolbar"}>
+        <ButtonGroup minimal={false} large={false} vertical={false}>
+          <Button text="故事" rightIcon="insert" />
+          <Button text="目录" rightIcon="folder-new" />
+        </ButtonGroup>
+      </div>
+
+      <StylesProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <div className={"tree-container"}>
+            <Tree
+              tree={treeData}
+              rootId={0}
+              onDrop={handleDrop}
+              render={(node, { depth, isOpen, onToggle }) => (
+                <AVGTreeNodeView
+                  node={node}
+                  depth={depth}
+                  isOpen={isOpen}
+                  isSelected={node.id === selectedNode?.id}
+                  onToggle={onToggle}
+                  onSelect={handleSelect}
+                />
+              )}
+              // dragPreviewRender={(
+              //   monitorProps: DragLayerMonitorProps<AVGTreeNode>
+              // ) => <CustomDragPreview monitorProps={monitorProps} />}
+              classes={{
+                root: "treeRoot",
+                draggingSource: "draggingSource",
+                dropTarget: "dropTarget"
+              }}
+            />
+          </div>
+        </ThemeProvider>
+      </StylesProvider>
+    </div>
   );
 };

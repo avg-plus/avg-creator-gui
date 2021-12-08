@@ -20,49 +20,16 @@ interface PathObject {
 export class AVGProject {
   private projectData: ProjectFileData;
   private projectRootDir: string;
-  private treeItems: AVGTreeNodeModel[] = [];
 
   loadProject(dir: string) {
     this.projectRootDir = dir;
     this.projectData = AVGProjectManager.readProjectData(this.projectRootDir);
 
-    const storiesDir = this.getDir("stories");
-
-    // 读取故事树
-    const fileTree = this.buildFileTree(storiesDir);
-    const convertPathObjectToTreeItem = (pathObjects: PathObject[]) => {
-      const items: AVGTreeNodeModel[] = [];
-      pathObjects.forEach((obj) => {
-        const treeItem: Partial<AVGTreeNodeModel> = {};
-        treeItem.text = obj.name;
-        treeItem.id = obj.path;
-        if (obj.children?.length) {
-          treeItem.children = convertPathObjectToTreeItem(obj.children);
-        }
-
-        treeItem.data = {
-          nodeType: obj.stats.isDirectory()
-            ? ResourceTreeNodeTypes.Folder
-            : ResourceTreeNodeTypes.StoryNode,
-          MD5: "",
-          path: obj.path
-        };
-
-        items.push(treeItem as AVGTreeNodeModel);
-      });
-
-      return items;
-    };
-
-    this.treeItems = convertPathObjectToTreeItem(fileTree);
-
-    ObservableContext.next(GlobalEvents.OnProjectLoaded, this.treeItems);
-
-    return this.treeItems;
+    return this.projectData;
   }
 
-  getStoryTrees() {
-    return this.treeItems;
+  getStoryTree(): AVGTreeNodeModel[] {
+    return this.projectData.file_tree;
   }
 
   openStory(filename: string) {

@@ -66,7 +66,7 @@ export const AVGWorkspace = () => {
             },
             splitPercentage: 20
           },
-          splitPercentage: 10
+          splitPercentage: 22
         }}
       />
     </div>

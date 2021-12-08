@@ -48,7 +48,8 @@ export class AVGProjectManager {
       fs.writeJsonSync(projectFile, {
         project_name,
         description,
-        version: "1.0"
+        version: "1.0",
+        file_tree: []
       });
     } catch (error) {
       throw error;

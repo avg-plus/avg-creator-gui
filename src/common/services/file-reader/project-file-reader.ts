@@ -6,6 +6,7 @@ export interface ProjectFileData {
   project_name: string;
   description: string;
   version: string;
+  file_tree: [];
 }
 
 export class ProjectFileReader extends AVGFileReader<ProjectFileData> {
@@ -20,6 +21,7 @@ export class ProjectFileReader extends AVGFileReader<ProjectFileData> {
     assert(data.project_name, `Missing field <project_name> in project`);
 
     this.data = data;
+    this.data.file_tree = this.data.file_tree ?? [];
 
     return this.data;
   }
