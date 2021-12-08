@@ -8,10 +8,10 @@ import "./avg-workspace.less";
 import { Codegen } from "../../../common/services/storyboard/codegen";
 import { GUIWorkspaceService, LayoutPanelID } from "./avg-workspace.service";
 import { Mosaic, MosaicWindow } from "react-mosaic-component";
-import { ResourceTreeView } from "./views/resource-tree-view/resource-tree-view";
 import { RendererApplication } from "../../../common/services/renderer-application";
 import { VisualStoryEditor } from "./views/visual-story-editor/visual-story-editor";
 import { _DevelopmentDebugView } from "./views/_debug-view";
+import { FileTreeView } from "./views/file-tree/file-tree.view";
 
 export const AVGWorkspace = () => {
   useMount(() => {
@@ -25,7 +25,7 @@ export const AVGWorkspace = () => {
   const renderView = (id: LayoutPanelID) => {
     switch (id) {
       case "StoryTree": {
-        return <ResourceTreeView></ResourceTreeView>;
+        return <FileTreeView></FileTreeView>;
       }
       case "StoryBoard": {
         return <VisualStoryEditor></VisualStoryEditor>;

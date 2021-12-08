@@ -1,0 +1,32 @@
+.root {
+  align-items: center;
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  height: 28px;
+  cursor: default;
+
+  &.selected {
+    background-color: #c62d24;
+    border-radius: 4px;
+    color: white;
+  }
+}
+
+.expandIconWrapper {
+  align-items: center;
+  font-size: 0;
+  display: flex;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+  // transition: transform linear 0.1s;
+  transform: rotate(0deg);
+}
+
+.expandIconWrapper.isOpen {
+  transform: rotate(90deg);
+}
+
+.labelGridItem {
+  padding-inline-start: 8px;
+}

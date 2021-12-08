@@ -4,11 +4,8 @@ import fg from "fast-glob";
 
 import { GlobalEvents } from "../../../common/global-events";
 import { ResourceTreeNodeTypes } from "../../../common/models/resource-tree-node-types";
-import { AVGTreeNode } from "../../../common/models/tree-node";
-import {
-  ProjectFileData,
-  ProjectFileReader
-} from "../../../common/services/file-reader/project-file-reader";
+import { AVGTreeNodeModel } from "../../../common/models/tree-node-item";
+import { ProjectFileData } from "../../../common/services/file-reader/project-file-reader";
 import { StoryFileReader } from "../../../common/services/file-reader/story-file-reader";
 import { ObservableContext } from "../../../common/services/observable-module";
 import { AVGProjectManager } from "./project-manager";
@@ -21,9 +18,9 @@ interface PathObject {
 }
 
 export class AVGProject {
+  private projectData: ProjectFileData;
   private projectRootDir: string;
-  projectData: ProjectFileData;
-  private treeItems: AVGTreeNode[] = [];
+  private treeItems: AVGTreeNodeModel[] = [];
 
   loadProject(dir: string) {
     this.projectRootDir = dir;
@@ -34,10 +31,11 @@ export class AVGProject {
     // 读取故事树
     const fileTree = this.buildFileTree(storiesDir);
     const convertPathObjectToTreeItem = (pathObjects: PathObject[]) => {
-      const items: AVGTreeNode[] = [];
+      const items: AVGTreeNodeModel[] = [];
       pathObjects.forEach((obj) => {
-        const treeItem: Partial<AVGTreeNode> = {};
-        treeItem.title = obj.name;
+        const treeItem: Partial<AVGTreeNodeModel> = {};
+        treeItem.text = obj.name;
+        treeItem.id = obj.path;
         if (obj.children?.length) {
           treeItem.children = convertPathObjectToTreeItem(obj.children);
         }
@@ -50,7 +48,7 @@ export class AVGProject {
           path: obj.path
         };
 
-        items.push(treeItem as AVGTreeNode);
+        items.push(treeItem as AVGTreeNodeModel);
       });
 
       return items;
