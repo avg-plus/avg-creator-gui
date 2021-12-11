@@ -2,12 +2,9 @@ import { Stats } from "fs";
 import path from "path";
 import fg from "fast-glob";
 
-import { GlobalEvents } from "../../../common/global-events";
-import { ResourceTreeNodeTypes } from "../../../common/models/resource-tree-node-types";
 import { AVGTreeNodeModel } from "../../../common/models/tree-node-item";
 import { ProjectFileData } from "../../../common/services/file-reader/project-file-reader";
 import { StoryFileReader } from "../../../common/services/file-reader/story-file-reader";
-import { ObservableContext } from "../../../common/services/observable-module";
 import { AVGProjectManager } from "./project-manager";
 
 interface PathObject {

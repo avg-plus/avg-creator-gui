@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { RiAddLine } from "react-icons/ri";
 
 import {
   Alert,
@@ -16,8 +17,6 @@ import classNames from "classnames";
 import "./project-browser-page.less";
 
 import AntdIcon from "@ant-design/icons";
-import { Col, Row } from "antd/lib/grid";
-import List from "antd/lib/list";
 import Typography from "antd/lib/typography";
 
 import projectIcon from "../../images/icons/project-title.svg";
@@ -31,6 +30,9 @@ import { useMount } from "react-use";
 import { GUIAlertDialog } from "../../modals/alert-dialog";
 import { GlobalEvents } from "../../../common/global-events";
 import ipcObservableRenderer from "../../../common/ipc-observable/ipc-observable-renderer";
+import Row from "antd/lib/row";
+import Col from "antd/lib/col";
+import List from "antd/lib/list";
 const { Title, Text } = Typography;
 
 export const ProjectBrowserPage = () => {
@@ -135,7 +137,7 @@ export const ProjectBrowserPage = () => {
           ContextMenu.hide();
           setIsRemoveAlertShow(true);
         }}
-        onExploreDir={() => { }}
+        onExploreDir={() => {}}
         onOpen={() => ProjectBrowserService.openProjectInWorkspace(item)}
         onOpenResource={() =>
           ProjectBrowserService.openProjectResourceWorkspace(item)
@@ -251,12 +253,17 @@ export const ProjectBrowserPage = () => {
                                   selected: item.id === selectedID
                                 })}
                               >
-                                <Icon
+                                {/* <Icon
                                   className="add-new-icon"
                                   color="#dcddde"
                                   icon="plus"
                                   iconSize={80}
-                                />
+                                /> */}
+                                <RiAddLine
+                                  size={80}
+                                  className="add-new-icon"
+                                  color={"#dcddde"}
+                                ></RiAddLine>
                               </div>
                             </Row>
                             <Row justify={"center"}>

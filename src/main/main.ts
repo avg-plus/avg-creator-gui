@@ -30,7 +30,6 @@ app.on("ready", async () => {
     app.dock.setIcon("pack-data/icons/icon_512x512@2x.png");
   }
 
-  Menu.setApplicationMenu(null);
   mainWindow.loadFile("./dist/static/index.html");
 });
 

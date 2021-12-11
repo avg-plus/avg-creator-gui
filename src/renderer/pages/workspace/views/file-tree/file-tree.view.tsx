@@ -5,70 +5,16 @@ import { AVGTreeNodeView } from "./tree-node.view";
 import { theme } from "./file-tree.theme";
 
 import { AVGTreeNodeModel } from "../../../../../common/models/tree-node-item";
-import { ResourceTreeNodeTypes } from "../../../../../common/models/resource-tree-node-types";
 
 import "./file-tree.view.less";
-import { Button, ButtonGroup, Divider } from "@blueprintjs/core";
+import { Button, ButtonGroup } from "@blueprintjs/core";
+import { FileTreeService } from "./file-tree.service";
 
 export const FileTreeView = () => {
-  const [treeData, setTreeData] = useState<AVGTreeNodeModel[]>([
-    {
-      id: 1,
-      parent: 0,
-      droppable: true,
-      text: "Folder 1",
-      data: {
-        nodeType: ResourceTreeNodeTypes.Folder
-      }
-    },
-    {
-      id: 2,
-      parent: 1,
-      droppable: false,
-      text: "File 1-1",
-      data: {}
-    },
-    {
-      id: 3,
-      parent: 1,
-      droppable: false,
-      text: "File 1-2",
-      data: {}
-    },
-    {
-      id: 4,
-      parent: 0,
-      droppable: true,
-      text: "Folder 2",
-      data: {
-        nodeType: ResourceTreeNodeTypes.Folder
-      }
-    },
-    {
-      id: 5,
-      parent: 4,
-      droppable: true,
-      text: "Folder 2-1",
-      data: {
-        nodeType: ResourceTreeNodeTypes.Folder
-      }
-    },
-    {
-      id: 6,
-      parent: 5,
-      droppable: false,
-      text: "File 2-1-1",
-      data: {}
-    },
-    {
-      id: 7,
-      parent: 0,
-      droppable: false,
-      text: "File 3",
-      data: {}
-    }
-  ]);
-  const [selectedNode, setSelectedNode] = useState<AVGTreeNodeModel>();
+  const [treeData, setTreeData] = useState<AVGTreeNodeModel[]>(
+    FileTreeService.getTreeItem()
+  );
+  const [selectedNode, setSelectedNode] = useState<AVGTreeNodeModel | null>();
 
   const handleSelect = (node: AVGTreeNodeModel) => {
     console.log("selected node: ", node);
@@ -76,6 +22,10 @@ export const FileTreeView = () => {
   };
   const handleDrop = (newTreeData: React.SetStateAction<AVGTreeNodeModel[]>) =>
     setTreeData(newTreeData);
+
+  const handleClickBlank = () => {
+    setSelectedNode(null);
+  };
 
   return (
     <div className="container">
@@ -88,7 +38,7 @@ export const FileTreeView = () => {
 
       <StylesProvider injectFirst>
         <ThemeProvider theme={theme}>
-          <div className={"tree-container"}>
+          <div className={"tree-container"} onClick={handleClickBlank}>
             <Tree
               tree={treeData}
               rootId={0}

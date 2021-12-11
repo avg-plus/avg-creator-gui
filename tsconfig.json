@@ -39,7 +39,12 @@
       "./node_modules/@types",
       "./typings"
     ],
-    "baseUrl": "../src"
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "./src/*"
+      ]
+    },
   },
   "include": [
     "src/**/*",
