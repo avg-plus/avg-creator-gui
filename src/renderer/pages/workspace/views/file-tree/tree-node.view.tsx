@@ -13,7 +13,7 @@ import { AVGTreeNodeModel } from "../../../../../common/models/tree-node-item";
 import "./tree-node.less";
 import classNames from "classnames";
 import { ResourceTreeNodeTypes } from "../../../../../common/models/resource-tree-node-types";
-import { EditableText, Label } from "@blueprintjs/core";
+import { EditableText } from "@blueprintjs/core";
 
 type Props = {
   node: AVGTreeNodeModel;
