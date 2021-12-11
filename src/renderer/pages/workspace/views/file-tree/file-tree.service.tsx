@@ -27,7 +27,12 @@ export class FileTreeService {
     return this.treeItems;
   }
 
-  static getTreeItem() {
+  static updateTreeData(treeData: AVGTreeNodeModel[]) {
+    this.treeItems = treeData;
+    this.commitChanges();
+  }
+
+  static getTreeData() {
     return this.treeItems;
   }
 

@@ -18,7 +18,7 @@ import classNames from "classnames";
 
 export const FileTreeView = () => {
   const [treeData, setTreeData] = useState<AVGTreeNodeModel[]>(
-    FileTreeService.getTreeItem()
+    FileTreeService.getTreeData()
   );
   const [selectedNode, setSelectedNode] = useState<AVGTreeNodeModel | null>();
   const [canAddStoryNode, setCanAddStoryNode] = useState<boolean>();
@@ -84,6 +84,11 @@ export const FileTreeView = () => {
     setCanAddFolderNode(selectedNode.type === ResourceTreeNodeTypes.Folder);
     setCanAddStoryNode(true);
   }, [selectedNode]);
+
+  useEffect(() => {
+    console.log("Tree data updated: ", treeData);
+    FileTreeService.updateTreeData(treeData);
+  }, [treeData]);
 
   return (
     <div className="container">
