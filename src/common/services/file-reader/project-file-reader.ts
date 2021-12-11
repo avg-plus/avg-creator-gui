@@ -1,12 +1,12 @@
 import fs from "fs-extra";
 import { assert } from "../../../common/exception";
+import { AVGTreeNodeModel } from "../../models/tree-node-item";
 import { AVGFileReader } from "./file-reader";
-
 export interface ProjectFileData {
   project_name: string;
   description: string;
   version: string;
-  file_tree: [];
+  file_tree: AVGTreeNodeModel[];
 }
 
 export class ProjectFileReader extends AVGFileReader<ProjectFileData> {

@@ -1,9 +1,44 @@
+import { AVGTreeNodeModel } from "../../../../../common/models/tree-node-item";
+import { Nullable } from "../../../../../common/traits";
+import { AVGProjectManager } from "../../../../modules/context/project-manager";
 import { WorkspaceContext } from "../../../../modules/context/workspace-context";
 
 export class FileTreeService {
-  static getTreeItem() {
-    const project = WorkspaceContext.getCurrentProject();
+  private static treeItems: AVGTreeNodeModel[] = [];
+  private static inRenameStatusNode: string = "";
 
-    return project.getStoryTree();
+  static setRenameStatus(node: AVGTreeNodeModel | null | undefined) {
+    if (!node) {
+      this.inRenameStatusNode = "";
+      return;
+    }
+
+    this.inRenameStatusNode = node.id;
+  }
+
+  static isInRenameStatus() {
+    return this.inRenameStatusNode !== "";
+  }
+
+  static loadFileTree() {
+    const project = WorkspaceContext.getCurrentProject();
+    this.treeItems = project.getStoryTree();
+
+    return this.treeItems;
+  }
+
+  static getTreeItem() {
+    return this.treeItems;
+  }
+
+  static onRenameEnd(node: Nullable<AVGTreeNodeModel>) {
+    this.commitChanges();
+  }
+
+  private static commitChanges() {
+    const project = WorkspaceContext.getCurrentProject();
+    project.setStoryTree(this.treeItems);
+
+    AVGProjectManager.saveProject(project);
   }
 }

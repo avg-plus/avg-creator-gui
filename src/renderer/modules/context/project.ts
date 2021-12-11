@@ -1,11 +1,13 @@
 import { Stats } from "fs";
 import path from "path";
 import fg from "fast-glob";
+import { nanoid } from "nanoid";
 
 import { AVGTreeNodeModel } from "../../../common/models/tree-node-item";
 import { ProjectFileData } from "../../../common/services/file-reader/project-file-reader";
 import { StoryFileReader } from "../../../common/services/file-reader/story-file-reader";
 import { AVGProjectManager } from "./project-manager";
+import { ResourceTreeNodeTypes } from "../../../common/models/resource-tree-node-types";
 
 interface PathObject {
   name: string;
@@ -25,8 +27,27 @@ export class AVGProject {
     return this.projectData;
   }
 
+  getData() {
+    return this.projectData;
+  }
+
   getStoryTree(): AVGTreeNodeModel[] {
     return this.projectData.file_tree;
+  }
+
+  setStoryTree(nodes: AVGTreeNodeModel[]) {
+    this.projectData.file_tree = nodes;
+  }
+
+  addStory(parentID: string, text: string, data: any) {
+    this.projectData.file_tree.push({
+      id: nanoid(),
+      text,
+      parent: parentID,
+      droppable: false,
+      type: ResourceTreeNodeTypes.StoryNode,
+      data
+    });
   }
 
   openStory(filename: string) {

@@ -12,6 +12,16 @@
   }
 }
 
+.rename-editing-status {
+  &.others-in-editing {
+    opacity: 0.2;
+  }
+
+  &.in-editing {
+    opacity: 1;
+  }
+}
+
 .expandIconWrapper {
   align-items: center;
   font-size: 0;
@@ -29,4 +39,7 @@
 
 .labelGridItem {
   padding-inline-start: 8px;
+  .bp3-editable-text-editing {
+    color: black;
+  }
 }

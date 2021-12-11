@@ -2,6 +2,7 @@ import fs from "fs-extra";
 import path from "path";
 import { DBProjects } from "../../common/remote-objects/remote-database";
 import { ProjectFileReader } from "../../../common/services/file-reader/project-file-reader";
+import { AVGProject } from "./project";
 
 const PROJECT_FILE_NAME = "project.avg";
 interface VerifiedFile {
@@ -76,12 +77,24 @@ export class AVGProjectManager {
       throw new Error("加载项目出错");
     }
 
-    const projectFile = path.join(projectDir, "project.avg");
+    const projectFile = path.join(projectDir, PROJECT_FILE_NAME);
 
     // 读取工程文件 project.avg
     const projectReader = new ProjectFileReader(projectFile);
 
     return projectReader.load();
+  }
+
+  static saveProject(project: AVGProject) {
+    const projectDir = project.getDir("root");
+    if (!AVGProjectManager.verifyProject(projectDir)) {
+      throw new Error("保存项目出错");
+    }
+
+    const projectFile = path.join(projectDir, PROJECT_FILE_NAME);
+
+    // 读取工程文件 project.avg
+    fs.writeJSONSync(projectFile, project.getData());
   }
 
   static verifyProject(dir: string) {
