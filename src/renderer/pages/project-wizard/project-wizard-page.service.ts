@@ -2,7 +2,7 @@ import { remote } from "electron";
 import fs from "fs-extra";
 import { GlobalEvents } from "../../../common/global-events";
 import ipcObservableRenderer from "../../../common/ipc-observable/ipc-observable-renderer";
-import { AVGProjectManager } from "../../modules/context/project-manager";
+import AVGProjectManager from "../../modules/context/project-manager";
 import { ProjectWizardWindow } from "../../windows/project-wizard-window";
 
 export class ProjectWizardService {

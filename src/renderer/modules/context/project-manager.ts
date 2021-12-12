@@ -29,7 +29,7 @@ const VerifyFileList = [
   }
 ] as VerifiedFile[];
 
-export class AVGProjectManager {
+class AVGProjectManager {
   static async createEmptyProject(
     dir: string,
     project_name: string,
@@ -126,3 +126,5 @@ export class AVGProjectManager {
     return true;
   }
 }
+
+export default AVGProjectManager;

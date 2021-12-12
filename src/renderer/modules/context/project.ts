@@ -6,7 +6,7 @@ import { nanoid } from "nanoid";
 import { AVGTreeNodeModel } from "../../../common/models/tree-node-item";
 import { ProjectFileData } from "../../../common/services/file-reader/project-file-reader";
 import { StoryFileReader } from "../../../common/services/file-reader/story-file-reader";
-import { AVGProjectManager } from "./project-manager";
+import AVGProjectManager from "./project-manager";
 import { ResourceTreeNodeTypes } from "../../../common/models/resource-tree-node-types";
 
 interface PathObject {

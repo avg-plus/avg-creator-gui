@@ -1,24 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NodeModel, Tree } from "@minoru/react-dnd-treeview";
 import { StylesProvider, ThemeProvider } from "@material-ui/styles";
-import { AVGTreeNodeView } from "./tree-node.view";
-import { theme } from "./file-tree.theme";
+import { Button, ButtonGroup, ContextMenu } from "@blueprintjs/core";
 
-import { AVGTreeNodeModel } from "../../../../../common/models/tree-node-item";
+import { theme } from "./file-tree.theme";
+import { AVGTreeNodeView } from "./tree-node.view";
+
+import {
+  AVGTreeNodeID,
+  AVGTreeNodeModel
+} from "../../../../../common/models/tree-node-item";
 
 import "./file-tree.view.less";
-import { Button, ButtonGroup, ContextMenu } from "@blueprintjs/core";
 import { FileTreeService } from "./file-tree.service";
 import { StoryTreeMenu } from "../../../../components/context-menus/story-tree-menus";
-import { useForceUpdate } from "../../../../hooks/use-forceupdate";
 import { ResourceTreeNodeTypes } from "../../../../../common/models/resource-tree-node-types";
-import { Divider } from "antd";
 import { useMount } from "react-use";
 import classNames from "classnames";
+import { Nullable } from "../../../../../common/traits";
+
+const service = new FileTreeService();
 
 export const FileTreeView = () => {
   const [treeData, setTreeData] = useState<AVGTreeNodeModel[]>(
-    FileTreeService.getTreeData()
+    service.getTreeData()
   );
   const [selectedNode, setSelectedNode] = useState<AVGTreeNodeModel | null>();
   const [canAddStoryNode, setCanAddStoryNode] = useState<boolean>();
@@ -27,12 +32,22 @@ export const FileTreeView = () => {
     useState<string>("");
 
   useMount(() => {
-    const items = FileTreeService.loadFileTree();
+    const items = service.loadFileTree();
     setTreeData(items);
   });
 
   const handleSelect = (node: AVGTreeNodeModel) => {
     setSelectedNode(node);
+  };
+
+  const handleCreateNode = (
+    type: ResourceTreeNodeTypes,
+    parent: Nullable<AVGTreeNodeModel>
+  ) => {
+    const newNode = service.createNode(type, parent);
+
+    // 开始重命名模式
+    setIsInRenameStatusNodeID(newNode.id);
   };
 
   const handleDrop = (
@@ -55,10 +70,14 @@ export const FileTreeView = () => {
     ContextMenu.show(
       <StoryTreeMenu
         node={node}
-        onAddFolder={() => {}}
-        onAddStory={() => {}}
+        onAddFolder={() => {
+          handleCreateNode(ResourceTreeNodeTypes.Folder, selectedNode);
+        }}
+        onAddStory={() => {
+          handleCreateNode(ResourceTreeNodeTypes.StoryNode, selectedNode);
+        }}
         onRename={(node) => {
-          FileTreeService.setRenameStatus(selectedNode);
+          service.setRenameStatus(selectedNode);
           setIsInRenameStatusNodeID(selectedNode ? selectedNode.id : "");
         }}
       />,
@@ -69,9 +88,13 @@ export const FileTreeView = () => {
     );
   };
 
-  const hanelRenameEnd = () => {
+  const handleRenameEnd = (hasUpdated: boolean) => {
     setIsInRenameStatusNodeID("");
-    FileTreeService.onRenameEnd(selectedNode);
+
+    // 名称更改了的情况下才提交更新
+    if (hasUpdated) {
+      service.onRenameEnd(selectedNode);
+    }
   };
 
   useEffect(() => {
@@ -81,21 +104,43 @@ export const FileTreeView = () => {
       return;
     }
 
-    setCanAddFolderNode(selectedNode.type === ResourceTreeNodeTypes.Folder);
+    setCanAddFolderNode(
+      selectedNode.type === ResourceTreeNodeTypes.Folder ||
+        selectedNode.type === ResourceTreeNodeTypes.StoryRootFolder
+    );
     setCanAddStoryNode(true);
   }, [selectedNode]);
 
+  const firstUpdate = useRef(true);
+
   useEffect(() => {
-    console.log("Tree data updated: ", treeData);
-    FileTreeService.updateTreeData(treeData);
+    // 如果不是首次更新
+    if (!firstUpdate) {
+      console.log("Tree data updated: ", treeData);
+      service.updateTreeData(treeData);
+    }
   }, [treeData]);
 
   return (
     <div className="container">
       <div className={"toolbar"}>
         <ButtonGroup minimal={false} large={false} vertical={false}>
-          <Button text="故事" disabled={!canAddStoryNode} icon="insert" />
-          <Button text="目录" disabled={!canAddFolderNode} icon="folder-new" />
+          <Button
+            text="故事"
+            disabled={!canAddStoryNode}
+            icon="insert"
+            onClick={(e) => {
+              handleCreateNode(ResourceTreeNodeTypes.StoryNode, selectedNode);
+            }}
+          />
+          <Button
+            text="目录"
+            disabled={!canAddFolderNode}
+            icon="folder-new"
+            onClick={(e) => {
+              handleCreateNode(ResourceTreeNodeTypes.Folder, selectedNode);
+            }}
+          />
         </ButtonGroup>
       </div>
 
@@ -116,7 +161,7 @@ export const FileTreeView = () => {
           >
             <Tree<AVGTreeNodeModel>
               tree={treeData}
-              rootId={"0"}
+              rootId={"root"}
               onDrop={handleDrop as any}
               render={(node, { depth, isOpen, onToggle }) => (
                 <AVGTreeNodeView
@@ -127,7 +172,7 @@ export const FileTreeView = () => {
                   isSelected={node.id === selectedNode?.id}
                   onToggle={onToggle}
                   onSelect={handleSelect}
-                  onRenameEnd={hanelRenameEnd}
+                  onRenameEnd={handleRenameEnd.bind(this)}
                   onMouseDown={(e, node) => {
                     if (e.button === 2) {
                       ContextMenu.hide();

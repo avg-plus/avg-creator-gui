@@ -6,6 +6,7 @@ import {
 } from "react-icons/ai";
 
 import { FaFileSignature } from "react-icons/fa";
+import { GiSpellBook } from "react-icons/gi";
 
 import { useDragOver } from "@minoru/react-dnd-treeview";
 import { AVGTreeNodeModel } from "../../../../../common/models/tree-node-item";
@@ -25,7 +26,7 @@ type Props = {
   onMouseDown: (e: React.MouseEvent, node: AVGTreeNodeModel) => void;
   onContextMenu: (e: React.MouseEvent, node: AVGTreeNodeModel) => void;
   onToggle: (id: AVGTreeNodeModel["id"]) => void;
-  onRenameEnd: () => void;
+  onRenameEnd: (hasUpdated: boolean) => void;
 };
 
 export const AVGTreeNodeView: React.FC<Props> = (props) => {
@@ -76,7 +77,8 @@ export const AVGTreeNodeView: React.FC<Props> = (props) => {
       {...dragOverProps}
     >
       <div className={`${"expandIconWrapper"} ${props.isOpen ? "isOpen" : ""}`}>
-        {props.node.type === ResourceTreeNodeTypes.Folder && (
+        {(props.node.type === ResourceTreeNodeTypes.Folder ||
+          props.node.type === ResourceTreeNodeTypes.StoryRootFolder) && (
           <AiFillCaretRight size={16}></AiFillCaretRight>
         )}
       </div>
@@ -91,6 +93,10 @@ export const AVGTreeNodeView: React.FC<Props> = (props) => {
         {props.node.type === ResourceTreeNodeTypes.StoryNode && (
           <FaFileSignature size={16}></FaFileSignature>
         )}
+
+        {props.node.type === ResourceTreeNodeTypes.StoryRootFolder && (
+          <GiSpellBook size={24}></GiSpellBook>
+        )}
       </div>
       <div className={"labelGridItem"}>
         {props.inEditingNodeID === props.node.id ? (
@@ -102,13 +108,15 @@ export const AVGTreeNodeView: React.FC<Props> = (props) => {
               setRenameEditingText(value);
             }}
             onConfirm={(value: string) => {
-              setRenameEditingText(value);
-              props.node.text = value;
-              props.onRenameEnd();
+              if (value.length) {
+                setRenameEditingText(value);
+                props.node.text = value;
+              }
+              props.onRenameEnd(true);
             }}
             onCancel={(value: string) => {
               setRenameEditingText(props.node.text);
-              props.onRenameEnd();
+              props.onRenameEnd(false);
             }}
           ></EditableText>
         ) : (

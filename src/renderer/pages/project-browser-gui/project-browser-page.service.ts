@@ -1,5 +1,5 @@
-import { remote } from "electron";
 import fs from "fs-extra";
+import { remote } from "electron";
 
 import { ProjectBrowserWindow } from "../../windows/project-browser-window";
 import { ProjectWizardWindow } from "../../windows/project-wizard-window";
@@ -7,7 +7,7 @@ import { ProjectResourceService } from "../project-resource-gui/project-resource
 import { WorkspaceWindow } from "../../windows/workspace-window";
 
 import { DBProjects } from "../../common/remote-objects/remote-database";
-import { AVGProjectManager } from "../../modules/context/project-manager";
+import AVGProjectManager from "../../modules/context/project-manager";
 
 export type ProjectBrowserItemType =
   | "recently-project"

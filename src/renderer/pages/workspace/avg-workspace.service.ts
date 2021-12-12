@@ -1,5 +1,5 @@
+import AVGProjectManager from "../../modules/context/project-manager";
 import { RendererApplication } from "../../../common/services/renderer-application";
-import { AVGProjectManager } from "../../modules/context/project-manager";
 import { WorkspaceContext } from "../../modules/context/workspace-context";
 
 export type LayoutPanelID =
