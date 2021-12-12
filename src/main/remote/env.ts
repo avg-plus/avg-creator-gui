@@ -25,6 +25,14 @@ export class _Env {
     return platforms[os.platform()];
   }
 
+  isMacOS() {
+    return this.getOSName() === "MacOS";
+  }
+
+  isWindows() {
+    return this.getOSName() === "Windows";
+  }
+
   getAppDataDir(): string {
     // 初始化数据目录
     const appData = app.getPath("appData");

@@ -27,10 +27,7 @@ export class FileTreeService {
     this.treeItems = project.getStoryTree();
 
     if (!this.treeItems.length) {
-      const rootNode = this.createNode(
-        ResourceTreeNodeTypes.StoryRootFolder,
-        null
-      );
+      const rootNode = this.createNode(ResourceTreeNodeTypes.ProjectRoot, null);
       rootNode.text = project.getData().project_name;
     }
 
@@ -53,11 +50,25 @@ export class FileTreeService {
       parent: parent?.id ?? "root",
       text: "",
       data: {}
-    };
+    } as AVGTreeNodeModel;
 
     this.treeItems.push(newNode);
 
     return newNode;
+  }
+
+  deleteNode(node: Nullable<AVGTreeNodeModel>) {
+    if (!node) {
+      return;
+    }
+
+    this.treeItems = this.treeItems.filter((v) => {
+      return v.id !== node.id;
+    });
+
+    this.commitChanges();
+
+    return this.treeItems;
   }
 
   /**

@@ -1,5 +1,5 @@
 export enum ResourceTreeNodeTypes {
-  StoryRootFolder = "StoryRootFolder",
+  ProjectRoot = "ProjectRoot",
   Folder = "Folder",
   StoryNode = "StoryNode"
 }

@@ -78,7 +78,7 @@ export const AVGTreeNodeView: React.FC<Props> = (props) => {
     >
       <div className={`${"expandIconWrapper"} ${props.isOpen ? "isOpen" : ""}`}>
         {(props.node.type === ResourceTreeNodeTypes.Folder ||
-          props.node.type === ResourceTreeNodeTypes.StoryRootFolder) && (
+          props.node.type === ResourceTreeNodeTypes.ProjectRoot) && (
           <AiFillCaretRight size={16}></AiFillCaretRight>
         )}
       </div>
@@ -94,13 +94,15 @@ export const AVGTreeNodeView: React.FC<Props> = (props) => {
           <FaFileSignature size={16}></FaFileSignature>
         )}
 
-        {props.node.type === ResourceTreeNodeTypes.StoryRootFolder && (
+        {props.node.type === ResourceTreeNodeTypes.ProjectRoot && (
           <GiSpellBook size={24}></GiSpellBook>
         )}
       </div>
       <div className={"labelGridItem"}>
         {props.inEditingNodeID === props.node.id ? (
           <EditableText
+            placeholder=""
+            selectAllOnFocus={true}
             isEditing={true}
             defaultValue={renameEditingText}
             value={renameEditingText}

@@ -1,5 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { IconContext } from "react-icons";
+
 import fs from "fs-extra";
 import url from "url";
 import querystring from "querystring";
@@ -34,7 +36,9 @@ if (urlObject && urlObject.query?.length) {
     GUIWorkspaceService.loadProject(projectDir);
 
     ReactDOM.render(
-      <AVGWorkspace />,
+      <IconContext.Provider value={{}}>
+        <AVGWorkspace />
+      </IconContext.Provider>,
       document.getElementById("root") as HTMLElement
     );
   }

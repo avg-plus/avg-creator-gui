@@ -1,15 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { NodeModel, Tree } from "@minoru/react-dnd-treeview";
+import { Tree } from "@minoru/react-dnd-treeview";
 import { StylesProvider, ThemeProvider } from "@material-ui/styles";
 import { Button, ButtonGroup, ContextMenu } from "@blueprintjs/core";
 
 import { theme } from "./file-tree.theme";
 import { AVGTreeNodeView } from "./tree-node.view";
 
-import {
-  AVGTreeNodeID,
-  AVGTreeNodeModel
-} from "../../../../../common/models/tree-node-item";
+import { AVGTreeNodeModel } from "../../../../../common/models/tree-node-item";
 
 import "./file-tree.view.less";
 import { FileTreeService } from "./file-tree.service";
@@ -77,8 +74,12 @@ export const FileTreeView = () => {
           handleCreateNode(ResourceTreeNodeTypes.StoryNode, selectedNode);
         }}
         onRename={(node) => {
-          service.setRenameStatus(selectedNode);
-          setIsInRenameStatusNodeID(selectedNode ? selectedNode.id : "");
+          service.setRenameStatus(node);
+          setIsInRenameStatusNodeID(node ? node.id : "");
+        }}
+        onDelete={(node) => {
+          service.deleteNode(node);
+          setTreeData(service.getTreeData());
         }}
       />,
       {
@@ -106,7 +107,7 @@ export const FileTreeView = () => {
 
     setCanAddFolderNode(
       selectedNode.type === ResourceTreeNodeTypes.Folder ||
-        selectedNode.type === ResourceTreeNodeTypes.StoryRootFolder
+        selectedNode.type === ResourceTreeNodeTypes.ProjectRoot
     );
     setCanAddStoryNode(true);
   }, [selectedNode]);
@@ -172,7 +173,7 @@ export const FileTreeView = () => {
                   isSelected={node.id === selectedNode?.id}
                   onToggle={onToggle}
                   onSelect={handleSelect}
-                  onRenameEnd={handleRenameEnd.bind(this)}
+                  onRenameEnd={handleRenameEnd}
                   onMouseDown={(e, node) => {
                     if (e.button === 2) {
                       ContextMenu.hide();

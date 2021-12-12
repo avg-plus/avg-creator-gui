@@ -1,34 +1,58 @@
 import React from "react";
+import { AiFillCopy, AiOutlineDelete } from "react-icons/ai";
+import { BiCut, BiPaste } from "react-icons/bi";
 import { Menu, MenuDivider, MenuItem } from "@blueprintjs/core";
 import { AVGTreeNodeModel } from "../../../common/models/tree-node-item";
 import { ResourceTreeNodeTypes } from "../../../common/models/resource-tree-node-types";
 import { Env } from "../../common/remote-objects/remote-env";
+import { Nullable } from "../../../common/traits";
+import HotKeysManager from "../../common/hotkeys";
 
 interface IResourceTreeContextMenuProps {
   node: AVGTreeNodeModel | null | undefined;
   onAddStory: () => void;
   onAddFolder: () => void;
-  onRename: (node: AVGTreeNodeModel) => void;
+  onRename: (node: Nullable<AVGTreeNodeModel>) => void;
+  onDelete: (node: Nullable<AVGTreeNodeModel>) => void;
 }
 
 export const StoryTreeMenu = (props: IResourceTreeContextMenuProps) => {
+  const isStoryNode =
+    props.node && props.node.type === ResourceTreeNodeTypes.StoryNode;
+
+  const isFolderNode =
+    props.node && props.node.type === ResourceTreeNodeTypes.Folder;
+
+  const isRootNode =
+    props.node && props.node.type === ResourceTreeNodeTypes.ProjectRoot;
+
+  const canAddStoryNode = isRootNode || isStoryNode || isFolderNode;
+  const canAddFolderNode = isRootNode || isFolderNode;
+  const canReload = isRootNode || !props.node;
+
   return (
     <Menu>
-      {props.node && props.node.type === ResourceTreeNodeTypes.Folder && (
+      {(canAddStoryNode || canAddFolderNode) && (
         <>
-          <MenuItem icon="add" text="添加故事" onClick={props.onAddStory} />
-          <MenuItem
-            icon="folder-new"
-            text="添加目录"
-            onClick={props.onAddFolder}
-          />
+          {canAddStoryNode && (
+            <MenuItem
+              icon="document"
+              text="添加故事"
+              onClick={props.onAddStory}
+            />
+          )}
+          {canAddFolderNode && (
+            <MenuItem
+              icon="folder-new"
+              text="添加目录"
+              onClick={props.onAddFolder}
+            />
+          )}
           <MenuDivider />
         </>
       )}
 
-      {((props.node && props.node.type === ResourceTreeNodeTypes.Folder) ||
-        (props.node &&
-          props.node.type === ResourceTreeNodeTypes.StoryNode)) && (
+      {(isRootNode || isStoryNode || isFolderNode) && (
         <>
           <MenuItem
             icon="folder-shared-open"
@@ -38,17 +62,54 @@ export const StoryTreeMenu = (props: IResourceTreeContextMenuProps) => {
                 : "在 Finder 中显示"
             }
           />
-          <MenuDivider />
-          <MenuItem text="剪切" />
-          <MenuItem text="复制" />
-          <MenuItem text="粘贴" />
-          <MenuDivider />
-          <MenuItem text="重命名" onClick={props.onRename} />
-          <MenuItem intent="danger" icon="delete" text="删除" />
-          <MenuDivider />
+          {!isRootNode && (
+            <>
+              <MenuDivider />
+              <MenuItem
+                text="剪切"
+                icon="cut"
+                label={HotKeysManager.hotkeyToLabel("Cut")}
+              />
+              <MenuItem
+                text="复制"
+                icon="duplicate"
+                label={HotKeysManager.hotkeyToLabel("Copy")}
+              />
+              <MenuItem
+                text="粘贴"
+                icon="clipboard"
+                label={HotKeysManager.hotkeyToLabel("Paste")}
+              />
+            </>
+          )}
+          {!isRootNode && (
+            <>
+              <MenuDivider />
+              <MenuItem
+                text="重命名"
+                icon="edit"
+                onClick={() => {
+                  props.onRename(props.node);
+                }}
+              />
+              <MenuItem
+                intent="danger"
+                icon="trash"
+                text="删除"
+                onClick={() => {
+                  props.onDelete(props.node);
+                }}
+              />
+            </>
+          )}
         </>
       )}
-      <MenuItem icon="refresh" text="重新载入" />
+      {canReload && (
+        <>
+          {props.node && <MenuDivider />}
+          <MenuItem icon="refresh" text="重新载入" />
+        </>
+      )}
     </Menu>
   );
 };

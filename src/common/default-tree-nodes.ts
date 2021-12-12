@@ -44,7 +44,7 @@ export const DefaultTreeNodes = [
   //   },
   {
     title: "剧本",
-    nodeType: ResourceTreeNodeTypes.StoryRootFolder,
+    nodeType: ResourceTreeNodeTypes.ProjectRoot,
     children: [
       {
         title: "开场",
