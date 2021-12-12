@@ -1,11 +1,11 @@
-import { Stats } from "fs";
+import fs, { Stats } from "fs-extra";
 import path from "path";
 import fg from "fast-glob";
 import { nanoid } from "nanoid";
 
 import { AVGTreeNodeModel } from "../../../common/models/tree-node-item";
-import { ProjectFileData } from "../../../common/services/file-reader/project-file-reader";
-import { StoryFileReader } from "../../../common/services/file-reader/story-file-reader";
+import { ProjectFileData } from "../../../common/services/file-reader/project-file-stream";
+import { StoryFileStream } from "../../../common/services/file-reader/story-file-stream";
 import AVGProjectManager from "./project-manager";
 import { ResourceTreeNodeTypes } from "../../../common/models/resource-tree-node-types";
 
@@ -39,28 +39,15 @@ export class AVGProject {
     this.projectData.file_tree = nodes;
   }
 
-  addStory(parentID: string, text: string, data: any) {
-    this.projectData.file_tree.push({
-      id: nanoid(),
-      text,
-      parent: parentID,
-      droppable: false,
-      type: ResourceTreeNodeTypes.StoryNode,
-      data
-    });
-  }
-
   openStory(filename: string) {
-    const storyReader = new StoryFileReader(filename);
+    const storyReader = new StoryFileStream(filename);
     return storyReader.load();
   }
 
   saveStory(filename: string, data: any) {
-    const storyReader = new StoryFileReader(filename);
+    const storyReader = new StoryFileStream(filename);
     storyReader.save(data);
   }
-
-  generateIndexes() {}
 
   getDir(dir: "root" | "stories" | "data") {
     switch (dir) {

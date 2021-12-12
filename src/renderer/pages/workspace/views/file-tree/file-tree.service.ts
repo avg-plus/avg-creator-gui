@@ -1,10 +1,7 @@
 import { nanoid } from "nanoid";
 
 import { ResourceTreeNodeTypes } from "../../../../../common/models/resource-tree-node-types";
-import {
-  AVGTreeNodeID,
-  AVGTreeNodeModel
-} from "../../../../../common/models/tree-node-item";
+import { AVGTreeNodeModel } from "../../../../../common/models/tree-node-item";
 import { Nullable } from "../../../../../common/traits";
 import { WorkspaceContext } from "../../../../modules/context/workspace-context";
 import AVGProjectManager from "../../../../modules/context/project-manager";
@@ -24,6 +21,7 @@ export class FileTreeService {
 
   loadFileTree() {
     const project = WorkspaceContext.getCurrentProject();
+    project.loadProject(project.getDir("root"));
     this.treeItems = project.getStoryTree();
 
     if (!this.treeItems.length) {
@@ -44,13 +42,25 @@ export class FileTreeService {
   }
 
   createNode(type: ResourceTreeNodeTypes, parent: Nullable<AVGTreeNodeModel>) {
+    const parentID =
+      parent?.type === ResourceTreeNodeTypes.Folder ||
+      parent?.type === ResourceTreeNodeTypes.ProjectRoot
+        ? parent.id
+        : parent?.parent;
+
     const newNode = {
       id: nanoid(),
       type,
-      parent: parent?.id ?? "root",
+      parent: parentID ?? "root",
       text: "",
       data: {}
     } as AVGTreeNodeModel;
+
+    // 在对应目录下创建响应的文件实体
+    const project = WorkspaceContext.getCurrentProject();
+    if (newNode.type === ResourceTreeNodeTypes.StoryNode) {
+      AVGProjectManager.createStoryFile(project, newNode.id);
+    }
 
     this.treeItems.push(newNode);
 
@@ -62,9 +72,16 @@ export class FileTreeService {
       return;
     }
 
+    const project = WorkspaceContext.getCurrentProject();
     this.treeItems = this.treeItems.filter((v) => {
-      return v.id !== node.id;
+      // 删除节点时，同时删除其子节点
+      return v.id !== node.id && v.parent !== node.id;
     });
+
+    // 删除对应的文件
+    if (node.type === ResourceTreeNodeTypes.StoryNode) {
+      AVGProjectManager.deleteStoryFile(project, node.id);
+    }
 
     this.commitChanges();
 

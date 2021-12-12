@@ -13,7 +13,7 @@ import { GUIVisualStoryEditorService } from "./visual-story-editor/visual-story-
 import { BlockAPI, OutputData } from "@editorjs/editorjs";
 import { EditorBlockDocument } from "./visual-story-editor/editor-block-document";
 import { APICharacterBlockService } from "./visual-story-editor/plugins/character/character.service";
-import { StoryFileData } from "../../../../common/services/file-reader/story-file-reader";
+import { StoryFileData } from "../../../../common/services/file-reader/story-file-stream";
 import { Codegen } from "../../../modules/compilers/codegen";
 import { APICharacterData } from "../../../../common/models/character";
 import { GUIWorkspaceService } from "../avg-workspace.service";

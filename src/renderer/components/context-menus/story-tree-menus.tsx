@@ -14,6 +14,7 @@ interface IResourceTreeContextMenuProps {
   onAddFolder: () => void;
   onRename: (node: Nullable<AVGTreeNodeModel>) => void;
   onDelete: (node: Nullable<AVGTreeNodeModel>) => void;
+  onReload: () => void;
 }
 
 export const StoryTreeMenu = (props: IResourceTreeContextMenuProps) => {
@@ -107,7 +108,13 @@ export const StoryTreeMenu = (props: IResourceTreeContextMenuProps) => {
       {canReload && (
         <>
           {props.node && <MenuDivider />}
-          <MenuItem icon="refresh" text="重新载入" />
+          <MenuItem
+            icon="refresh"
+            text="重新载入"
+            onClick={() => {
+              props.onReload();
+            }}
+          />
         </>
       )}
     </Menu>

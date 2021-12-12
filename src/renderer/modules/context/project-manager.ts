@@ -1,9 +1,17 @@
 import fs from "fs-extra";
 import path from "path";
 import { DBProjects } from "../../common/remote-objects/remote-database";
-import { ProjectFileReader } from "../../../common/services/file-reader/project-file-reader";
+import { ProjectFileStream } from "../../../common/services/file-reader/project-file-stream";
 import { AVGProject } from "./project";
+import {
+  StoryFileData,
+  StoryFileStream
+} from "../../../common/services/file-reader/story-file-stream";
+import { Env } from "../../common/remote-objects/remote-env";
+import { assert } from "../../../common/exception";
+import { AVGTreeNodeID } from "../../../common/models/tree-node-item";
 
+const EXT_STORY_FILE = ".story";
 const PROJECT_FILE_NAME = "project.avg";
 interface VerifiedFile {
   name: string;
@@ -30,7 +38,7 @@ const VerifyFileList = [
 ] as VerifiedFile[];
 
 class AVGProjectManager {
-  static async createEmptyProject(
+  async createEmptyProject(
     dir: string,
     project_name: string,
     description: string
@@ -57,7 +65,7 @@ class AVGProjectManager {
     }
   }
 
-  static async addProjectRecord(path: string) {
+  async addProjectRecord(path: string) {
     const project = await DBProjects.findOne({ path });
     if (!project) {
       // 尝试读取项目文件
@@ -72,22 +80,22 @@ class AVGProjectManager {
     }
   }
 
-  static readProjectData(projectDir: string) {
-    if (!AVGProjectManager.verifyProject(projectDir)) {
+  readProjectData(projectDir: string) {
+    if (!this.verifyProject(projectDir)) {
       throw new Error("加载项目出错");
     }
 
     const projectFile = path.join(projectDir, PROJECT_FILE_NAME);
 
     // 读取工程文件 project.avg
-    const projectReader = new ProjectFileReader(projectFile);
+    const projectReader = new ProjectFileStream(projectFile);
 
     return projectReader.load();
   }
 
-  static saveProject(project: AVGProject) {
+  saveProject(project: AVGProject) {
     const projectDir = project.getDir("root");
-    if (!AVGProjectManager.verifyProject(projectDir)) {
+    if (!this.verifyProject(projectDir)) {
       throw new Error("保存项目出错");
     }
 
@@ -97,7 +105,35 @@ class AVGProjectManager {
     fs.writeJSONSync(projectFile, project.getData());
   }
 
-  static verifyProject(dir: string) {
+  createStoryFile(prject: AVGProject, id: AVGTreeNodeID) {
+    const storyDir = prject.getDir("stories");
+
+    // 文件是否存在
+    const filename = path.join(storyDir, `${id}${EXT_STORY_FILE}`);
+    assert(!fs.existsSync(filename), "文件已经存在。");
+
+    const data = {
+      meta: { time: new Date(), version: Env.getAppVersion() },
+      stories: []
+    } as StoryFileData;
+
+    const storyFile = new StoryFileStream(filename);
+    storyFile.save(data);
+
+    return true;
+  }
+
+  deleteStoryFile(prject: AVGProject, id: AVGTreeNodeID) {
+    const storyDir = prject.getDir("stories");
+
+    // 文件是否存在
+    const filename = path.join(storyDir, `${id}${EXT_STORY_FILE}`);
+    if (fs.existsSync(filename)) {
+      fs.unlinkSync(filename);
+    }
+  }
+
+  verifyProject(dir: string) {
     if (!fs.existsSync(dir)) {
       return false;
     }
@@ -127,4 +163,4 @@ class AVGProjectManager {
   }
 }
 
-export default AVGProjectManager;
+export default new AVGProjectManager();

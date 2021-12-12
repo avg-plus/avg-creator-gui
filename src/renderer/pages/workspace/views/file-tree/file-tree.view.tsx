@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Tree } from "@minoru/react-dnd-treeview";
 import { StylesProvider, ThemeProvider } from "@material-ui/styles";
-import { Button, ButtonGroup, ContextMenu } from "@blueprintjs/core";
+import { Button, ButtonGroup, ContextMenu, Intent } from "@blueprintjs/core";
 
 import { theme } from "./file-tree.theme";
 import { AVGTreeNodeView } from "./tree-node.view";
@@ -15,6 +15,7 @@ import { ResourceTreeNodeTypes } from "../../../../../common/models/resource-tre
 import { useMount } from "react-use";
 import classNames from "classnames";
 import { Nullable } from "../../../../../common/traits";
+import { GUIAlertDialog } from "../../../../modals/alert-dialog";
 
 const service = new FileTreeService();
 
@@ -41,10 +42,17 @@ export const FileTreeView = () => {
     type: ResourceTreeNodeTypes,
     parent: Nullable<AVGTreeNodeModel>
   ) => {
-    const newNode = service.createNode(type, parent);
+    try {
+      const newNode = service.createNode(type, parent);
+      if (!newNode) {
+        return;
+      }
 
-    // 开始重命名模式
-    setIsInRenameStatusNodeID(newNode.id);
+      // 开始重命名模式
+      setIsInRenameStatusNodeID(newNode.id);
+    } catch (error) {
+      GUIAlertDialog.show({ text: error, intent: Intent.DANGER });
+    }
   };
 
   const handleDrop = (
@@ -80,6 +88,11 @@ export const FileTreeView = () => {
         onDelete={(node) => {
           service.deleteNode(node);
           setTreeData(service.getTreeData());
+        }}
+        onReload={() => {
+          const treeData = service.loadFileTree();
+          setTreeData([]);
+          setTreeData(treeData);
         }}
       />,
       {

@@ -25,6 +25,10 @@ export class _Env {
     return platforms[os.platform()];
   }
 
+  getAppVersion() {
+    return app.getVersion();
+  }
+
   isMacOS() {
     return this.getOSName() === "MacOS";
   }

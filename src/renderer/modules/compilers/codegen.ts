@@ -3,7 +3,7 @@ import { APICharacterData } from "../../../common/models/character";
 import {
   StoryFileData,
   StoryItem
-} from "../../../common/services/file-reader/story-file-reader";
+} from "../../../common/services/file-reader/story-file-stream";
 import { APIDialogueData } from "../../../common/models/dialogue";
 
 export class CodegenContext {

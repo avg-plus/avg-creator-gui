@@ -1,7 +1,7 @@
 import fs from "fs-extra";
-import { assert } from "../../../common/exception";
+import { assert } from "../../exception";
 import { AVGTreeNodeModel } from "../../models/tree-node-item";
-import { AVGFileReader } from "./file-reader";
+import { AVGFileStream } from "./file-stream";
 export interface ProjectFileData {
   project_name: string;
   description: string;
@@ -9,7 +9,7 @@ export interface ProjectFileData {
   file_tree: AVGTreeNodeModel[];
 }
 
-export class ProjectFileReader extends AVGFileReader<ProjectFileData> {
+export class ProjectFileStream extends AVGFileStream<ProjectFileData> {
   constructor(filename: string) {
     super(filename);
   }

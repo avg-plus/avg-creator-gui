@@ -1,6 +1,6 @@
 import fs from "fs-extra";
 import { assert } from "../../exception";
-import { AVGFileReader } from "./file-reader";
+import { AVGFileStream } from "./file-stream";
 
 export interface StoryItem {
   id: string;
@@ -8,11 +8,11 @@ export interface StoryItem {
   data: { [key: string]: any };
 }
 export interface StoryFileData {
-  meta: { [key: string]: any };
+  meta: { time: Date; version: string };
   stories: Array<StoryItem>;
 }
 
-export class StoryFileReader extends AVGFileReader<StoryFileData> {
+export class StoryFileStream extends AVGFileStream<StoryFileData> {
   constructor(filename: string) {
     super(filename);
   }
@@ -24,8 +24,6 @@ export class StoryFileReader extends AVGFileReader<StoryFileData> {
     const meta = jsonData.meta;
     const stories = jsonData.stories;
 
-    console.log("jsonData", jsonData);
-
     return {
       meta,
       stories
@@ -33,7 +31,7 @@ export class StoryFileReader extends AVGFileReader<StoryFileData> {
   }
 
   save(data: StoryFileData) {
-    fs.writeJsonSync(this.filename, data);
+    fs.writeJsonSync(this.filename, data, {});
 
     return true;
   }

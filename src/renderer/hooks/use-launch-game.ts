@@ -1,4 +1,4 @@
-import { ProjectFileData } from "../../common/services/file-reader/project-file-reader";
+import { ProjectFileData } from "../../common/services/file-reader/project-file-stream";
 import { GameRunner } from "../../common/services/game-runner";
 import { DebugServer } from "../../main/debug-server/debug-server";
 

@@ -3,7 +3,7 @@ import {
   AVGCreatorAction
 } from "./../actions/avg-creator-actions";
 import { UpdateItem } from "../../../common/services/autoupdater";
-import { ProjectFileData } from "../../../common/services/file-reader/project-file-reader";
+import { ProjectFileData } from "../../../common/services/file-reader/project-file-stream";
 
 export interface IAVGServer {
   serveProject: ProjectFileData | null;
