@@ -91,6 +91,7 @@ copyFiles();
 try {
   if (require.main === module) {
     const watch = process.argv.includes("--watch");
-    compileParcel({ watch });
+    const isDebug = process.argv.includes("--debug");
+    compileParcel({ watch, isDebug });
   }
 } catch (error) {}

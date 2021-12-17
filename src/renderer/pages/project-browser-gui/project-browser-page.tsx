@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { RiAddLine } from "react-icons/ri";
+import { RiAddLine, RiProjector2Fill } from "react-icons/ri";
+import GridList from "react-gridlist";
+import { setConfiguration, Container, Row, Col } from "react-grid-system";
+
+setConfiguration({ maxScreenClass: "xl" });
 
 import {
   Alert,
@@ -16,9 +20,6 @@ import classNames from "classnames";
 
 import "./project-browser-page.less";
 
-import AntdIcon from "@ant-design/icons";
-import Typography from "antd/lib/typography";
-
 import projectIcon from "../../images/icons/project-title.svg";
 import { ProjectItemContextMenu } from "../../components/context-menus/project-item-menus";
 import {
@@ -30,10 +31,6 @@ import { useMount } from "react-use";
 import { GUIAlertDialog } from "../../modals/alert-dialog";
 import { GlobalEvents } from "../../../common/global-events";
 import ipcObservableRenderer from "../../../common/ipc-observable/ipc-observable-renderer";
-import Row from "antd/lib/row";
-import Col from "antd/lib/col";
-import List from "antd/lib/list";
-const { Title, Text } = Typography;
 
 export const ProjectBrowserPage = () => {
   const [activeMenuItem, setActiveMenuItem] =
@@ -164,6 +161,13 @@ export const ProjectBrowserPage = () => {
     setIsRemoveAlertShow(false);
   };
 
+  const getItemData = (item: ProjectBrowserItem) => {
+    return {
+      key: item.id,
+      height: 180
+    };
+  };
+
   return (
     <div>
       <Alert
@@ -185,7 +189,7 @@ export const ProjectBrowserPage = () => {
       </Alert>
 
       <Row style={{ height: "100%" }}>
-        <Col flex={"140px"}>
+        <Col width={"22%"} style={{ paddingRight: 0 }}>
           <div key="side-menu">
             <div className="side-menu">
               <Menu>
@@ -215,7 +219,7 @@ export const ProjectBrowserPage = () => {
             </div>
           </div>
         </Col>
-        <Col flex={"720px"}>
+        <Col style={{ paddingLeft: 0, paddingRight: 0 }}>
           <div
             key="projects"
             onMouseDown={(e) => {
@@ -223,112 +227,109 @@ export const ProjectBrowserPage = () => {
             }}
           >
             <div className="project-container">
-              <Title className="category-title" level={4}>
+              <div className="category-title">
                 {activeMenuItem === "recently-project" ? "我的项目" : "模板库"}
-              </Title>
-              <List
-                grid={{ column: 3 }}
-                dataSource={
+              </div>
+              <GridList
+                fixedColumnWidth={240}
+                getColumnCount={(elementWidth: number, gridGap: number) => {
+                  return 3;
+                }}
+                getGridGap={(elementWidth: number, windowHeight: number) => {
+                  return 0;
+                }}
+                items={
                   activeMenuItem === "recently-project"
                     ? projectItems
                     : templateItems
                 }
+                getItemData={getItemData}
                 renderItem={(item) => {
                   if (item.itemType === "add-new") {
                     return (
-                      <List.Item>
-                        <div
-                          className="box-wrapper"
-                          onDoubleClick={(e) => {
-                            handleItemDbClick(item);
-                          }}
-                          onMouseDown={(e) =>
-                            handleItemClick(e, activeMenuItem, item)
-                          }
-                        >
-                          <Col>
-                            <Row>
-                              <div
-                                className={classNames("box", "add-new-box", {
-                                  selected: item.id === selectedID
-                                })}
-                              >
-                                {/* <Icon
-                                  className="add-new-icon"
-                                  color="#dcddde"
-                                  icon="plus"
-                                  iconSize={80}
-                                /> */}
-                                <RiAddLine
-                                  size={80}
-                                  className="add-new-icon"
-                                  color={"#dcddde"}
-                                ></RiAddLine>
-                              </div>
-                            </Row>
-                            <Row justify={"center"}>
-                              <div
-                                className={classNames("title", {
-                                  selected: item.id === selectedID
-                                })}
-                              >
-                                {item.name}
-                              </div>
-                            </Row>
-                          </Col>
-                        </div>
-                      </List.Item>
+                      <div
+                        className="box-wrapper"
+                        onDoubleClick={(e) => {
+                          handleItemDbClick(item);
+                        }}
+                        onMouseDown={(e) =>
+                          handleItemClick(e, activeMenuItem, item)
+                        }
+                      >
+                        <Col>
+                          <Row className={"gird-box-row"}>
+                            <div
+                              className={classNames("box", "add-new-box", {
+                                selected: item.id === selectedID
+                              })}
+                            >
+                              <RiAddLine
+                                size={80}
+                                className="add-new-icon"
+                                color={"#dcddde"}
+                              ></RiAddLine>
+                            </div>
+                          </Row>
+                          <Row className={"gird-box-row"} justify={"center"}>
+                            <div
+                              className={classNames("title", {
+                                selected: item.id === selectedID
+                              })}
+                            >
+                              {item.name}
+                            </div>
+                          </Row>
+                        </Col>
+                      </div>
                     );
                   } else {
                     return (
-                      <List.Item>
-                        <div
-                          className="box-wrapper"
-                          onMouseDown={(e) =>
-                            handleItemClick(e, activeMenuItem, item)
-                          }
-                          onDoubleClick={() => handleItemDbClick(item)}
-                          onContextMenu={(event) =>
-                            handleContextMenu(event, item)
-                          }
-                        >
-                          <Col>
-                            <Row>
-                              <div
-                                className={classNames("box", {
-                                  selected: item.id === selectedID
-                                })}
-                              >
-                                <Row justify="center" align="middle">
-                                  <Col>
-                                    <AntdIcon
-                                      component={projectIcon}
-                                      style={{ fontSize: "24px" }}
-                                    ></AntdIcon>
-                                  </Col>
+                      <div
+                        className="box-wrapper"
+                        onMouseDown={(e) =>
+                          handleItemClick(e, activeMenuItem, item)
+                        }
+                        onDoubleClick={() => handleItemDbClick(item)}
+                        onContextMenu={(event) =>
+                          handleContextMenu(event, item)
+                        }
+                      >
+                        <Col>
+                          <Row className={"gird-box-row"}>
+                            <div
+                              className={classNames("box", {
+                                selected: item.id === selectedID
+                              })}
+                            >
+                              <Row className={"gird-box-row"} justify="center">
+                                <Col>
+                                  <RiProjector2Fill
+                                    className="project-default-cover-icon"
+                                    color={"#dcddde"}
+                                  ></RiProjector2Fill>
+                                </Col>
 
-                                  <Col>
-                                    <div className={"title"}>{item.name}</div>
-                                  </Col>
-                                </Row>
+                                <Col>
+                                  {/* <div className={"title"}>{item.name}</div> */}
+                                </Col>
+                              </Row>
 
-                                <div className={"description"}>
-                                  {item.description}
-                                </div>
+                              <div className={"description"}>
+                                {item.description}
                               </div>
-                            </Row>
-                            <Row justify={"center"}>
-                              <div
-                                className={classNames("title", {
-                                  selected: item.id === selectedID
-                                })}
-                              >
-                                {item.name}
-                              </div>
-                            </Row>
-                          </Col>
-                        </div>
-                      </List.Item>
+                            </div>
+                          </Row>
+                          <Row justify={"center"}>
+                            <div
+                              className={classNames("title", {
+                                selected: item.id === selectedID
+                              })}
+                            >
+                              {item.name}
+                            </div>
+                          </Row>
+                        </Col>
+                      </div>
                     );
                   }
                 }}

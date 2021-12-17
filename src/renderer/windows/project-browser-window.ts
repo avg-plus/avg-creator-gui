@@ -1,8 +1,8 @@
 import { WindowIDs } from "../../common/window-ids";
 import { AVGWindow } from "./gui-window";
 
-const WIDTH = 860;
-const HEIGHT = 640;
+const WIDTH = 1024;
+const HEIGHT = 768;
 
 interface GUIProjectBrowserWindowParams {}
 
@@ -26,9 +26,9 @@ export class GUIProjectBrowserWindow extends AVGWindow {
         resizable: false,
         titleBarStyle: "hidden",
         webPreferences: {
-          nodeIntegration: true,
-          nodeIntegrationInWorker: true,
-          allowRunningInsecureContent: false
+          // nodeIntegration: true,
+          // nodeIntegrationInWorker: true,
+          // allowRunningInsecureContent: false
         }
       }
     });

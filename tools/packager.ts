@@ -49,8 +49,7 @@ const updateVersion = async () => {
 const build = async () => {
   const Platform = builder.Platform;
 
-  // 构建
-  await builder.build({
+  const buildOptions: builder.CliOptions = {
     targets: Platform.current().createTarget(),
     config: {
       productName: "AVGPlusCreator", //项目名 这也是生成的exe文件的前缀名
@@ -66,7 +65,7 @@ const build = async () => {
         identity: null, // 不签名
         hardenedRuntime: true,
         icon: "pack-data/icons/icon_512x512@2x.png",
-        target: ["dir", "dmg"]
+        target: ["dir"]
       },
       nsis: {
         oneClick: false,
@@ -90,7 +89,17 @@ const build = async () => {
         ]
       }
     }
-  });
+  };
+
+  if (!program.devPackage) {
+    const target = (buildOptions.config as builder.Configuration).mac!
+      .target as Array<builder.MacOsTargetName>;
+
+    target.push("dmg");
+  }
+
+  // 构建
+  await builder.build(buildOptions);
 };
 
 build();
