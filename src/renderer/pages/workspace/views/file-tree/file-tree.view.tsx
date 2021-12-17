@@ -30,12 +30,26 @@ export const FileTreeView = () => {
     useState<string>("");
 
   useMount(() => {
-    const items = service.loadFileTree();
-    setTreeData(items);
+    reloadTree(true);
   });
+
+  const reloadTree = (force = false) => {
+    if (force) {
+      const items = service.loadFileTree();
+      setTreeData(items);
+      return;
+    }
+
+    setTreeData(service.getTreeData());
+  };
 
   const handleSelect = (node: AVGTreeNodeModel) => {
     setSelectedNode(node);
+  };
+
+  const handleNodeToggle = (node: AVGTreeNodeModel, isOpen: boolean) => {
+    console.log("handleNodeToggle", node, isOpen);
+    node.is_open = isOpen;
   };
 
   const handleCreateNode = (
@@ -43,10 +57,12 @@ export const FileTreeView = () => {
     parent: Nullable<AVGTreeNodeModel>
   ) => {
     try {
-      const newNode = service.createNode(type, parent);
+      const newNode = service.createNode(type, parent, true);
       if (!newNode) {
         return;
       }
+
+      setSelectedNode(newNode);
 
       // 开始重命名模式
       setIsInRenameStatusNodeID(newNode.id);
@@ -102,13 +118,14 @@ export const FileTreeView = () => {
     );
   };
 
-  const handleRenameEnd = (hasUpdated: boolean) => {
+  const handleRenameEnd = (node: AVGTreeNodeModel, hasUpdated: boolean) => {
     setIsInRenameStatusNodeID("");
 
     // 名称更改了的情况下才提交更新
-    if (hasUpdated) {
-      service.onRenameEnd(selectedNode);
-    }
+    const treeData = service.onRenameEnd(node, hasUpdated);
+
+    // 重新加载
+    setTreeData(treeData);
   };
 
   useEffect(() => {
@@ -177,6 +194,7 @@ export const FileTreeView = () => {
               tree={treeData}
               rootId={"root"}
               onDrop={handleDrop as any}
+              initialOpen={["root"]}
               render={(node, { depth, isOpen, onToggle }) => (
                 <AVGTreeNodeView
                   node={node as AVGTreeNodeModel}
@@ -184,9 +202,14 @@ export const FileTreeView = () => {
                   isOpen={isOpen}
                   inEditingNodeID={isInRenameStatusNodeID}
                   isSelected={node.id === selectedNode?.id}
-                  onToggle={onToggle}
+                  onToggle={() => {
+                    onToggle();
+                    // handleNodeToggle(node as AVGTreeNodeModel, isOpen);
+                  }}
                   onSelect={handleSelect}
-                  onRenameEnd={handleRenameEnd}
+                  onRenameEnd={(hasUpdated) => {
+                    handleRenameEnd(node as AVGTreeNodeModel, hasUpdated);
+                  }}
                   onMouseDown={(e, node) => {
                     if (e.button === 2) {
                       ContextMenu.hide();

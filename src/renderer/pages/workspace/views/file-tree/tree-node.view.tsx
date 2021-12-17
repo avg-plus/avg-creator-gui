@@ -113,8 +113,10 @@ export const AVGTreeNodeView: React.FC<Props> = (props) => {
               if (value.length) {
                 setRenameEditingText(value);
                 props.node.text = value;
+                props.onRenameEnd(true);
+              } else {
+                props.onRenameEnd(false);
               }
-              props.onRenameEnd(true);
             }}
             onCancel={(value: string) => {
               setRenameEditingText(props.node.text);

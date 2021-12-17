@@ -41,7 +41,11 @@ export class FileTreeService {
     return this.treeItems;
   }
 
-  createNode(type: ResourceTreeNodeTypes, parent: Nullable<AVGTreeNodeModel>) {
+  createNode(
+    type: ResourceTreeNodeTypes,
+    parent: Nullable<AVGTreeNodeModel>,
+    isShadow = false
+  ) {
     const parentID =
       parent?.type === ResourceTreeNodeTypes.Folder ||
       parent?.type === ResourceTreeNodeTypes.ProjectRoot
@@ -49,6 +53,7 @@ export class FileTreeService {
         : parent?.parent;
 
     const newNode = {
+      __shadow__: isShadow,
       id: nanoid(),
       type,
       parent: parentID ?? "root",
@@ -69,10 +74,9 @@ export class FileTreeService {
 
   deleteNode(node: Nullable<AVGTreeNodeModel>) {
     if (!node) {
-      return;
+      return this.treeItems;
     }
 
-    const project = WorkspaceContext.getCurrentProject();
     this.treeItems = this.treeItems.filter((v) => {
       // 删除节点时，同时删除其子节点
       return v.id !== node.id && v.parent !== node.id;
@@ -80,6 +84,7 @@ export class FileTreeService {
 
     // 删除对应的文件
     if (node.type === ResourceTreeNodeTypes.StoryNode) {
+      const project = WorkspaceContext.getCurrentProject();
       AVGProjectManager.deleteStoryFile(project, node.id);
     }
 
@@ -92,8 +97,25 @@ export class FileTreeService {
    *
    * @param node 重命名结束
    */
-  onRenameEnd(node: Nullable<AVGTreeNodeModel>) {
-    this.commitChanges();
+  onRenameEnd(node: AVGTreeNodeModel, hasUpdated: boolean) {
+    if (!node) {
+      return this.treeItems;
+    }
+
+    // 节点是否 shadow
+    if (node.__shadow__ === true) {
+      if (!hasUpdated) {
+        console.log("Node is shadow and no name input, delete.", node);
+        return this.deleteNode(node);
+      }
+    }
+
+    if (hasUpdated) {
+      delete node?.__shadow__;
+      this.commitChanges();
+    }
+
+    return this.treeItems;
   }
 
   /**
