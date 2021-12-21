@@ -1,4 +1,4 @@
-import { BlockToolConstructorOptions } from "@editorjs/editorjs";
+import { BlockAPI, BlockToolConstructorOptions } from "@editorjs/editorjs";
 import ReactDOM from "react-dom";
 import { EditorBlockDocument } from "../editor-block-document";
 import { CEBlockService } from "./ce-block-service";

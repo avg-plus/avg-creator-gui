@@ -1,8 +1,6 @@
-import Cropper from "cropperjs";
 import { APICharacterData } from "../../../../../../../common/models/character";
 import { EditorBlockDocument } from "../../editor-block-document";
 import { CEBlockService, ServiceStateContext } from "../ce-block-service";
-import gen from "../../../../../../modules/compilers/codegen/character.codegen";
 
 export class APICharacterBlockService extends CEBlockService<APICharacterData> {
   private _characterData: APICharacterData;

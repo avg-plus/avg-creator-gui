@@ -1,14 +1,26 @@
 import { nanoid } from "nanoid";
 
 import { ResourceTreeNodeTypes } from "../../../../../common/models/resource-tree-node-types";
-import { AVGTreeNodeModel } from "../../../../../common/models/tree-node-item";
+import {
+  AVGTreeNodeModel,
+  AVGTreeNodePersistence
+} from "../../../../../common/models/tree-node-item";
 import { Nullable } from "../../../../../common/traits";
 import { WorkspaceContext } from "../../../../modules/context/workspace-context";
 import AVGProjectManager from "../../../../modules/context/project-manager";
+import { GUIVisualStoryEditorService } from "../visual-story-editor/visual-story-editor.service";
+import { OutputData } from "@editorjs/editorjs";
+import { AVGProject } from "../../../../modules/context/project";
 
 export class FileTreeService {
   private treeItems: AVGTreeNodeModel[] = [];
   private inRenameStatusNode: string = "";
+  private project: AVGProject;
+  private selectedNode: AVGTreeNodeModel;
+
+  constructor(project: AVGProject) {
+    this.project = project;
+  }
 
   setRenameStatus(node: AVGTreeNodeModel | null | undefined) {
     if (!node) {
@@ -20,13 +32,14 @@ export class FileTreeService {
   }
 
   loadFileTree() {
-    const project = WorkspaceContext.getCurrentProject();
-    project.loadProject(project.getDir("root"));
-    this.treeItems = project.getStoryTree();
+    this.project.loadProject(this.project.getDir("root"));
+    this.treeItems = this.project.getStoryTree() as AVGTreeNodeModel[];
 
     if (!this.treeItems.length) {
       const rootNode = this.createNode(ResourceTreeNodeTypes.ProjectRoot, null);
-      rootNode.text = project.getData().project_name;
+      console.log("rootNode", rootNode);
+
+      rootNode.text = this.project.getData().project_name;
     }
 
     return this.treeItems;
@@ -58,16 +71,18 @@ export class FileTreeService {
       type,
       parent: parentID ?? "root",
       text: "",
+      shouldSave: false,
       data: {}
     } as AVGTreeNodeModel;
 
     // 在对应目录下创建响应的文件实体
-    const project = WorkspaceContext.getCurrentProject();
     if (newNode.type === ResourceTreeNodeTypes.StoryNode) {
-      AVGProjectManager.createStoryFile(project, newNode.id);
+      AVGProjectManager.createStoryFile(this.project, newNode.id);
     }
 
     this.treeItems.push(newNode);
+
+    console.log("create node this.treeItems", this.treeItems);
 
     return newNode;
   }
@@ -79,13 +94,16 @@ export class FileTreeService {
 
     this.treeItems = this.treeItems.filter((v) => {
       // 删除节点时，同时删除其子节点
+      // if (node.parent === v.id) {
+      //   AVGProjectManager.deleteStoryFile(this.project, node.id);
+      // }
+
       return v.id !== node.id && v.parent !== node.id;
     });
 
     // 删除对应的文件
     if (node.type === ResourceTreeNodeTypes.StoryNode) {
-      const project = WorkspaceContext.getCurrentProject();
-      AVGProjectManager.deleteStoryFile(project, node.id);
+      AVGProjectManager.deleteStoryFile(this.project, node.id);
     }
 
     this.commitChanges();
@@ -112,21 +130,54 @@ export class FileTreeService {
 
     if (hasUpdated) {
       delete node?.__shadow__;
-      this.commitChanges();
     }
 
+    console.log("handleRenameEnd", this.treeItems);
+    this.commitChanges();
+
     return this.treeItems;
+  }
+
+  getOpenedNode() {
+    return this.selectedNode;
+  }
+
+  openStoryDocument(node: AVGTreeNodeModel) {
+    this.selectedNode = node;
+
+    if (node.type !== ResourceTreeNodeTypes.StoryNode) {
+      return;
+    }
+
+    if (!node.storyData) {
+      const filename = AVGProjectManager.getStoryFilePath(
+        this.project,
+        node.id
+      );
+      const data = this.project.openStory(filename);
+
+      if (!data.stories.length) {
+        data.stories = [];
+      }
+
+      node.storyData = {
+        version: data.meta.version,
+        time: data.meta.time,
+        blocks: data.stories
+      } as unknown as OutputData;
+    }
+
+    GUIVisualStoryEditorService.renderStoryData(node.storyData);
   }
 
   /**
    * 提交变更并写入到项目文件
    */
   private commitChanges() {
-    const project = WorkspaceContext.getCurrentProject();
-    project.setStoryTree(this.treeItems);
+    this.project.setStoryTree(this.treeItems as AVGTreeNodePersistence[]);
 
-    if (project) {
-      AVGProjectManager.saveProject(project);
+    if (this.project) {
+      AVGProjectManager.saveProject(this.project);
     }
   }
 }

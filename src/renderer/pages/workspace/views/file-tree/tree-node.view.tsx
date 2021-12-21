@@ -9,7 +9,10 @@ import { FaFileSignature } from "react-icons/fa";
 import { GiSpellBook } from "react-icons/gi";
 
 import { useDragOver } from "@minoru/react-dnd-treeview";
-import { AVGTreeNodeModel } from "../../../../../common/models/tree-node-item";
+import {
+  AVGTreeNodeModel,
+  AVGTreeNodePersistence
+} from "../../../../../common/models/tree-node-item";
 
 import "./tree-node.less";
 import classNames from "classnames";

@@ -1,4 +1,7 @@
 import { BlockToolConstructorOptions } from "@editorjs/editorjs";
+import { ResourceTreeNodeTypes } from "../../../../../../common/models/resource-tree-node-types";
+import { WorkspaceContext } from "../../../../../modules/context/workspace-context";
+import { GUIVisualStoryEditorService } from "../visual-story-editor.service";
 import { CETool } from "./ce-tool";
 
 export type ServiceStateContext<T> = {
@@ -40,6 +43,26 @@ export abstract class CEBlockService<TData extends object = object> {
 
   getToolView() {
     return this._toolView;
+  }
+
+  async emitContentChanged() {
+    // 获取当前项目
+    const project = WorkspaceContext.getCurrentProject();
+
+    // 找到对应的树节点
+    const treeService = project.getTreeService();
+    const node = treeService.getOpenedNode();
+
+    console.log("emitContentChanged", node);
+
+    if (node && node.type === ResourceTreeNodeTypes.StoryNode) {
+      const editor = GUIVisualStoryEditorService.getEditor();
+      const output = await editor.save();
+      node.shouldSave = true;
+      node.storyData = output;
+
+      project.onFileContentChanged(node);
+    }
   }
 
   delete() {

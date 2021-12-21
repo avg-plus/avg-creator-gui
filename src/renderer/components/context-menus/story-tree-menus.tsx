@@ -2,7 +2,10 @@ import React from "react";
 import { AiFillCopy, AiOutlineDelete } from "react-icons/ai";
 import { BiCut, BiPaste } from "react-icons/bi";
 import { Menu, MenuDivider, MenuItem } from "@blueprintjs/core";
-import { AVGTreeNodeModel } from "../../../common/models/tree-node-item";
+import {
+  AVGTreeNodeModel,
+  AVGTreeNodePersistence
+} from "../../../common/models/tree-node-item";
 import { ResourceTreeNodeTypes } from "../../../common/models/resource-tree-node-types";
 import { Env } from "../../common/remote-objects/remote-env";
 import { Nullable } from "../../../common/traits";
@@ -55,17 +58,21 @@ export const StoryTreeMenu = (props: IResourceTreeContextMenuProps) => {
 
       {(isRootNode || isStoryNode || isFolderNode) && (
         <>
-          <MenuItem
-            icon="folder-shared-open"
-            text={
-              Env.getOSName() === "Windows"
-                ? "在资源管理器中打开"
-                : "在 Finder 中显示"
-            }
-          />
+          {isRootNode && (
+            <>
+              <MenuItem
+                icon="folder-shared-open"
+                text={
+                  Env.getOSName() === "Windows"
+                    ? "在资源管理器中打开"
+                    : "在 Finder 中显示"
+                }
+              />
+              <MenuDivider />
+            </>
+          )}
           {!isRootNode && (
             <>
-              <MenuDivider />
               <MenuItem
                 text="剪切"
                 icon="cut"
@@ -81,10 +88,6 @@ export const StoryTreeMenu = (props: IResourceTreeContextMenuProps) => {
                 icon="clipboard"
                 label={HotKeysManager.hotkeyToLabel("Paste")}
               />
-            </>
-          )}
-          {!isRootNode && (
-            <>
               <MenuDivider />
               <MenuItem
                 text="重命名"
@@ -107,7 +110,6 @@ export const StoryTreeMenu = (props: IResourceTreeContextMenuProps) => {
       )}
       {canReload && (
         <>
-          {props.node && <MenuDivider />}
           <MenuItem
             icon="refresh"
             text="重新载入"

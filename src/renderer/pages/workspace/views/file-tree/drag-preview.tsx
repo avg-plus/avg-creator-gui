@@ -1,10 +1,10 @@
 import React from "react";
 import { DragLayerMonitorProps } from "@minoru/react-dnd-treeview";
 import "./drag-preview.less";
-import { AVGTreeNodeModel } from "../../../../../common/models/tree-node-item";
+import { AVGTreeNodePersistence } from "../../../../../common/models/tree-node-item";
 
 type Props = {
-  monitorProps: DragLayerMonitorProps<AVGTreeNodeModel>;
+  monitorProps: DragLayerMonitorProps<AVGTreeNodePersistence>;
 };
 
 export const CustomDragPreview: React.FC<Props> = (props) => {

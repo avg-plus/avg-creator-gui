@@ -5,7 +5,8 @@ import { ProjectFileStream } from "../../../common/services/file-reader/project-
 import { AVGProject } from "./project";
 import {
   StoryFileData,
-  StoryFileStream
+  StoryFileStream,
+  StoryItem
 } from "../../../common/services/file-reader/story-file-stream";
 import { Env } from "../../common/remote-objects/remote-env";
 import { assert } from "../../../common/exception";
@@ -106,16 +107,19 @@ class AVGProjectManager {
   }
 
   createStoryFile(prject: AVGProject, id: AVGTreeNodeID) {
-    const storyDir = prject.getDir("stories");
-
     // 文件是否存在
-    const filename = path.join(storyDir, `${id}${EXT_STORY_FILE}`);
+    const filename = this.getStoryFilePath(prject, id);
     assert(!fs.existsSync(filename), "文件已经存在。");
 
     const data = {
       meta: { time: new Date(), version: Env.getAppVersion() },
       stories: []
     } as StoryFileData;
+
+    // 默认添加一行空白块
+    // data.stories.push({
+    //   id: nanoid()
+    // } as StoryItem)
 
     const storyFile = new StoryFileStream(filename);
     storyFile.save(data);
@@ -124,13 +128,18 @@ class AVGProjectManager {
   }
 
   deleteStoryFile(prject: AVGProject, id: AVGTreeNodeID) {
-    const storyDir = prject.getDir("stories");
-
     // 文件是否存在
-    const filename = path.join(storyDir, `${id}${EXT_STORY_FILE}`);
+    const filename = this.getStoryFilePath(prject, id);
     if (fs.existsSync(filename)) {
       fs.unlinkSync(filename);
     }
+  }
+
+  getStoryFilePath(prject: AVGProject, id: AVGTreeNodeID) {
+    const storyDir = prject.getDir("stories");
+
+    // 文件是否存在
+    return path.join(storyDir, `${id}${EXT_STORY_FILE}`);
   }
 
   verifyProject(dir: string) {

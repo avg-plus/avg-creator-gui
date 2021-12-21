@@ -1,13 +1,15 @@
-import fs, { Stats } from "fs-extra";
+import { Stats } from "fs-extra";
 import path from "path";
 import fg from "fast-glob";
-import { nanoid } from "nanoid";
 
-import { AVGTreeNodeModel } from "../../../common/models/tree-node-item";
+import {
+  AVGTreeNodeModel,
+  AVGTreeNodePersistence
+} from "../../../common/models/tree-node-item";
 import { ProjectFileData } from "../../../common/services/file-reader/project-file-stream";
 import { StoryFileStream } from "../../../common/services/file-reader/story-file-stream";
 import AVGProjectManager from "./project-manager";
-import { ResourceTreeNodeTypes } from "../../../common/models/resource-tree-node-types";
+import { FileTreeService } from "../../pages/workspace/views/file-tree/file-tree.service";
 
 interface PathObject {
   name: string;
@@ -19,6 +21,11 @@ interface PathObject {
 export class AVGProject {
   private projectData: ProjectFileData;
   private projectRootDir: string;
+  private treeService: FileTreeService;
+
+  constructor() {
+    this.treeService = new FileTreeService(this);
+  }
 
   loadProject(dir: string) {
     this.projectRootDir = dir;
@@ -27,15 +34,19 @@ export class AVGProject {
     return this.projectData;
   }
 
+  getTreeService() {
+    return this.treeService;
+  }
+
   getData() {
     return this.projectData;
   }
 
-  getStoryTree(): AVGTreeNodeModel[] {
+  getStoryTree(): AVGTreeNodePersistence[] {
     return this.projectData.file_tree;
   }
 
-  setStoryTree(nodes: AVGTreeNodeModel[]) {
+  setStoryTree(nodes: AVGTreeNodePersistence[]) {
     this.projectData.file_tree = nodes;
   }
 
@@ -58,6 +69,10 @@ export class AVGProject {
       case "data":
         return path.join(this.projectRootDir, "data");
     }
+  }
+
+  onFileContentChanged(node: AVGTreeNodeModel) {
+    console.log("file changed: ", node);
   }
 
   private buildFileTree(dir: string, extensions = []) {

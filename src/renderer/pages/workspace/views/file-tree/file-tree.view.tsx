@@ -1,7 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Tree } from "@minoru/react-dnd-treeview";
 import { StylesProvider, ThemeProvider } from "@material-ui/styles";
-import { Button, ButtonGroup, ContextMenu, Intent } from "@blueprintjs/core";
+import {
+  Button,
+  ButtonGroup,
+  ContextMenu,
+  Divider,
+  Intent
+} from "@blueprintjs/core";
+import { Classes, Tooltip2 } from "@blueprintjs/popover2";
 
 import { theme } from "./file-tree.theme";
 import { AVGTreeNodeView } from "./tree-node.view";
@@ -16,10 +23,16 @@ import { useMount } from "react-use";
 import classNames from "classnames";
 import { Nullable } from "../../../../../common/traits";
 import { GUIAlertDialog } from "../../../../modals/alert-dialog";
+import { WorkspaceContext } from "../../../../modules/context/workspace-context";
+import { AVGProject } from "../../../../modules/context/project";
 
-const service = new FileTreeService();
+interface FileTreeViewProps {
+  project: AVGProject;
+}
 
-export const FileTreeView = () => {
+export const FileTreeView = (props: FileTreeViewProps) => {
+  const service = props.project.getTreeService();
+
   const [treeData, setTreeData] = useState<AVGTreeNodeModel[]>(
     service.getTreeData()
   );
@@ -40,11 +53,15 @@ export const FileTreeView = () => {
       return;
     }
 
+    setIsInRenameStatusNodeID("");
+
     setTreeData(service.getTreeData());
   };
 
   const handleSelect = (node: AVGTreeNodeModel) => {
     setSelectedNode(node);
+
+    service.openStoryDocument(node);
   };
 
   const handleNodeToggle = (node: AVGTreeNodeModel, isOpen: boolean) => {
@@ -58,9 +75,12 @@ export const FileTreeView = () => {
   ) => {
     try {
       const newNode = service.createNode(type, parent, true);
+
       if (!newNode) {
         return;
       }
+
+      console.log("on create new node: ", type, parent, service.getTreeData());
 
       setSelectedNode(newNode);
 
@@ -155,23 +175,54 @@ export const FileTreeView = () => {
   return (
     <div className="container">
       <div className={"toolbar"}>
-        <ButtonGroup minimal={false} large={false} vertical={false}>
-          <Button
-            text="故事"
-            disabled={!canAddStoryNode}
-            icon="insert"
-            onClick={(e) => {
-              handleCreateNode(ResourceTreeNodeTypes.StoryNode, selectedNode);
-            }}
-          />
-          <Button
-            text="目录"
+        <ButtonGroup minimal={true} large={false} vertical={false}>
+          <>
+            <Tooltip2
+              hoverOpenDelay={0}
+              placement="bottom"
+              content={"新建故事"}
+            >
+              <Button
+                disabled={!canAddStoryNode}
+                icon="insert"
+                onClick={(e) => {
+                  handleCreateNode(
+                    ResourceTreeNodeTypes.StoryNode,
+                    selectedNode
+                  );
+                }}
+              />
+            </Tooltip2>
+          </>
+
+          <Tooltip2
             disabled={!canAddFolderNode}
-            icon="folder-new"
-            onClick={(e) => {
-              handleCreateNode(ResourceTreeNodeTypes.Folder, selectedNode);
-            }}
-          />
+            hoverOpenDelay={0}
+            placement="bottom"
+            content={"新建目录"}
+          >
+            <Button
+              disabled={!canAddFolderNode}
+              icon="folder-new"
+              onClick={(e) => {
+                handleCreateNode(ResourceTreeNodeTypes.Folder, selectedNode);
+              }}
+            />
+          </Tooltip2>
+          <Divider></Divider>
+          <Tooltip2
+            disabled={!canAddFolderNode}
+            hoverOpenDelay={0}
+            placement="bottom"
+            content={"刷新故事树"}
+          >
+            <Button
+              icon="refresh"
+              onClick={(e) => {
+                reloadTree(true);
+              }}
+            />
+          </Tooltip2>
         </ButtonGroup>
       </div>
 

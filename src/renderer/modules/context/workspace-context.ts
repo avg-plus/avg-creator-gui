@@ -16,5 +16,7 @@ export class WorkspaceContext {
     project.loadProject(projectDir);
 
     WorkspaceContext.project = project;
+
+    return project;
   }
 }

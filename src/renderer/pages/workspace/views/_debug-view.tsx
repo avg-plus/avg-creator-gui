@@ -47,13 +47,13 @@ export const _DevelopmentDebugView = () => {
 
         // editor.blocks.insert(data.stories[0].type, data.stories[0].data);
 
-        const stories = {
-          version: data.meta.version,
-          time: data.meta.time,
-          blocks: data.stories
-        } as OutputData;
+        // const stories = {
+        //   version: data.meta.version,
+        //   time: data.meta.time,
+        //   blocks: data.stories
+        // } as OutputData;
 
-        GUIVisualStoryEditorService.load(stories);
+        // GUIVisualStoryEditorService.load(stories);
       },
       保存: async () => {
         const project = new AVGProject();

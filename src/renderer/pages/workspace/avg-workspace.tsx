@@ -8,13 +8,17 @@ import "./avg-workspace.less";
 import { Codegen } from "../../../common/services/storyboard/codegen";
 import { GUIWorkspaceService, LayoutPanelID } from "./avg-workspace.service";
 import { Mosaic, MosaicWindow } from "react-mosaic-component";
-import { RendererApplication } from "../../../common/services/renderer-application";
 import { VisualStoryEditor } from "./views/visual-story-editor/visual-story-editor";
 import { _DevelopmentDebugView } from "./views/_debug-view";
 import { FileTreeView } from "./views/file-tree/file-tree.view";
+import { AVGProject } from "../../modules/context/project";
 
-export const AVGWorkspace = () => {
-  useMount(() => {
+interface AVGWorkspaceProps {
+  project: AVGProject;
+}
+
+export const AVGWorkspace = (props: AVGWorkspaceProps) => {
+  useMount(async () => {
     delayExecution(() => {
       Codegen.init();
     }, 0);
@@ -25,7 +29,7 @@ export const AVGWorkspace = () => {
   const renderView = (id: LayoutPanelID) => {
     switch (id) {
       case "StoryTree": {
-        return <FileTreeView></FileTreeView>;
+        return <FileTreeView project={props.project}></FileTreeView>;
       }
       case "StoryBoard": {
         return <VisualStoryEditor></VisualStoryEditor>;
@@ -56,7 +60,6 @@ export const AVGWorkspace = () => {
           direction: "row",
           first: "StoryTree",
           second: {
-            // direction: "column",
             direction: "row",
             first: "DebugView",
             second: {

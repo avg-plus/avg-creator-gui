@@ -6,7 +6,7 @@ import "./visual-story-editor.less";
 
 export const VisualStoryEditor = () => {
   useMount(() => {
-    GUIVisualStoryEditorService.load();
+    GUIVisualStoryEditorService.init();
   });
 
   return <div id="editorjs"></div>;

@@ -52,7 +52,7 @@ const build = async () => {
   const buildOptions: builder.CliOptions = {
     targets: Platform.current().createTarget(),
     config: {
-      productName: "AVGPlusCreator", //项目名 这也是生成的exe文件的前缀名
+      productName: "AVGPlus Creator", //项目名 这也是生成的exe文件的前缀名
       appId: "com.avgplus.creator", //包名
       buildVersion: PackageJson.version,
       directories: {
@@ -65,7 +65,13 @@ const build = async () => {
         identity: null, // 不签名
         hardenedRuntime: true,
         icon: "pack-data/icons/icon_512x512@2x.png",
-        target: ["dir"]
+        defaultArch: "arm64",
+        target: [
+          {
+            target: "dir",
+            arch: "arm64"
+          }
+        ]
       },
       nsis: {
         oneClick: false,

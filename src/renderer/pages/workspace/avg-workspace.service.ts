@@ -22,6 +22,6 @@ export class GUIWorkspaceService {
     const data = AVGProjectManager.readProjectData(projectDir);
     RendererApplication.updateTitle(`${data.project_name} — AVG Creator`);
 
-    WorkspaceContext.loadProject(projectDir);
+    return await WorkspaceContext.loadProject(projectDir);
   }
 }

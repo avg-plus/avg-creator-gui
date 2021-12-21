@@ -1,12 +1,12 @@
 import fs from "fs-extra";
 import { assert } from "../../exception";
-import { AVGTreeNodeModel } from "../../models/tree-node-item";
+import { AVGTreeNodePersistence } from "../../models/tree-node-item";
 import { AVGFileStream } from "./file-stream";
 export interface ProjectFileData {
   project_name: string;
   description: string;
   version: string;
-  file_tree: AVGTreeNodeModel[];
+  file_tree: AVGTreeNodePersistence[];
 }
 
 export class ProjectFileStream extends AVGFileStream<ProjectFileData> {
