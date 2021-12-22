@@ -13,7 +13,6 @@ import { RendererApplication } from "../common/services/renderer-application";
 import { WorkspaceWindow } from "./windows/workspace-window";
 import { remote } from "electron";
 import { GUIWorkspaceService } from "./pages/workspace/avg-workspace.service";
-import { WorkspaceContext } from "./modules/context/workspace-context";
 
 (async () => {
   const URL = remote.getCurrentWindow().webContents.getURL();

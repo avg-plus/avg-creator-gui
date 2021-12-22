@@ -4,11 +4,13 @@ import { APICharacterTool } from "./plugins/character/character.tool";
 import { APIDialogueTool } from "./plugins/dialogue/dialogue.tool";
 
 export class GUIVisualStoryEditorService {
-  private static editor: EditorJS;
+  private editor: EditorJS;
 
-  static init() {
-    this.editor = new EditorJS({
-      holder: "editorjs",
+  init() {}
+
+  createEditorInstance(holder: string) {
+    return new EditorJS({
+      holder: holder ?? "editorjs",
       autofocus: true,
       defaultBlock: "dialogue",
       tunes: [],
@@ -33,12 +35,12 @@ export class GUIVisualStoryEditorService {
     });
   }
 
-  static getEditor() {
+  getEditor() {
     return this.editor;
   }
 
-  static renderStoryData(stories: OutputData) {
-    const editor = GUIVisualStoryEditorService.getEditor();
+  renderStoryData(stories: OutputData) {
+    const editor = this.getEditor();
 
     editor.render(stories);
 

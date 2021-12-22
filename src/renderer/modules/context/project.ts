@@ -10,6 +10,7 @@ import { ProjectFileData } from "../../../common/services/file-reader/project-fi
 import { StoryFileStream } from "../../../common/services/file-reader/story-file-stream";
 import AVGProjectManager from "./project-manager";
 import { FileTreeService } from "../../pages/workspace/views/file-tree/file-tree.service";
+import { DocumentTabsService } from "../../pages/workspace/views/document-tabs/document-tabs.service";
 
 interface PathObject {
   name: string;
@@ -22,9 +23,11 @@ export class AVGProject {
   private projectData: ProjectFileData;
   private projectRootDir: string;
   private treeService: FileTreeService;
+  private documentTabsService: DocumentTabsService;
 
   constructor() {
     this.treeService = new FileTreeService(this);
+    this.documentTabsService = new DocumentTabsService(this);
   }
 
   loadProject(dir: string) {
@@ -36,6 +39,10 @@ export class AVGProject {
 
   getTreeService() {
     return this.treeService;
+  }
+
+  getDocumentTabsService() {
+    return this.documentTabsService;
   }
 
   getData() {

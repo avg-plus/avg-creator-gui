@@ -13,6 +13,7 @@ import { VisualStoryEditor } from "./views/visual-story-editor/visual-story-edit
 import { _DevelopmentDebugView } from "./views/_debug-view";
 import { FileTreeView } from "./views/file-tree/file-tree.view";
 import { AVGProject } from "../../modules/context/project";
+import { DocumentTabs } from "./views/document-tabs/document-tabs.view";
 
 interface AVGWorkspaceProps {
   project: AVGProject;
@@ -34,7 +35,8 @@ export const AVGWorkspace = (props: AVGWorkspaceProps) => {
         return <FileTreeView project={props.project}></FileTreeView>;
       }
       case "StoryBoard": {
-        return <VisualStoryEditor project={props.project}></VisualStoryEditor>;
+        // return <VisualStoryEditor project={props.project}></VisualStoryEditor>;
+        return <DocumentTabs project={props.project}></DocumentTabs>;
       }
       case "DebugView": {
         return <_DevelopmentDebugView></_DevelopmentDebugView>;

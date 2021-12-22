@@ -167,7 +167,10 @@ export class FileTreeService {
       } as unknown as OutputData;
     }
 
-    GUIVisualStoryEditorService.renderStoryData(node.storyData);
+    // GUIVisualStoryEditorService.renderStoryData(node.storyData);
+
+    const tabsService = this.project.getDocumentTabsService();
+    tabsService.addTab("story", node);
   }
 
   /**
