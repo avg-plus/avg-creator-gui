@@ -12,7 +12,7 @@ export type LayoutPanelID =
 export class GUIWorkspaceService {
   static layout: Record<LayoutPanelID, { title: string }> = {
     StoryTree: { title: "故事管理" },
-    StoryBoard: { title: "剧本编辑器" },
+    StoryBoard: { title: "__NO_TOOLBAR__" },
     Preview: { title: "预览" },
     PropertyView: { title: "属性" },
     DebugView: { title: "调试" }

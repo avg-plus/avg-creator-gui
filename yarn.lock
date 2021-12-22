@@ -11671,6 +11671,11 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.2.8:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-awesome-tabs@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.npmmirror.com/react-awesome-tabs/download/react-awesome-tabs-0.1.0.tgz#d84eb08627941508773b4d9d2f89c599474ec86e"
+  integrity sha1-2E6whieUFQh3O02dL4nFmUdOyG4=
+
 react-custom-scrollbars@^4.2.1:
   version "4.2.1"
   resolved "https://registry.nlark.com/react-custom-scrollbars/download/react-custom-scrollbars-4.2.1.tgz#830fd9502927e97e8a78c2086813899b2a8b66db"

@@ -1,3 +1,8 @@
+@import (less)
+  "../../../../../../node_modules/react-awesome-tabs/dist/react-awesome-tabs.css";
+
+@import (less) "../../../../styles/theme.less";
+
 #editorjs {
   width: auto;
   height: 100%;
@@ -6,5 +11,18 @@
   .ce-block__content {
     margin-left: 10px;
     max-width: 90%;
+  }
+}
+.r-a-t {
+  .tab-wrapper .tab-button.active .tab {
+    border-color: @pt-intent-primary;
+    background: #fff;
+    border-width: 3px 0 0;
+    border-style: solid;
+    border-radius: 2px 2px 0 0;
+  }
+
+  .panel-wrapper {
+    border-top: 1px solid @pt-intent-primary;
   }
 }

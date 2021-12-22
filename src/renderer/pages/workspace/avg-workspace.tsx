@@ -1,5 +1,6 @@
 import React from "react";
 import { useMount } from "react-use";
+import $ from "jquery";
 
 import { delayExecution } from "../../../common/utils";
 
@@ -19,9 +20,10 @@ interface AVGWorkspaceProps {
 
 export const AVGWorkspace = (props: AVGWorkspaceProps) => {
   useMount(async () => {
-    delayExecution(() => {
-      Codegen.init();
-    }, 0);
+    console.log();
+
+    // 把所有设为了 __NO_TOOLBAR__ 的工具栏移除掉
+    $(`.mosaic-window-toolbar div[title="__NO_TOOLBAR__"]`).parent().remove();
   });
 
   const layoutMap = GUIWorkspaceService.layout;
@@ -32,7 +34,7 @@ export const AVGWorkspace = (props: AVGWorkspaceProps) => {
         return <FileTreeView project={props.project}></FileTreeView>;
       }
       case "StoryBoard": {
-        return <VisualStoryEditor></VisualStoryEditor>;
+        return <VisualStoryEditor project={props.project}></VisualStoryEditor>;
       }
       case "DebugView": {
         return <_DevelopmentDebugView></_DevelopmentDebugView>;

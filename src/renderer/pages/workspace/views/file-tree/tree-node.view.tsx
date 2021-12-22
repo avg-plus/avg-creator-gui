@@ -130,6 +130,7 @@ export const AVGTreeNodeView: React.FC<Props> = (props) => {
           props.node.text
         )}
       </div>
+      <div>{props.node.storyData && props.node.shouldSave ? "*" : ""}</div>
     </div>
   );
 };

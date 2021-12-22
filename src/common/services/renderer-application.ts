@@ -12,6 +12,7 @@ export interface GUIWindowApplicationOptions {
 export class RendererApplication {
   static titlebar: Titlebar;
   static currentWindow: AVGWindow;
+  static ThemePrimaryColor = "#c62d24";
 
   static start(options?: GUIWindowApplicationOptions) {
     options = options ?? {
@@ -28,7 +29,7 @@ export class RendererApplication {
         maximizable: true,
         minimizable: true,
         closeable: true,
-        backgroundColor: Color.fromHex("#c62d24")
+        backgroundColor: Color.fromHex(RendererApplication.ThemePrimaryColor)
       });
     }
   }
