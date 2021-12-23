@@ -31,6 +31,10 @@ import { useMount } from "react-use";
 import { GUIAlertDialog } from "../../modals/alert-dialog";
 import { GlobalEvents } from "../../../common/global-events";
 import ipcObservableRenderer from "../../../common/ipc-observable/ipc-observable-renderer";
+import { EXRenderer } from "../../../electron-x";
+
+EXRenderer.init();
+EXRenderer.dispatch("test", { value: 42 });
 
 export const ProjectBrowserPage = () => {
   const [activeMenuItem, setActiveMenuItem] =

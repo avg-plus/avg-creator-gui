@@ -12,8 +12,18 @@ import "../common/ipc-observable";
 
 app.commandLine.appendSwitch("in-process-gpu");
 
+import { EXMain } from "../electron-x";
+EXMain.init();
+
+console.log("global: ", EXMain.isMainProcess(), EXMain.isRendererProcess());
+
 app.on("ready", async () => {
   MainApplication.init();
+
+  // EXMain.createWindow("x");
+  // EXMain.createWindow("x");
+  // EXMain.createWindow("x");
+  // EXMain.createWindow("x");
 
   const mainWindow = new BrowserWindow({
     show: false,

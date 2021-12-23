@@ -170,7 +170,7 @@ export class FileTreeService {
     // GUIVisualStoryEditorService.renderStoryData(node.storyData);
 
     const tabsService = this.project.getDocumentTabsService();
-    tabsService.addTab("story", node);
+    tabsService.openTab("story", node);
   }
 
   /**

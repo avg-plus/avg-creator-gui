@@ -35,7 +35,6 @@ export const AVGWorkspace = (props: AVGWorkspaceProps) => {
         return <FileTreeView project={props.project}></FileTreeView>;
       }
       case "StoryBoard": {
-        // return <VisualStoryEditor project={props.project}></VisualStoryEditor>;
         return <DocumentTabs project={props.project}></DocumentTabs>;
       }
       case "DebugView": {
@@ -63,17 +62,18 @@ export const AVGWorkspace = (props: AVGWorkspaceProps) => {
         initialValue={{
           direction: "row",
           first: "StoryTree",
+          splitPercentage: 15,
           second: {
             direction: "row",
-            first: "DebugView",
-            second: {
+            first: {
               direction: "column",
               first: "StoryBoard",
+              splitPercentage: 80,
               second: "PropertyView"
             },
-            splitPercentage: 20
-          },
-          splitPercentage: 25
+            splitPercentage: 80,
+            second: "DebugView"
+          }
         }}
       />
     </div>

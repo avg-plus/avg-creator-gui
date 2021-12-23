@@ -47,6 +47,7 @@
     "nconf": "^0.10.0",
     "nedb": "^1.8.0",
     "nedb-promises": "^4.0.3",
+    "nstate": "^0.2.13",
     "pubsub-js": "^1.9.0",
     "react": "^17.0.2",
     "react-awesome-tabs": "^0.1.0",
