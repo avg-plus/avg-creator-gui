@@ -1,5 +1,4 @@
 import { APICharacterData } from "../../../../../../../common/models/character";
-import { EditorService } from "../../editor-service";
 import { CEBlockService, ServiceStateContext } from "../ce-block-service";
 
 export class APICharacterBlockService extends CEBlockService<APICharacterData> {

@@ -163,80 +163,79 @@ export const Tabs = (props: ITabsProps) => {
   const tabTotal = props.children.length;
   const singleTabWidth = 98 / tabTotal;
 
-  let children = props.children.map((tab: { props: ITabProps }, index) => {
-    let style = {};
-    let position = index;
-    let icon: JSX.Element = <></>;
+  const renderTabs = () => {
+    return props.children?.map((tab: { props: ITabProps }, index) => {
+      let style = {};
+      let position = index;
+      let icon: JSX.Element = <></>;
 
-    if (tab.props.icon) {
-      if (typeof tab.props.icon === "string") {
-        icon = <TabIcon type={tab.props.icon}></TabIcon>;
-      } else {
-        icon = tab.props.icon;
+      if (tab.props.icon) {
+        if (typeof tab.props.icon === "string") {
+          icon = <TabIcon type={tab.props.icon}></TabIcon>;
+        } else {
+          icon = tab.props.icon;
+        }
       }
-    }
 
-    style["zIndex"] = tabTotal - position;
-    style["left"] = getLeftByIndex(position) + "%";
-    style["width"] = singleTabWidth + "%";
+      style["zIndex"] = tabTotal - position;
+      style["left"] = getLeftByIndex(position) + "%";
+      style["width"] = singleTabWidth + "%";
 
-    if (dragTarget && dragTarget.index == position) {
-      style["left"] = dragTarget.left;
-    }
+      if (dragTarget && dragTarget.index == position) {
+        style["left"] = dragTarget.left;
+      }
 
-    return (
-      <div
-        key={index}
-        className={"tab-button" + (props.active == index ? " active" : "")}
-        style={style}
-        onMouseDown={(e) => {
-          handleMouseDown(e);
-
-          if (e.button === 0) {
-            switchTab(index);
-          }
-        }}
-        onMouseUp={handleMouseUp}
-        onMouseMove={handleMouseMove}
-        onMouseEnter={showTooltip}
-        onMouseLeave={hideTooltip}
-      >
+      return (
         <div
-          className="tab"
-          style={props.color ? { borderColor: props.color } : {}}
-        ></div>
-        <div className={"text" + (tab.props.showClose ? " with-close" : "")}>
-          {icon}
-          {tab.props.title}
-        </div>
-        {tab.props.showClose ? (
-          <div
-            className="close"
-            onClick={(e) => {
-              handleClose(index, e);
-            }}
-          ></div>
-        ) : null}
-      </div>
-    );
-  });
+          key={index}
+          className={"tab-button" + (props.active == index ? " active" : "")}
+          style={style}
+          onMouseDown={(e) => {
+            handleMouseDown(e);
 
-  let panels = props.children.map((panel, index) => {
-    if (index !== props.active) {
-      return null;
+            if (e.button === 0) {
+              switchTab(index);
+            }
+          }}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+          onMouseEnter={showTooltip}
+          onMouseLeave={hideTooltip}
+        >
+          <div
+            className="tab"
+            style={props.color ? { borderColor: props.color } : {}}
+          ></div>
+          <div className={"text" + (tab.props.showClose ? " with-close" : "")}>
+            {icon}
+            {tab.props.title}
+          </div>
+          {tab.props.showClose ? (
+            <div
+              className="close"
+              onClick={(e) => {
+                handleClose(index, e);
+              }}
+            ></div>
+          ) : null}
+        </div>
+      );
+    });
+  };
+
+  const renderPanels = () => {
+    if (!props.children || !Array.isArray(props.children)) {
+      return <></>;
     }
 
-    return (
-      <div
-        className={classNames("panel", { active: props.active === index })}
-        aria-hidden={props.active !== index}
-        // style={{  display: props.active === index ? "block" : "none" }}
-        key={"panel-" + index}
-      >
-        {panel}
-      </div>
-    );
-  });
+    return props.children.map((panel, index) => {
+      // if (index !== props.active) {
+      //   return null;
+      // }
+
+      return <div className={classNames("panel", "active")}>{panel}</div>;
+    });
+  };
 
   return (
     <div className="r-a-t">
@@ -244,7 +243,7 @@ export const Tabs = (props: ITabsProps) => {
         className={"tab-wrapper" + (props.showAdd ? " with-add" : "")}
         ref={tabs}
       >
-        {children}
+        {renderTabs()}
       </div>
       {props.showAdd ? (
         <div
@@ -258,7 +257,7 @@ export const Tabs = (props: ITabsProps) => {
         className="panel-wrapper"
         style={props.color ? { borderColor: props.color } : {}}
       >
-        {panels}
+        {renderPanels()}
       </div>
       <div className="tooltip" ref={tooltipRef}></div>
     </div>

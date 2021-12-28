@@ -1,8 +1,6 @@
-import React from "react";
-import { nanoid } from "nanoid";
+import React, { useRef } from "react";
 import { createReactEditorJS } from "react-editor-js";
 import { AVGProject } from "../../../../modules/context/project";
-// import { Paragraph } from "@editorjs/editorjs";
 
 import "./document-tabs.less";
 import NState, { setDebug } from "nstate";
@@ -20,17 +18,10 @@ import { AVGTreeNodeModel } from "../../../../../common/models/tree-node-item";
 
 setDebug(false); // enable debug log
 const ReactEditorJS = createReactEditorJS();
-const ReactEditorJS2 = createReactEditorJS();
-const ReactEditorJS3 = createReactEditorJS();
-
-console.log(ReactEditorJS, ReactEditorJS2);
-
 export class DocumentTabsStore extends NState<{
   tabs: DocumentTab[];
   activeIndex: number;
 }> {
-  private editorCached = new Map<string, JSX.Element>([]);
-
   setTabList(list: DocumentTab[]) {
     this.setState((draft) => {
       draft.tabs = [...list];
@@ -49,16 +40,6 @@ export class DocumentTabsStore extends NState<{
       }
     }
   }
-
-  addEditorCached(id: string, editor: JSX.Element) {
-    this.editorCached.set(id, editor);
-  }
-
-  getEditorCached(id: string) {
-    console.log("cached list : ", this.editorCached);
-
-    return this.editorCached.get(id);
-  }
 }
 
 export const documentTabsStore = new DocumentTabsStore({
@@ -75,51 +56,39 @@ export const DocumentTabs = (props: DocumentTabsProps) => {
   const activeIndex = documentTabsStore.useState((s) => s.activeIndex);
 
   const renderEditor = (tab: DocumentTab) => {
-    const editorCached = documentTabsStore.getEditorCached(
-      tab.id
-    ) as JSX.Element;
     const storyTab = tab as StoryDocumentTab;
     const storyData = (storyTab.data as AVGTreeNodeModel).storyData;
 
-    if (editorCached) {
-      return editorCached;
-    } else {
-      const editor = (
-        <ReactEditorJS
-          defaultValue={storyData}
-          autofocus={true}
-          defaultBlock={"dialogue"}
-          tunes={[]}
-          data={storyData}
-          tools={{
-            paragraph: {
-              toolbox: false,
-              inlineToolbar: false
-            },
-            dialogue: APIDialogueTool,
-            character: APICharacterTool
-          }}
-          onChange={(api: API, block: BlockAPI) => {
-            const blockService = storyTab.editorService.getBlock(block.id);
-
-            if (blockService) {
-              blockService.emitContentChanged();
-            }
-          }}
-        />
-      );
-
-      documentTabsStore.addEditorCached(tab.id, editor);
-
-      return editor;
-    }
+    return (
+      <ReactEditorJS
+        defaultValue={storyData}
+        autofocus={true}
+        defaultBlock={"dialogue"}
+        tunes={[]}
+        data={storyData}
+        tools={{
+          paragraph: {
+            toolbox: false,
+            inlineToolbar: false
+          },
+          dialogue: APIDialogueTool,
+          character: APICharacterTool
+        }}
+        onChange={(api: API, block: BlockAPI) => {
+          const blockService = storyTab.editorService.getBlock(block.id);
+          if (blockService) {
+            blockService.emitContentChanged();
+          }
+        }}
+      />
+    );
   };
 
   const renderTabs = () => {
     return tabs.map((v) => {
       return (
         <Tab
-          key={nanoid()}
+          key={v.id}
           showClose={v.closable}
           title={`  ${v.title}`}
           icon={
