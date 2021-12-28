@@ -1,4 +1,4 @@
-import { EditorBlockDocument } from "../../pages/workspace/views/visual-story-editor/editor-block-document";
+import { EditorService } from "../../pages/workspace/views/visual-story-editor/editor-service";
 import { APICharacterData } from "../../../common/models/character";
 import {
   StoryFileData,

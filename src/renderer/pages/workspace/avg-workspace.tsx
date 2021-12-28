@@ -9,7 +9,6 @@ import "./avg-workspace.less";
 import { Codegen } from "../../../common/services/storyboard/codegen";
 import { GUIWorkspaceService, LayoutPanelID } from "./avg-workspace.service";
 import { Mosaic, MosaicWindow } from "react-mosaic-component";
-import { VisualStoryEditor } from "./views/visual-story-editor/visual-story-editor";
 import { _DevelopmentDebugView } from "./views/_debug-view";
 import { FileTreeView } from "./views/file-tree/file-tree.view";
 import { AVGProject } from "../../modules/context/project";

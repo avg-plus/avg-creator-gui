@@ -1129,6 +1129,11 @@
     codex-tooltip "^1.0.2"
     nanoid "^3.1.22"
 
+"@editorjs/paragraph@^2.8.0":
+  version "2.8.0"
+  resolved "https://registry.nlark.com/@editorjs/paragraph/download/@editorjs/paragraph-2.8.0.tgz#11cc381fcafaf8b9160517ce65d59eee93fc4af9"
+  integrity sha1-Ecw4H8r6+LkWBRfOZdWe7pP8Svk=
+
 "@electron/get@^1.0.1", "@electron/get@^1.13.0":
   version "1.13.1"
   resolved "https://registry.npmmirror.com/@electron/get/download/@electron/get-1.13.1.tgz?cache=0&sync_timestamp=1635498368802&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40electron%2Fget%2Fdownload%2F%40electron%2Fget-1.13.1.tgz#42a0aa62fd1189638bd966e23effaebb16108368"
@@ -1514,6 +1519,25 @@
   version "2.0.0"
   resolved "https://registry.nlark.com/@react-dnd/shallowequal/download/@react-dnd/shallowequal-2.0.0.tgz#a3031eb54129f2c66b2753f8404266ec7bf67f0a"
   integrity sha1-owMetUEp8sZrJ1P4QEJm7Hv2fwo=
+
+"@react-editor-js/client@2.0.3":
+  version "2.0.3"
+  resolved "https://registry.npmmirror.com/@react-editor-js/client/download/@react-editor-js/client-2.0.3.tgz#b8907987d106fa0f4bbec500dc224f85e4c4a514"
+  integrity sha1-uJB5h9EG+g9LvsUA3CJPheTEpRQ=
+  dependencies:
+    "@react-editor-js/core" "2.0.3"
+
+"@react-editor-js/core@2.0.3":
+  version "2.0.3"
+  resolved "https://registry.npmmirror.com/@react-editor-js/core/download/@react-editor-js/core-2.0.3.tgz#adb8f7f39e4079046e4c4e95cbccb17630c7707c"
+  integrity sha1-rbj3855AeQRuTE6Vy8yxdjDHcHw=
+
+"@react-editor-js/server@2.0.3":
+  version "2.0.3"
+  resolved "https://registry.npmmirror.com/@react-editor-js/server/download/@react-editor-js/server-2.0.3.tgz#e73558c49e81a51d337042b0640f7518b56d2fe0"
+  integrity sha1-5zVYxJ6BpR0zcEKwZA91GLVtL+A=
+  dependencies:
+    "@react-editor-js/core" "2.0.3"
 
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
@@ -11750,6 +11774,14 @@ react-dom@^17.0.2:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     scheduler "^0.20.2"
+
+react-editor-js@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.npmmirror.com/react-editor-js/download/react-editor-js-2.0.3.tgz#e41cbdb086cb8696dd9c4fc46e73bedb914b0a8a"
+  integrity sha1-5By9sIbLhpbdnE/EbnO+25FLCoo=
+  dependencies:
+    "@react-editor-js/client" "2.0.3"
+    "@react-editor-js/server" "2.0.3"
 
 react-fast-compare@^3.0.1:
   version "3.2.0"

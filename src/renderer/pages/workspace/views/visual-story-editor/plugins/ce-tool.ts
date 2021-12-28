@@ -1,6 +1,7 @@
 import { BlockAPI, BlockToolConstructorOptions } from "@editorjs/editorjs";
 import ReactDOM from "react-dom";
-import { EditorBlockDocument } from "../editor-block-document";
+import { WorkspaceContext } from "../../../../../modules/context/workspace-context";
+import { StoryDocumentTab } from "../../document-tabs/document-tabs.service";
 import { CEBlockService } from "./ce-block-service";
 
 export abstract class CETool<
@@ -46,13 +47,25 @@ export abstract class CETool<
   rendered() {
     // 注册到 block 管理器
     if (this.options.block?.id) {
-      EditorBlockDocument.registerBlock(this.options.block.id, this.service);
+      // 这里因为第三方库的问题导致只能通过全局对象来获取 project
+      const project = WorkspaceContext.getCurrentProject();
+      const tabService = project.getDocumentTabsService();
+      const documentTab = tabService.getActiveTab();
+      const editorService = (documentTab as StoryDocumentTab).editorService;
+
+      editorService.registerBlock(this.options.block.id, this.service);
     }
   }
 
   removed(): void {
     if (this.options.block?.id) {
-      EditorBlockDocument.unregisterBlock(this.options.block.id);
+      // 这里因为第三方库的问题导致只能通过全局对象来获取 project
+      const project = WorkspaceContext.getCurrentProject();
+      const tabService = project.getDocumentTabsService();
+      const documentTab = tabService.getActiveTab();
+      const editorService = (documentTab as StoryDocumentTab).editorService;
+
+      editorService.unregisterBlock(this.options.block.id);
     }
   }
 

@@ -6,9 +6,7 @@ import {
   AVGTreeNodePersistence
 } from "../../../../../common/models/tree-node-item";
 import { Nullable } from "../../../../../common/traits";
-import { WorkspaceContext } from "../../../../modules/context/workspace-context";
 import AVGProjectManager from "../../../../modules/context/project-manager";
-import { GUIVisualStoryEditorService } from "../visual-story-editor/visual-story-editor.service";
 import { OutputData } from "@editorjs/editorjs";
 import { AVGProject } from "../../../../modules/context/project";
 

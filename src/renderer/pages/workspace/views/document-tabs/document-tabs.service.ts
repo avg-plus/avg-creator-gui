@@ -1,5 +1,7 @@
+import $, { map } from "jquery";
 import { AVGTreeNodeModel } from "../../../../../common/models/tree-node-item";
 import { AVGProject } from "../../../../modules/context/project";
+import { EditorService } from "../visual-story-editor/editor-service";
 import { documentTabsStore } from "./document-tabs.view";
 
 export type DocumentTabType = "story" | "blank";
@@ -8,21 +10,26 @@ export interface DocumentTab {
   id: string;
   title: string;
   closable: boolean;
-  unsaveStatus: boolean;
   type: DocumentTabType;
+}
+
+export interface StoryDocumentTab extends DocumentTab {
+  unsaveStatus: boolean;
+  editorService: EditorService;
   data: AVGTreeNodeModel | {};
 }
 
 export class DocumentTabsService {
   private project: AVGProject;
   private tabs: DocumentTab[] = [];
+  private activeTabIndex = 0;
 
   constructor(project: AVGProject) {
     this.project = project;
 
     // Add default tab
     if (!this.tabs.length) {
-      this.openTab("blank");
+      this.openTab("blank", {});
     }
   }
 
@@ -30,41 +37,95 @@ export class DocumentTabsService {
     return this.tabs;
   }
 
-  openTab(type: DocumentTabType, data?: AVGTreeNodeModel) {
+  setActiveTab(index: number) {
+    const tab = this.tabs[index];
+    if (tab && tab.type !== "blank") {
+      this.activeTabIndex = index;
+      return;
+    }
+  }
+
+  getActiveTab() {
+    return this.tabs[this.activeTabIndex];
+  }
+
+  openTab(type: DocumentTabType, node: AVGTreeNodeModel | {}) {
     const tab = {
       id: "",
       title: "",
       type,
       closable: true,
       unsaveStatus: false,
-      data
+      data: node
     } as DocumentTab;
 
-    if (type === "story" && data) {
-      tab.id = data.id;
-      tab.title = (data as AVGTreeNodeModel).text;
-      tab.unsaveStatus = data.shouldSave;
+    if (type === "story" && node) {
+      tab.id = (node as AVGTreeNodeModel).id;
+      tab.title = (node as AVGTreeNodeModel).text;
+      (tab as StoryDocumentTab).unsaveStatus = (
+        node as AVGTreeNodeModel
+      ).shouldSave;
     } else if (type === "blank") {
       tab.id = "blank";
       tab.title = "开始使用";
     }
 
-    let index = this.getTabIndexByID(tab.id);
-    if (index === -1) {
+    let tabData = this.getTabDataByID(tab.id);
+    if (tabData.index === -1 && !tabData.tab) {
       this.tabs.push(tab);
-      index = this.tabs.indexOf(tab);
+      tabData.index = this.tabs.indexOf(tab);
       documentTabsStore.setTabList(this.tabs);
+
+      if (type === "story" && !(tab as StoryDocumentTab).editorService) {
+        (tab as StoryDocumentTab).editorService = new EditorService(
+          `editor-placeholder-${tab.id}`
+        );
+
+        (node as AVGTreeNodeModel).documentTab = tab;
+      }
+    } else if (type === "story" && tabData.index >= 0 && tabData.tab) {
+      (node as AVGTreeNodeModel).documentTab = tabData.tab;
     }
 
     // active tab
-    documentTabsStore.setActiveIndex(index);
+    documentTabsStore.setActiveIndex(tabData.index);
+
+    if (type === "story") {
+      // setTimeout(() => {
+      //   this.attachEditorToTab(tab);
+      // }, 1000);
+    }
   }
 
-  closeTab(id: string) {}
+  closeTab(index: number) {
+    this.tabs.splice(index, 1);
 
-  private getTabIndexByID(id: string) {
+    if (this.tabs.length > 0) {
+      documentTabsStore.setActiveIndex(this.tabs.length - 1);
+    } else {
+      documentTabsStore.setActiveIndex(0);
+    }
+
+    documentTabsStore.setTabList(this.tabs);
+  }
+
+  attachEditorToTab(tab: DocumentTab) {
+    // 把编辑器移动到标签页内
+    // (tab as StoryDocumentTab).editorService.activeEditorHolderElement(true);
+    // const element = $(`#editor-${tab.id}`).detach();
+    // $(`#editor-placeholder-${tab.id}`).append(element);
+  }
+
+  dettachEditorToTab(tab: DocumentTab) {
+    // // 把编辑器移动到标签页内
+    // const element = $(`#editor-${tab.id}`).detach();
+    // $("#editor-instances-container").append(element);
+    // (tab as StoryDocumentTab).editorService.activeEditorHolderElement(false);
+  }
+
+  private getTabDataByID(id: string) {
     let foundIndex = -1;
-    this.tabs.find((v, index) => {
+    const tab = this.tabs.find((v, index) => {
       if (v.id === id) {
         foundIndex = index;
         return true;
@@ -73,6 +134,9 @@ export class DocumentTabsService {
       return false;
     });
 
-    return foundIndex;
+    return {
+      tab,
+      index: foundIndex
+    };
   }
 }

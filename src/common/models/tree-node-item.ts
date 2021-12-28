@@ -1,5 +1,6 @@
 import { OutputData } from "@editorjs/editorjs";
 import { NodeModel } from "@minoru/react-dnd-treeview";
+import { DocumentTab } from "../../renderer/pages/workspace/views/document-tabs/document-tabs.service";
 import { ResourceTreeNodeTypes } from "./resource-tree-node-types";
 
 export type AVGTreeNodeID = string | "root";
@@ -17,6 +18,7 @@ export interface AVGTreeNodeModel extends AVGTreeNodePersistence {
   // 标记该节点是否待创建节点
   __shadow__?: boolean;
 
+  documentTab: DocumentTab;
   storyData?: OutputData;
   shouldSave: boolean;
 }

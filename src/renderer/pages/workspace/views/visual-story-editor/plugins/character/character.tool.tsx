@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
 import className from "classnames";
 
 import { CETool } from "../ce-tool";
@@ -9,7 +8,6 @@ import { APICharacterBlockService } from "./character.service";
 import { BlockToolConstructorOptions } from "@editorjs/editorjs";
 import { useMount } from "react-use";
 import { PluginBaseWrapperComponent } from "../plugin-base-wrapper";
-import { EditorBlockDocument } from "../../editor-block-document";
 import { APICharacterData } from "../../../../../../../common/models/character";
 
 interface CharacterViewProps {
@@ -19,9 +17,7 @@ interface CharacterViewProps {
 const CharacterView = (props: CharacterViewProps) => {
   const [avatarThumbnail, setAvatarThumbnail] = useState("");
   const [characterName, setCharacterName] = useState("");
-  const [isSelected, setIsSelected] = useState(
-    props.context.service.isSelected()
-  );
+  const [isSelected, setIsSelected] = useState(false);
 
   useMount(() => {
     props.context.service.bindingRendererStates({

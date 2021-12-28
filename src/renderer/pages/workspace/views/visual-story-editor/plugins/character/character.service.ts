@@ -1,5 +1,5 @@
 import { APICharacterData } from "../../../../../../../common/models/character";
-import { EditorBlockDocument } from "../../editor-block-document";
+import { EditorService } from "../../editor-service";
 import { CEBlockService, ServiceStateContext } from "../ce-block-service";
 
 export class APICharacterBlockService extends CEBlockService<APICharacterData> {
@@ -43,13 +43,6 @@ export class APICharacterBlockService extends CEBlockService<APICharacterData> {
     this._avatarThumbnail = states.avatarThumbnail;
     this._charaterName = states.characterName;
     this._isSelected = states.isSelected;
-  }
-
-  isSelected() {
-    return (
-      EditorBlockDocument.getCurrentFocusBlock()?.getBlockID() ===
-      this.getBlockID()
-    );
   }
 
   setCharacterData(data: APICharacterData) {

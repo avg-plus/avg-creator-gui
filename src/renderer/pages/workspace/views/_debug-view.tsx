@@ -1,7 +1,6 @@
 import Cropper from "cropperjs";
 import * as dat from "dat.gui";
 
-import { Button, InputGroup } from "@blueprintjs/core";
 import React, { useEffect, useState } from "react";
 import { GlobalEvents } from "../../../../common/global-events";
 import { autoSubScribe } from "../../../../common/utils";
@@ -9,14 +8,10 @@ import { WorkspaceDebugUI } from "../../../../common/services/workspace-debug-ui
 
 import "./_debug-view.less";
 import { useMount } from "react-use";
-import { GUIVisualStoryEditorService } from "./visual-story-editor/visual-story-editor.service";
-import { BlockAPI, OutputData } from "@editorjs/editorjs";
-import { EditorBlockDocument } from "./visual-story-editor/editor-block-document";
+import { EditorService } from "./visual-story-editor/editor-service";
 import { APICharacterBlockService } from "./visual-story-editor/plugins/character/character.service";
 import { StoryFileData } from "../../../../common/services/file-reader/story-file-stream";
-import { Codegen } from "../../../modules/compilers/codegen";
 import { APICharacterData } from "../../../../common/models/character";
-import { GUIWorkspaceService } from "../avg-workspace.service";
 import { AVGProjectBuilder } from "../../../modules/compilers/builder";
 import { AVGProject } from "../../../modules/context/project";
 import { WorkspaceContext } from "../../../modules/context/workspace-context";
@@ -133,7 +128,7 @@ export const _DevelopmentDebugView = () => {
         const dataURL = cropper!.getCroppedCanvas().toDataURL();
 
         const block =
-          EditorBlockDocument.getCurrentFocusBlock() as APICharacterBlockService;
+          EditorService.getCurrentFocusBlock() as APICharacterBlockService;
         if (block && block.setCharacterData) {
           const data = new APICharacterData();
           data.character_id = "test-id-" + Date.now();

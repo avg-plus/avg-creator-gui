@@ -1,7 +1,8 @@
+import EditorJS from "@editorjs/editorjs";
 import { BlockToolConstructorOptions } from "@editorjs/editorjs";
 import { ResourceTreeNodeTypes } from "../../../../../../common/models/resource-tree-node-types";
 import { WorkspaceContext } from "../../../../../modules/context/workspace-context";
-import { GUIVisualStoryEditorService } from "../visual-story-editor.service";
+import { StoryDocumentTab } from "../../document-tabs/document-tabs.service";
 import { CETool } from "./ce-tool";
 
 export type ServiceStateContext<T> = {
@@ -53,10 +54,11 @@ export abstract class CEBlockService<TData extends object = object> {
     const treeService = project.getTreeService();
     const node = treeService.getOpenedNode();
 
-    console.log("emitContentChanged", node);
+    const editor = (
+      node.documentTab as StoryDocumentTab
+    ).editorService.getEditor();
 
-    if (node && node.type === ResourceTreeNodeTypes.StoryNode) {
-      const editor = GUIVisualStoryEditorService.getEditor();
+    if (editor && node && node.type === ResourceTreeNodeTypes.StoryNode) {
       const output = await editor.save();
       node.shouldSave = true;
       node.storyData = output;

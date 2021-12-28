@@ -1,5 +1,7 @@
 import React from "react";
-import { EditorBlockDocument } from "../editor-block-document";
+import { WorkspaceContext } from "../../../../../modules/context/workspace-context";
+import { StoryDocumentTab } from "../../document-tabs/document-tabs.service";
+import { EditorService } from "../editor-service";
 import { CETool } from "./ce-tool";
 
 import "./plugin.less";
@@ -16,15 +18,21 @@ export const PluginBaseWrapperComponent = (
     <div
       className={"plugin-container"}
       onClick={async () => {
+        // 这里因为第三方库的问题导致只能通过全局对象来获取 project
+        const project = WorkspaceContext.getCurrentProject();
+        const tabService = project.getDocumentTabsService();
+        const documentTab = tabService.getActiveTab();
+        const editorService = (documentTab as StoryDocumentTab).editorService;
+
         const blockID = props.tool.service.getBlockID();
-        const currentFocus = EditorBlockDocument.getCurrentFocusBlock();
+        const currentFocus = editorService.getCurrentFocusBlock();
         currentFocus?.onBlockBlur && currentFocus?.onBlockBlur();
 
-        await EditorBlockDocument.setFocusBlock(blockID);
+        await editorService.setFocusBlock(blockID);
         // props.tool.service.setToBlock(blockID);
 
         // 触发点击和焦点事件
-        const block = EditorBlockDocument.get(blockID);
+        const block = editorService.getBlock(blockID);
         if (block) {
           block.onBlockClicked && block.onBlockClicked();
           block.onBlockFocus && block.onBlockFocus();
