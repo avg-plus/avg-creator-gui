@@ -164,63 +164,67 @@ export const Tabs = (props: ITabsProps) => {
   const singleTabWidth = 98 / tabTotal;
 
   const renderTabs = () => {
-    return props.children?.map((tab: { props: ITabProps }, index) => {
-      let style = {};
-      let position = index;
-      let icon: JSX.Element = <></>;
+    return props.children?.map(
+      (tab: { key: string; props: ITabProps }, index) => {
+        let style = {};
+        let position = index;
+        let icon: JSX.Element = <></>;
 
-      if (tab.props.icon) {
-        if (typeof tab.props.icon === "string") {
-          icon = <TabIcon type={tab.props.icon}></TabIcon>;
-        } else {
-          icon = tab.props.icon;
+        if (tab.props.icon) {
+          if (typeof tab.props.icon === "string") {
+            icon = <TabIcon type={tab.props.icon}></TabIcon>;
+          } else {
+            icon = tab.props.icon;
+          }
         }
-      }
 
-      style["zIndex"] = tabTotal - position;
-      style["left"] = getLeftByIndex(position) + "%";
-      style["width"] = singleTabWidth + "%";
+        style["zIndex"] = tabTotal - position;
+        style["left"] = getLeftByIndex(position) + "%";
+        style["width"] = singleTabWidth + "%";
 
-      if (dragTarget && dragTarget.index == position) {
-        style["left"] = dragTarget.left;
-      }
+        if (dragTarget && dragTarget.index == position) {
+          style["left"] = dragTarget.left;
+        }
 
-      return (
-        <div
-          key={index}
-          className={"tab-button" + (props.active == index ? " active" : "")}
-          style={style}
-          onMouseDown={(e) => {
-            handleMouseDown(e);
-
-            if (e.button === 0) {
-              switchTab(index);
-            }
-          }}
-          onMouseUp={handleMouseUp}
-          onMouseMove={handleMouseMove}
-          onMouseEnter={showTooltip}
-          onMouseLeave={hideTooltip}
-        >
+        return (
           <div
-            className="tab"
-            style={props.color ? { borderColor: props.color } : {}}
-          ></div>
-          <div className={"text" + (tab.props.showClose ? " with-close" : "")}>
-            {icon}
-            {tab.props.title}
-          </div>
-          {tab.props.showClose ? (
+            key={tab.key}
+            className={"tab-button" + (props.active == index ? " active" : "")}
+            style={style}
+            onMouseDown={(e) => {
+              handleMouseDown(e);
+
+              if (e.button === 0) {
+                switchTab(index);
+              }
+            }}
+            onMouseUp={handleMouseUp}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={showTooltip}
+            onMouseLeave={hideTooltip}
+          >
             <div
-              className="close"
-              onClick={(e) => {
-                handleClose(index, e);
-              }}
+              className="tab"
+              style={props.color ? { borderColor: props.color } : {}}
             ></div>
-          ) : null}
-        </div>
-      );
-    });
+            <div
+              className={"text" + (tab.props.showClose ? " with-close" : "")}
+            >
+              {icon}
+              {tab.props.title}
+            </div>
+            {tab.props.showClose ? (
+              <div
+                className="close"
+                onClick={(e) => {
+                  handleClose(index, e);
+                }}
+              ></div>
+            ) : null}
+          </div>
+        );
+      }
+    );
   };
 
   const renderPanels = () => {
@@ -228,12 +232,18 @@ export const Tabs = (props: ITabsProps) => {
       return <></>;
     }
 
-    return props.children.map((panel, index) => {
-      // if (index !== props.active) {
-      //   return null;
-      // }
-
-      return <div className={classNames("panel", "active")}>{panel}</div>;
+    return props.children.map((panel: ITabProps, index) => {
+      return (
+        panel && (
+          <div
+            className={classNames("panel", { active: props.active === index })}
+            aria-hidden={props.active !== index}
+            key={"panel-" + panel.key}
+          >
+            {panel}
+          </div>
+        )
+      );
     });
   };
 
