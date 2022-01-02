@@ -34,13 +34,17 @@ export class APIDialogueBlockService extends CEBlockService<APIDialogueData> {
   }
 
   onTextChanged(text: string) {
+    if (this.options.data.text === text) {
+      return;
+    }
+
     this.options.data.text = text;
 
     if (this.options.data.text.length > 0) {
       this._shouldDelete = false;
     }
 
-    this.emitContentChanged();
+    super.emitContentChanged();
   }
 
   getText() {

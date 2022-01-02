@@ -14,26 +14,15 @@ export class EditorService {
 
   private focusBlock: CEBlockService | undefined;
   private editor: EditorJS;
-  private holderElement: JQuery<HTMLElement>;
 
-  constructor(holder: string) {
-    // this.holderElement = $("#editor-instances-container").append(
-    // this.holderElement = $(holder).append(
-    //   $("<div>").prop({
-    //     id: holder,
-    //     style: "display: none;"
-    //   })
-    // );
-    // this.createEditorInstance(holder);
-  }
+  constructor() {}
 
   getBlock(id: string) {
     return this.blockServices.get(id);
   }
 
-  activeEditorHolderElement(active = true) {
-    // this.holderElement.prop("style", active ? "" : "display: none;");
-    // return this.holderElement;
+  setEditor(editor: EditorJS) {
+    this.editor = editor;
   }
 
   async getBlockList() {
@@ -89,30 +78,5 @@ export class EditorService {
       this.editor.blocks.insert();
       this.editor.focus();
     }
-  }
-
-  private createEditorInstance(holder: string) {
-    return new EditorJS({
-      holder: holder,
-      autofocus: true,
-      defaultBlock: "dialogue",
-      tunes: [],
-      data: undefined,
-      tools: {
-        paragraph: {
-          toolbox: false,
-          inlineToolbar: false
-        },
-        dialogue: APIDialogueTool,
-        character: APICharacterTool
-      },
-      onReady: () => {},
-      onChange: (api: API, block: BlockAPI) => {
-        const blockService = this.getBlock(block.id);
-        if (blockService) {
-          blockService.emitContentChanged();
-        }
-      }
-    });
   }
 }

@@ -1,5 +1,6 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { createReactEditorJS } from "react-editor-js";
+import EditorJS from "@editorjs/editorjs";
 import { AVGProject } from "../../../../modules/context/project";
 
 import "./document-tabs.less";
@@ -15,6 +16,7 @@ import { APIDialogueTool } from "../visual-story-editor/plugins/dialogue/dialogu
 import { APICharacterTool } from "../visual-story-editor/plugins/character/character.tool";
 import { API, BlockAPI } from "@editorjs/editorjs";
 import { AVGTreeNodeModel } from "../../../../../common/models/tree-node-item";
+import { useForceUpdate } from "../../../../hooks/use-forceupdate";
 
 setDebug(false); // enable debug log
 const ReactEditorJS = createReactEditorJS();
@@ -28,6 +30,27 @@ export class DocumentTabsStore extends NState<{
     });
   }
 
+  setDocumentChangedStatus(tab: DocumentTab, isChanged: boolean) {
+    tab.unsaveStatus = isChanged;
+
+    this.state.tabs[1].unsaveStatus = true;
+
+    const tabs = [...this.state.tabs];
+    this.setTabList(tabs);
+  }
+
+  exchangeTabs(a: number, b: number) {
+    const tempA = { ...this.state.tabs[a] };
+    const tempB = { ...this.state.tabs[b] };
+    const tabs = [...this.state.tabs];
+
+    tabs[a] = tempB;
+    tabs[b] = tempA;
+
+    this.setTabList(tabs);
+    this.setActiveIndex(a);
+  }
+
   setActiveIndex(index: number) {
     this.setState(() => ({ activeIndex: index }));
 
@@ -39,6 +62,10 @@ export class DocumentTabsStore extends NState<{
         tabService.setActiveTab(index);
       }
     }
+  }
+
+  setEditorRef(tab: StoryDocumentTab, ref: EditorJS) {
+    tab.editorService.setEditor(ref);
   }
 }
 
@@ -54,13 +81,28 @@ interface DocumentTabsProps {
 export const DocumentTabs = (props: DocumentTabsProps) => {
   const tabs = documentTabsStore.useState((s) => s.tabs);
   const activeIndex = documentTabsStore.useState((s) => s.activeIndex);
+  const forceUpdate = useForceUpdate();
 
-  const renderEditor = (tab: DocumentTab) => {
+  const editorCore = React.useRef<EditorJS>();
+
+  const handleInitialize = React.useCallback(
+    (tab: StoryDocumentTab, instance: EditorJS) => {
+      editorCore.current = instance;
+      documentTabsStore.setEditorRef(tab, editorCore.current as EditorJS);
+    },
+    []
+  );
+
+  const renderEditor = (tab: StoryDocumentTab) => {
     const storyTab = tab as StoryDocumentTab;
     const storyData = (storyTab.data as AVGTreeNodeModel).storyData;
 
     return (
       <ReactEditorJS
+        onInitialize={(instance: EditorJS) => {
+          handleInitialize(storyTab, instance);
+        }}
+        key={"editor-" + tab.id}
         defaultValue={storyData}
         autofocus={true}
         defaultBlock={"dialogue"}
@@ -76,9 +118,13 @@ export const DocumentTabs = (props: DocumentTabsProps) => {
         }}
         onChange={(api: API, block: BlockAPI) => {
           const blockService = storyTab.editorService.getBlock(block.id);
+          console.log("block changed: ", blockService);
+
           if (blockService) {
             blockService.emitContentChanged();
           }
+
+          forceUpdate();
         }}
       />
     );
@@ -88,9 +134,9 @@ export const DocumentTabs = (props: DocumentTabsProps) => {
     return tabs.map((v) => {
       return (
         <Tab
-          key={v.id}
+          key={"tab-document-" + v.id}
           showClose={v.closable}
-          title={`  ${v.title}`}
+          title={v.unsaveStatus ? `  ${v.title} *` : `  ${v.title}`}
           icon={
             v.type === "blank" ? (
               <MdTipsAndUpdates size={16} />
@@ -99,7 +145,7 @@ export const DocumentTabs = (props: DocumentTabsProps) => {
             )
           }
         >
-          {v.type === "story" && renderEditor(v)}
+          {v.type === "story" && renderEditor(v as StoryDocumentTab)}
         </Tab>
       );
     });
@@ -107,6 +153,10 @@ export const DocumentTabs = (props: DocumentTabsProps) => {
 
   const onTabSwitch = (index: number) => {
     documentTabsStore.setActiveIndex(index);
+  };
+
+  const onTabPositionChange = (a: number, b: number) => {
+    documentTabsStore.exchangeTabs(a, b);
   };
 
   const onTabClose = (index: number) => {
@@ -119,11 +169,11 @@ export const DocumentTabs = (props: DocumentTabsProps) => {
       <Tabs
         active={activeIndex}
         color={RendererApplication.ThemePrimaryColor}
-        onTabPositionChange={() => {}}
+        onTabPositionChange={onTabPositionChange}
         onTabSwitch={onTabSwitch}
         onTabClose={onTabClose}
         draggable={true}
-        showAdd={false}
+        showAdd={true}
       >
         {renderTabs()}
       </Tabs>

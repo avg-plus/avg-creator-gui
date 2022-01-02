@@ -96,6 +96,9 @@ class AVGProjectManager {
 
   saveProject(project: AVGProject) {
     const projectDir = project.getDir("root");
+
+    console.log("save project", project.getData());
+
     if (!this.verifyProject(projectDir)) {
       throw new Error("保存项目出错");
     }

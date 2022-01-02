@@ -82,6 +82,8 @@ export const FileTreeView = (props: FileTreeViewProps) => {
 
       console.log("on create new node: ", type, parent, service.getTreeData());
 
+      setTreeData(service.getTreeData());
+
       setSelectedNode(newNode);
 
       // 开始重命名模式
@@ -122,8 +124,10 @@ export const FileTreeView = (props: FileTreeViewProps) => {
           setIsInRenameStatusNodeID(node ? node.id : "");
         }}
         onDelete={(node) => {
-          service.deleteNode(node);
-          setTreeData(service.getTreeData());
+          if (node) {
+            service.deleteNode(node);
+            setTreeData(service.getTreeData());
+          }
         }}
         onReload={() => {
           const treeData = service.loadFileTree();
@@ -146,6 +150,11 @@ export const FileTreeView = (props: FileTreeViewProps) => {
 
     // 重新加载
     setTreeData(treeData);
+
+    // 新建节点命名完毕后自动打开 tab
+    if (hasUpdated && !node.__shadow__) {
+      handleSelect(node);
+    }
   };
 
   useEffect(() => {
@@ -159,6 +168,7 @@ export const FileTreeView = (props: FileTreeViewProps) => {
       selectedNode.type === ResourceTreeNodeTypes.Folder ||
         selectedNode.type === ResourceTreeNodeTypes.ProjectRoot
     );
+
     setCanAddStoryNode(true);
   }, [selectedNode]);
 

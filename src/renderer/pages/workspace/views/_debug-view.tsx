@@ -8,79 +8,17 @@ import { WorkspaceDebugUI } from "../../../../common/services/workspace-debug-ui
 
 import "./_debug-view.less";
 import { useMount } from "react-use";
-import { EditorService } from "./visual-story-editor/editor-service";
 import { APICharacterBlockService } from "./visual-story-editor/plugins/character/character.service";
-import { StoryFileData } from "../../../../common/services/file-reader/story-file-stream";
 import { APICharacterData } from "../../../../common/models/character";
 import { AVGProjectBuilder } from "../../../modules/compilers/builder";
-import { AVGProject } from "../../../modules/context/project";
 import { WorkspaceContext } from "../../../modules/context/workspace-context";
+import { StoryDocumentTab } from "./document-tabs/document-tabs.service";
 
 export const _DevelopmentDebugView = () => {
-  const [components, setComponents] = useState(WorkspaceDebugUI.components);
-
-  useEffect(() => {
-    return autoSubScribe(
-      GlobalEvents.DebugComponentsShouldRender,
-      (event, data) => {
-        setComponents(WorkspaceDebugUI.components);
-      }
-    );
-  });
-
   useMount(() => {
     const currentProject = WorkspaceContext.getCurrentProject();
 
-    const storyData = {
-      文件路径: `${currentProject.getDir("stories")}/start.story`,
-      读取: () => {
-        const project = new AVGProject();
-        const data = project.openStory(storyData.文件路径);
-
-        const editor = GUIVisualStoryEditorService.getEditor();
-        editor.clear();
-
-        // editor.blocks.insert(data.stories[0].type, data.stories[0].data);
-
-        // const stories = {
-        //   version: data.meta.version,
-        //   time: data.meta.time,
-        //   blocks: data.stories
-        // } as OutputData;
-
-        // GUIVisualStoryEditorService.load(stories);
-      },
-      保存: async () => {
-        const project = new AVGProject();
-
-        const output = await GUIVisualStoryEditorService.getEditor().save();
-
-        const saveData = {
-          meta: {
-            time: output.time,
-            version: output.version
-          },
-          stories: []
-        } as StoryFileData;
-
-        saveData.stories = output.blocks.map((v) => {
-          return {
-            id: v.id!,
-            type: v.type,
-            data: v.data
-          };
-        });
-
-        project.saveStory(storyData.文件路径, saveData);
-      }
-    };
-
     const gui = new dat.GUI({ name: "My GUI" });
-    const storyDebugFolder = gui.addFolder("故事管理");
-    storyDebugFolder.add(storyData, "文件路径");
-    storyDebugFolder.add(storyData, "读取");
-    storyDebugFolder.add(storyData, "保存");
-    storyDebugFolder.open();
 
     const editorDebugFolder = gui.addFolder("编辑器调试");
 
@@ -127,8 +65,16 @@ export const _DevelopmentDebugView = () => {
 
         const dataURL = cropper!.getCroppedCanvas().toDataURL();
 
+        const project = WorkspaceContext.getCurrentProject();
+        const service = project.getDocumentTabsService();
+        const editorService = (service.getActiveTab() as StoryDocumentTab)
+          .editorService;
+
         const block =
-          EditorService.getCurrentFocusBlock() as APICharacterBlockService;
+          editorService.getCurrentFocusBlock() as APICharacterBlockService;
+
+        console.log("block", block);
+
         if (block && block.setCharacterData) {
           const data = new APICharacterData();
           data.character_id = "test-id-" + Date.now();
@@ -156,15 +102,6 @@ export const _DevelopmentDebugView = () => {
           maxWidth: "100%"
         }}
       ></img>
-
-      {/* {components.map((v) => {
-        return (
-          <Button key={v.text} onClick={v.callback}>
-            {v.text}
-          </Button>
-        );
-      })}
-    <hr></hr>*/}
     </div>
   );
 };

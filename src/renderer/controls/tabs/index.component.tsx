@@ -208,7 +208,8 @@ export const Tabs = (props: ITabsProps) => {
               style={props.color ? { borderColor: props.color } : {}}
             ></div>
             <div
-              className={"text" + (tab.props.showClose ? " with-close" : "")}
+              // className={"text" + (tab.props.showClose ? " with-close" : "")}
+              className={"text" + " with-close"}
             >
               {icon}
               {tab.props.title}

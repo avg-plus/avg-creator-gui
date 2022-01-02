@@ -1,4 +1,3 @@
-import $, { map } from "jquery";
 import { AVGTreeNodeModel } from "../../../../../common/models/tree-node-item";
 import { AVGProject } from "../../../../modules/context/project";
 import { EditorService } from "../visual-story-editor/editor-service";
@@ -10,11 +9,11 @@ export interface DocumentTab {
   id: string;
   title: string;
   closable: boolean;
+  unsaveStatus: boolean;
   type: DocumentTabType;
 }
 
 export interface StoryDocumentTab extends DocumentTab {
-  unsaveStatus: boolean;
   editorService: EditorService;
   data: AVGTreeNodeModel | {};
 }
@@ -59,12 +58,11 @@ export class DocumentTabsService {
       data: node
     } as DocumentTab;
 
+    const documentManager = this.project.getDocumentManager();
+
     if (type === "story" && node) {
       tab.id = (node as AVGTreeNodeModel).id;
       tab.title = (node as AVGTreeNodeModel).text;
-      (tab as StoryDocumentTab).unsaveStatus = (
-        node as AVGTreeNodeModel
-      ).shouldSave;
     } else if (type === "blank") {
       tab.id = "blank";
       tab.title = "开始使用";
@@ -77,27 +75,30 @@ export class DocumentTabsService {
       documentTabsStore.setTabList(this.tabs);
 
       if (type === "story" && !(tab as StoryDocumentTab).editorService) {
-        (tab as StoryDocumentTab).editorService = new EditorService(
-          `editor-placeholder-${tab.id}`
-        );
+        (tab as StoryDocumentTab).editorService = new EditorService();
+        // `editor-placeholder-${tab.id}`
 
-        (node as AVGTreeNodeModel).documentTab = tab;
+        documentManager.openDocument(tab);
       }
     } else if (type === "story" && tabData.index >= 0 && tabData.tab) {
-      (node as AVGTreeNodeModel).documentTab = tabData.tab;
+      documentManager.openDocument(tabData.tab);
     }
 
-    // active tab
     documentTabsStore.setActiveIndex(tabData.index);
-
-    if (type === "story") {
-      // setTimeout(() => {
-      //   this.attachEditorToTab(tab);
-      // }, 1000);
-    }
   }
 
-  closeTab(index: number) {
+  closeTab(indexOrTab: number | string | DocumentTab) {
+    let index = -1;
+    if (typeof indexOrTab === "number") {
+      index = indexOrTab;
+    } else if (typeof indexOrTab === "string") {
+      const tabData = this.getTabDataByID(indexOrTab);
+      index = tabData.index;
+    } else {
+      const tabData = this.getTabDataByID(indexOrTab.id);
+      index = tabData.index;
+    }
+
     this.tabs.splice(index, 1);
 
     if (this.tabs.length > 0) {
@@ -107,20 +108,6 @@ export class DocumentTabsService {
     }
 
     documentTabsStore.setTabList(this.tabs);
-  }
-
-  attachEditorToTab(tab: DocumentTab) {
-    // 把编辑器移动到标签页内
-    // (tab as StoryDocumentTab).editorService.activeEditorHolderElement(true);
-    // const element = $(`#editor-${tab.id}`).detach();
-    // $(`#editor-placeholder-${tab.id}`).append(element);
-  }
-
-  dettachEditorToTab(tab: DocumentTab) {
-    // // 把编辑器移动到标签页内
-    // const element = $(`#editor-${tab.id}`).detach();
-    // $("#editor-instances-container").append(element);
-    // (tab as StoryDocumentTab).editorService.activeEditorHolderElement(false);
   }
 
   private getTabDataByID(id: string) {

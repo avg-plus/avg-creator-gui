@@ -1,17 +1,14 @@
 import { nanoid } from "nanoid";
 
 import { ResourceTreeNodeTypes } from "../../../../../common/models/resource-tree-node-types";
-import {
-  AVGTreeNodeModel,
-  AVGTreeNodePersistence
-} from "../../../../../common/models/tree-node-item";
+import { AVGTreeNodeModel } from "../../../../../common/models/tree-node-item";
 import { Nullable } from "../../../../../common/traits";
 import AVGProjectManager from "../../../../modules/context/project-manager";
 import { OutputData } from "@editorjs/editorjs";
 import { AVGProject } from "../../../../modules/context/project";
 
 export class FileTreeService {
-  private treeItems: AVGTreeNodeModel[] = [];
+  // private treeItems: AVGTreeNodeModel[] = [];
   private inRenameStatusNode: string = "";
   private project: AVGProject;
   private selectedNode: AVGTreeNodeModel;
@@ -30,26 +27,33 @@ export class FileTreeService {
   }
 
   loadFileTree() {
-    this.project.loadProject(this.project.getDir("root"));
-    this.treeItems = this.project.getStoryTree() as AVGTreeNodeModel[];
+    const documentManager = this.project.getDocumentManager();
+    const treeNodes = documentManager.getTreeNodes();
 
-    if (!this.treeItems.length) {
+    if (!treeNodes.length) {
       const rootNode = this.createNode(ResourceTreeNodeTypes.ProjectRoot, null);
-      console.log("rootNode", rootNode);
 
       rootNode.text = this.project.getData().project_name;
     }
 
-    return this.treeItems;
+    return treeNodes;
   }
 
   updateTreeData(treeData: AVGTreeNodeModel[]) {
-    this.treeItems = treeData;
+    const documentManager = this.project.getDocumentManager();
+
+    treeData.forEach((v) => {
+      documentManager.updateDocument(v);
+    });
+
     this.commitChanges();
   }
 
   getTreeData() {
-    return this.treeItems;
+    const documentManager = this.project.getDocumentManager();
+    const treeNodes = documentManager.getTreeNodes();
+
+    return treeNodes;
   }
 
   createNode(
@@ -69,44 +73,26 @@ export class FileTreeService {
       type,
       parent: parentID ?? "root",
       text: "",
-      shouldSave: false,
       data: {}
     } as AVGTreeNodeModel;
 
-    // 在对应目录下创建响应的文件实体
-    if (newNode.type === ResourceTreeNodeTypes.StoryNode) {
-      AVGProjectManager.createStoryFile(this.project, newNode.id);
-    }
-
-    this.treeItems.push(newNode);
-
-    console.log("create node this.treeItems", this.treeItems);
+    const documentManager = this.project.getDocumentManager();
+    documentManager.createDocument(newNode);
 
     return newNode;
   }
 
-  deleteNode(node: Nullable<AVGTreeNodeModel>) {
-    if (!node) {
-      return this.treeItems;
+  deleteNode(node: AVGTreeNodeModel) {
+    const documentManager = this.project.getDocumentManager();
+    const deleted = documentManager.deleteDocument(node);
+
+    // 关闭对应的标签页
+    if (deleted) {
+      const tabService = this.project.getDocumentTabsService();
+      tabService.closeTab(node.id);
     }
 
-    this.treeItems = this.treeItems.filter((v) => {
-      // 删除节点时，同时删除其子节点
-      // if (node.parent === v.id) {
-      //   AVGProjectManager.deleteStoryFile(this.project, node.id);
-      // }
-
-      return v.id !== node.id && v.parent !== node.id;
-    });
-
-    // 删除对应的文件
-    if (node.type === ResourceTreeNodeTypes.StoryNode) {
-      AVGProjectManager.deleteStoryFile(this.project, node.id);
-    }
-
-    this.commitChanges();
-
-    return this.treeItems;
+    return documentManager.getTreeNodes();
   }
 
   /**
@@ -114,8 +100,10 @@ export class FileTreeService {
    * @param node 重命名结束
    */
   onRenameEnd(node: AVGTreeNodeModel, hasUpdated: boolean) {
+    const documentManager = this.project.getDocumentManager();
+
     if (!node) {
-      return this.treeItems;
+      return documentManager.getTreeNodes();
     }
 
     // 节点是否 shadow
@@ -130,10 +118,9 @@ export class FileTreeService {
       delete node?.__shadow__;
     }
 
-    console.log("handleRenameEnd", this.treeItems);
     this.commitChanges();
 
-    return this.treeItems;
+    return documentManager.getTreeNodes();
   }
 
   getOpenedNode() {
@@ -175,10 +162,7 @@ export class FileTreeService {
    * 提交变更并写入到项目文件
    */
   private commitChanges() {
-    this.project.setStoryTree(this.treeItems as AVGTreeNodePersistence[]);
-
-    if (this.project) {
-      AVGProjectManager.saveProject(this.project);
-    }
+    const documentManager = this.project.getDocumentManager();
+    documentManager.commitChanges();
   }
 }
